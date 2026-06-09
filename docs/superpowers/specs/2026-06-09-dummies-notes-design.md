@@ -75,9 +75,8 @@ decompose, never to assume — an obscure term becomes its own prerequisite node
    **stop** (treat as a citation). Cap depth/breadth as a runaway backstop and
    `log()` anything capped. Result: the DAG.
 3. **Illustrate (fan-out over atomic nodes not already in the registry)** —
-   `concept-illustrator` storyboards → renders frames → lints. Atomic nodes only;
-   intermediate nodes get a one-line composition caption that links to their
-   children.
+   `concept-illustrator` storyboards → renders frames → lints. Atomic (leaf) nodes
+   only; intermediate nodes are handled at assembly (step 5).
 4. **Review each figure (fresh-eyes gate, before registering)** — a separate
    `concept-reviewer` agent runs the blind-reader test and the fidelity critic on
    the artifact. On a gap, loop back (bounded ≈2 retries): regenerate the figure
@@ -87,7 +86,12 @@ decompose, never to assume — an obscure term becomes its own prerequisite node
 5. **Assemble** — topologically sort atomic-first; emit **both**:
    - a bottom-up explainer doc — each concept's figure + caption, ordered so every
      idea builds on already-illustrated ones; already-covered prerequisites are
-     **linked, not re-inlined**;
+     **linked, not re-inlined**. **Intermediate (non-leaf) nodes render
+     caption-only** — a short paragraph that links up to its children's figures —
+     **except the target**, which gets a **composition figure**: a light figure
+     built *from* the already-illustrated children, showing how they snap together
+     (produced via `concept-illustrator`'s compose-from-children mode). The target
+     is the payoff, so it earns a real "here's how it all assembles" picture;
    - an interactive concept map — nodes carry figure thumbnails, edges are the
      dependency/reference links — over the same registry.
 6. **Chain review (end-to-end, fresh agent)** — a `concept-reviewer` agent reads
@@ -105,7 +109,7 @@ Strongest (deterministic) to softest:
 1. **Shared stylesheet + template** — every figure embeds the same `_style.css`
    and starts from `template.svg`: fixed palette, two type sizes, sentence case,
    0.5 strokes, named color ramps. Handles color/type/spacing baseline.
-2. **Visual-vocabulary library** — `references/visual-vocabulary.md` + small
+2. **Visual-vocabulary library** — `references/visual-vocabulary.md` plus small
    reusable SVG snippets for recurring primitives: array/list cell, pointer, graph
    node, edge, container/set, stack frame, function box, and state styles (active,
    eliminated/greyed, target). Makes a list *look like a list* everywhere. This is
@@ -184,12 +188,16 @@ exist. Becoming real means authoring them and extending the contract:
   `references/voice-and-metaphor.md`.
 - **Extend the contract:** storyboard step, sequence archetype, frame-consistency
   rule, multi-frame `figure.json` output.
+- **Compose-from-children mode:** given a concept plus its already-illustrated
+  children, produce a light composition figure showing how the children snap
+  together. Used for the target node at assembly (step 5); lands in Phase 4 since it
+  needs child figures to exist.
 - **Machine-callable I/O:** input = concept slug/name/definition; output = a figure
   directory the Workflow can register.
 
 ## Proposed directory layout
 
-```
+```text
 .claude/skills/concept-illustrator/   # SKILL.md, assets/, references/, scripts/render.py
 .claude/skills/concept-decompose/     # SKILL.md
 .claude/workflows/dummies-notes.*     # the orchestrator Workflow
@@ -206,15 +214,18 @@ Each phase is its own spec → plan → build cycle.
 - **Phase 1 — `concept-illustrator`, made real.** Complete the promised assets, add
   the style/vocabulary/voice references and the linter gate, add multi-frame +
   storyboard + frame-consistency, the **per-figure fresh-eyes review** (blind-reader
-  + fidelity critic) with its bounded repair loop, plus a single-figure slideshow
-  viewer. *Independently useful; the foundation everything else calls.* **Plan this
-  next.**
+  and fidelity critic) with its bounded repair loop. **Viewer scope: only
+  `slideshow.html`** — the single-figure player, needed to even view a multi-frame
+  figure standalone. (The concept map and doc assembly are Phase 4.) *Independently
+  useful; the foundation everything else calls.* **Plan this next.**
 - **Phase 2 — `concept-decompose` + `concept-registry`.** Single-level decomposition
   primitive and the reference graph.
 - **Phase 3 — `dummies-notes` Workflow.** Wire the recursion: decompose → link →
   illustrate → review.
-- **Phase 4 — assembly + viewers + chain review.** Bottom-up explainer doc and
-  interactive map over the registry, plus the end-to-end chain review.
+- **Phase 4 — assembly + map viewer + chain review.** Bottom-up explainer doc and
+  the interactive concept map (`map.html`) over the registry; the
+  compose-from-children mode for the target's composition figure; the end-to-end
+  chain review.
 
 ## Non-goals (YAGNI)
 
@@ -231,8 +242,6 @@ Each phase is its own spec → plan → build cycle.
   (JSON shapes).
 - Where the registry lives relative to the living-doc `knowledge/` base (sibling
   `registry/` vs under `knowledge/`).
-- How intermediate (non-atomic) nodes render in the doc — caption-only vs a light
-  composition figure.
 - Audience-level parameter surface (single default vs selectable).
 - Review calibration: how strict the blind-reader/intended-concept comparison is
   (who judges the match, what counts as "diverged"), and the exact retry bound.
