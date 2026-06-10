@@ -58,6 +58,11 @@ Append-only chronological log of significant changes to this project. Each entry
 - `scripts/tests/test_render.py`: added `TestCli` (5 tests) covering both error-path guards and happy-path lint/viewer cases; suite total is now 51 tests, 1 skip.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
 
+## [2026-06-09] doc | narrow illustration-engine drift mapping to SKILL.md + render.py (Phase 1.5)
+
+- Scoped `illustration-engine.md` `affects:` from the broad `concept-illustrator/**` glob to exactly `SKILL.md` and `scripts/render.py`; reference docs and assets no longer trigger article drift checks.
+- Updated CLAUDE.md article-mapping table to two specific rows matching the new globs.
+
 ## [2026-06-09] fix | quicksort figure: color-semantics + silent-swap review
 
 - Revised all four frames in `examples/quicksort/` to use an unambiguous color model: `c-coral` = pivot (constant throughout), `c-teal` = current scan target (one cell, never the pivot), `c-gray` = settled left-zone cells, `box` = not-yet-scanned.

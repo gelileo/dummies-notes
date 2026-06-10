@@ -56,7 +56,8 @@ Each article's `affects:` globs drive `drift-check`; keep this table in sync.
 | When you change... | Update this article |
 | --- | --- |
 | `.claude/skills/concept-decompose/**` | `concepts/dummies-notes/concept-decomposition.md` |
-| `.claude/skills/concept-illustrator/**` | `concepts/dummies-notes/illustration-engine.md` |
+| `.claude/skills/concept-illustrator/SKILL.md` | `concepts/dummies-notes/illustration-engine.md` |
+| `.claude/skills/concept-illustrator/scripts/render.py` | `concepts/dummies-notes/illustration-engine.md` |
 | `src/catalog/**`, `registry/**` | `concepts/dummies-notes/atomic-illustration-catalog.md` |
 
 ### When code has no matching article

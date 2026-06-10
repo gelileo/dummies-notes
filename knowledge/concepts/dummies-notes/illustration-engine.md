@@ -2,10 +2,11 @@
 title: Illustration engine
 type: concept
 area: dummies-notes
-updated: 2026-06-10
+updated: 2026-06-09
 status: mature
 affects:
-  - ".claude/skills/concept-illustrator/**"
+  - ".claude/skills/concept-illustrator/SKILL.md"
+  - ".claude/skills/concept-illustrator/scripts/render.py"
 references:
   - "concepts/dummies-notes/concept-decomposition.md"
   - "concepts/dummies-notes/atomic-illustration-catalog.md"
