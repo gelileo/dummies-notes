@@ -2,6 +2,27 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] compile | Phase 3 knowledge-base reconciliation (Task 5)
+
+Phase 3 shipped three production deliverables. This entry records what landed and the articles matured to reflect it.
+
+**graph_check.py** (`scripts/graph_check.py`)
+- Zero-dep stdlib gate for a concept-graph directory; three checks: `load_graph` (shape), `find_cycles` (DFS cross-node cycle detection, diamond-safe), `check_coverage` (every graph node registered; `--require-illustrated` requires atomic nodes to have figures); frontier prerequisites (no graph file, not registered) are WARNs.
+- 12 unit tests in `scripts/tests/test_graph_check.py`; suite total 35 tests.
+
+**Orchestrator workflow** (`.claude/workflows/dummies-notes.js`)
+- Full BFS orchestration: registry-snapshot agent → BFS decompose with `MAX_DEPTH=2` / `MAX_NODES=12` caps + frontier logging → `pipeline()` illustrate→review per atomic node with `MAX_REPAIRS=2` and flag-and-continue → Finalize agent (python3-heredoc registration with `--prereqs`, attach-figure, index rebuild, `graph_check --require-illustrated`).
+- Accepts `args` as object or JSON-encoded string.
+
+**First end-to-end run** (modular arithmetic, 2026-06-10)
+- 1 node, atomic; clock-face figure illustrated into `registry/modular-arithmetic/figure/` (5 frames, lint clean); blind-reader + fidelity-critic review passed with no repairs; entry promoted to `illustrated`; `graph_check --require-illustrated` clean. 6 agents total.
+
+**Articles matured**
+- `concepts/dummies-notes/orchestration-workflow.md`: `status: thin` → `mature`. Removed stale "in progress" phrasing and Phase 3 Task status sections; accurate graph_check test count (12/35); added Phase 4 next section (assembly + end-to-end chain review + figure invalidation open question).
+- `knowledge/index.md`: orchestration-workflow row updated (dropped "in progress"; noted first run).
+- `CLAUDE.md § Current state`: Phase 3 marked shipped; graph_check command added; Phase 4 scope updated.
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`, `knowledge/index.md`, `CLAUDE.md`.
+
 ## [2026-06-10] fix | workflow: persist prereqs on re-register; quoting-proof finalize registration
 
 - `scripts/concept_registry.py register()`: idempotent re-registration now updates `prerequisites` when explicitly provided and different from the stored value, persisting graph edges for already-registered concepts without requiring a definition change.

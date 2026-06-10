@@ -3,7 +3,7 @@ title: Orchestration workflow
 type: concept
 area: dummies-notes
 updated: 2026-06-10
-status: thin
+status: mature
 affects:
   - ".claude/workflows/**"
   - "scripts/graph_check.py"
@@ -60,10 +60,16 @@ graph is acyclic, every graph node is registered, and (with
 `--require-illustrated`) every atomic node has a figure. Frontier prerequisites
 (no graph file, not registered) are WARNs.
 
-`graph_check.py` ships as of Phase 3 Task 2 with 11 unit tests (33 total across the suite). The `load_graph` / `find_cycles` / `check_coverage` API matches this description exactly.
+`graph_check.py` ships with 12 unit tests (35 total across the suite). The `load_graph` / `find_cycles` / `check_coverage` API matches this description exactly.
 
-## Workflow script status (Phase 3 Task 3)
-
-`.claude/workflows/dummies-notes.js` landed in Phase 3 Task 3. The Run shape above accurately reflects the shipped script: `MAX_DEPTH=2`, `MAX_NODES=12`, `MAX_REPAIRS=2`, `registry-snapshot` agent, BFS loop with frontier logging, `pipeline()` for illustrate/review, and a Finalize agent that calls `--prereqs` on registration and `--require-illustrated` on graph_check.
+The shipped workflow script parameters: `MAX_DEPTH=2`, `MAX_NODES=12`, `MAX_REPAIRS=2`, `registry-snapshot` agent, BFS loop with frontier logging, `pipeline()` for illustrate/review, and a Finalize agent that calls `--prereqs` on registration and `--require-illustrated` on graph_check.
 
 The Finalize agent registers concepts by writing NODES to a temp JSON file and calling `concept_registry.reg.register` via a python3 heredoc, avoiding shell-quoting hazards that could corrupt definitions or prerequisite slugs containing spaces or special characters.
+
+## Phase 4 next
+
+Phase 4 scope (not yet built):
+
+- **Assembly**: render `output/<topic>/index.html` (bottom-up explainer) and `output/<topic>/map.html` (interactive concept map) from the graph + registry figures.
+- **End-to-end chain review**: a cross-node fresh-eyes pass over the full assembled output, not just per-figure review.
+- **Open question carried forward**: figure invalidation and versioning — when an illustrated concept's definition changes, how does the registry detect staleness and trigger a re-illustration?

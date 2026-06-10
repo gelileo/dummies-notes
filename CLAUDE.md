@@ -109,7 +109,14 @@ scripts/concept-registry register|lookup|attach-figure|index ...
 python3 -m unittest discover -s scripts/tests -p 'test_*.py'
 ```
 
-**Phases 3–4** (the dummies-notes Workflow: recursion + automated review loop; assembly + map viewer over `output/<topic>/`) are **not yet built**. See `docs/superpowers/specs/2026-06-09-dummies-notes-design.md` and `docs/superpowers/plans/`.
+**Phase 3 shipped**: the `dummies-notes` Workflow at `.claude/workflows/dummies-notes.js` (run via the Workflow tool with `{topic: "..."}`, scriptPath or name) and `scripts/graph_check.py` (zero-dep; shape + cross-node cycle detection + registry coverage). First run illustrated modular-arithmetic end-to-end (1 node, clock-face figure, review passed, graph_check clean).
+
+```bash
+# validate a concept graph (cycles + registry coverage)
+python3 scripts/graph_check.py output/<topic>/graph --require-illustrated
+```
+
+**Phase 4** (assembly + map viewer + chain review over `output/<topic>/`) is **not yet built**. See `docs/superpowers/specs/2026-06-09-dummies-notes-design.md` and `docs/superpowers/plans/`.
 
 `example/` is the original design reference: `concept-illustrator-SKILL.md` plus a finished sample figure (`example-binary-search.svg` + light/dark PNGs). The shipped implementation supersedes it — treat `example/` as historical reference only.
 
