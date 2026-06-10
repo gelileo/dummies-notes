@@ -10,10 +10,13 @@ export const meta = {
   ],
 }
 
-const topic = args && args.topic
+// args may arrive as a JSON-encoded string depending on the caller — accept both.
+let A = args
+if (typeof A === 'string') { try { A = JSON.parse(A) } catch (e) { A = { topic: A } } }
+const topic = A && A.topic
 if (!topic) throw new Error('args.topic is required (e.g. {topic: "modular arithmetic"})')
-const MAX_DEPTH = (args && args.maxDepth) || 2
-const MAX_NODES = (args && args.maxNodes) || 12
+const MAX_DEPTH = (A && A.maxDepth) || 2
+const MAX_NODES = (A && A.maxNodes) || 12
 const MAX_REPAIRS = 2
 const AUDIENCE = 'a curious adult with no domain background'
 
@@ -99,7 +102,7 @@ const nodes = {}      // slug -> {name, definition, atomic, prerequisites:[slug]
 const frontier = []   // concepts left undone by caps
 let rootSlug = null
 let graphDir = null
-let queue = [{ slug: null, name: topic, definition: (args && args.definition) || null, depth: 0 }]
+let queue = [{ slug: null, name: topic, definition: (A && A.definition) || null, depth: 0 }]
 
 while (queue.length) {
   const item = queue.shift()

@@ -2,7 +2,7 @@
   "slug": "modular-arithmetic",
   "name": "Modular arithmetic",
   "definition": "A way of counting where the numbers wrap back to the start once they reach a fixed limit, the way the hours on a clock jump from 12 back to 1.",
-  "status": "registered",
+  "status": "illustrated",
   "prerequisites": [],
-  "figure": null
+  "figure": "modular-arithmetic/figure"
 }

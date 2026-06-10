@@ -42,6 +42,16 @@ review them with fresh eyes, and register everything.
    [[atomic-illustration-catalog]]), attach figures, rebuild the index, and run
    `scripts/graph_check.py` (shape, cross-node cycle detection, coverage).
 
+The script accepts `args` either as an object or a JSON-encoded string (some
+callers stringify it); it parses and falls back gracefully.
+
+## First run (Phase 3 smoke)
+
+The first end-to-end run ("modular arithmetic", 2026-06-10): 1 node, atomic;
+clock-face figure illustrated into `registry/modular-arithmetic/figure/`;
+blind-reader + fidelity-critic review passed with no repairs; entry promoted to
+`illustrated`; `graph_check --require-illustrated` clean. 6 agents total.
+
 ## graph_check
 
 `scripts/graph_check.py` (zero-dep; imports `concept_registry.lookup`) is the

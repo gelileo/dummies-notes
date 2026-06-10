@@ -1,0 +1,11 @@
+{
+  "concept": {
+    "slug": "modular-arithmetic",
+    "name": "Modular arithmetic",
+    "definition": "A way of counting where the numbers wrap back to the start once they reach a fixed limit, the way the hours on a clock jump from 12 back to 1."
+  },
+  "audience": "a curious adult with no domain background",
+  "atomic": true,
+  "atomic_reason": "One short clock-face figure of a few frames carries the whole idea: a hand sweeps past 12, wraps back to 1, and lands on the answer. The only thing it leans on is reading a clock and basic counting, which the audience already knows, so no sub-figure is needed.",
+  "prerequisites": []
+}

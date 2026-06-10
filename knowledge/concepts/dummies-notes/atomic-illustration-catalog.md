@@ -97,9 +97,12 @@ The registry ships with two entries:
 - **quicksort** (`status: illustrated`) — linked to the Phase 1 golden figure at
   `.claude/skills/concept-illustrator/examples/quicksort`. The relative `figure` path
   round-trips correctly through `lookup`.
-- **modular-arithmetic** (`status: registered`) — definition byte-identical to the
-  golden decomposition at `.claude/skills/concept-decompose/examples/modular-arithmetic/decomposition.json`;
-  awaiting its own figure in Phase 3 or later.
+- **modular-arithmetic** (`status: illustrated`) — definition byte-identical to the
+  golden decomposition at `.claude/skills/concept-decompose/examples/modular-arithmetic/decomposition.json`.
+  Promoted from `registered` by the **first dummies-notes workflow run** (Phase 3
+  smoke): the run decomposed it (atomic), illustrated a clock-face figure into
+  `registry/modular-arithmetic/figure/` (review passed, `review.json` in the figure
+  dir), and attached it — the first figure produced end-to-end by the orchestrator.
 
 ## Open question (Phase 3+)
 

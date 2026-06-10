@@ -1,0 +1,26 @@
+{
+  "concept_slug": "modular-arithmetic",
+  "title": "Modular arithmetic — counting that wraps at 12",
+  "archetype": "illustrative",
+  "playback": "slideshow",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "Counting up to 12 is ordinary — the count and the dial agree.",
+      "runbook": "Stable layout shared by all frames, viewBox 0 0 680 480. Title (th) at (340,32): 'Counting that wraps at 12'. Count strip: five cells (rx=2, w=56, h=36, y=66) at x=176,244,312,380,448 holding values 10,11,12,13,14 (th, centered at y=84); a ts label 'counting up' anchored end at (160,84). Dial: dashed rim circle (class leader) center (340,280) r=110; twelve nodes r=17 at clock positions — 12:(340,170) 1:(395,185) 2:(435,225) 3:(450,280) 4:(435,335) 5:(395,375) 6:(340,390) 7:(285,375) 8:(245,335) 9:(230,280) 10:(245,225) 11:(285,185) — each a circle plus th number; ts label 'the limit' anchored end at (312,148) next to node 12; ts center label 'the dial has only 12 places' at (340,280). Bottom annotation (t, centered) at (340,440). Frame 1 state: strip cells 10 and 11 are c-gray (already counted), cell 12 is c-teal (current count), cells 13 and 14 neutral box. All dial nodes are c-gray scaffold except node 12, which is c-teal to match the current count. No wrap arcs. Bottom annotation: 'Up to the limit, nothing special: count 12, land on 12.'",
+      "commentary": "Picture a clock dial with twelve places. We count upward: ten, eleven, twelve. The teal marker shows where we are, on the strip and on the dial. So far the two agree perfectly. Twelve is the top of the dial. It is also the limit."
+    },
+    {
+      "file": "frame-02.svg",
+      "caption": "The dial has no 13, so the count wraps past the top and lands on 1.",
+      "runbook": "Same stable layout and coordinates as frame 1 (viewBox 0 0 680 480; strip cells at x=176,244,312,380,448; dial nodes at the twelve fixed positions). Frame 2 state: strip cells 10, 11, 12 are c-gray (counted), cell 13 is c-teal (current count), cell 14 neutral box. Dial nodes all c-gray except node 1 at (395,185), which is c-teal — 13 has landed on 1. New annotation: a wrap arc (class arr, marker-end arrow) outside the rim from above node 12 to above node 1, d='M340,134 A146,146 0 0 1 408,151', with ts label '13 wraps to 1' anchored start at (416,132). Bottom annotation changes to: 'There is no 13 on the dial, so the count rolls past the top and lands on 1.' Changed from frame 1: the teal highlight moved from cell 12 to cell 13 and from node 12 to node 1; the wrap arc and its label appeared.",
+      "commentary": "Now we count one more: thirteen. But the dial has no thirteen. There is nowhere new to go. So the count rolls past the top and starts over. Thirteen lands on one. That wrap is the whole idea of modular arithmetic."
+    },
+    {
+      "file": "frame-03.svg",
+      "caption": "14 is two steps past 12 — 14 o'clock is just 2 o'clock.",
+      "runbook": "Same stable layout and coordinates as frames 1-2. Frame 3 state (the result): strip cells 10, 11, 12, 13 are c-gray (counted), cell 14 is c-coral (the answer we asked about). Dial nodes all c-gray except node 2 at (435,225), which is c-coral — 14 has landed on 2. Annotations: the frame-2 wrap arc and its '13 wraps to 1' label stay in place; a second arc (class arr, marker-end arrow) continues from above node 1 to above node 2, d='M417,156 A146,146 0 0 1 464,203', with ts label '14 lands on 2' anchored start at (478,176). Bottom annotation changes to: \"14 is two steps past 12 — so 14 o'clock is just 2 o'clock.\" Changed from frame 2: the highlight advanced one step and switched to coral (target found); the second arc and label appeared; node 1 returned to gray.",
+      "commentary": "One more step: fourteen. It follows the same rule. Fourteen is two steps past twelve, so it lands on two. That is why 14 o'clock is just 2 o'clock. Only the leftover steps after a full circle matter. The full circles themselves disappear."
+    }
+  ]
+}

@@ -213,3 +213,12 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - Created `scripts/concept_registry.py`: `register(root, slug, name, definition, prerequisites=())` and `lookup(root, slug)`. Entries persist at `registry/<slug>/entry.json`. Same-slug + same-definition is idempotent; same-slug + different-definition raises `RegistryError`; invalid slugs (non-kebab-case) and blank name/definition also raise `RegistryError`.
 - Created `scripts/tests/__init__.py` and `scripts/tests/test_concept_registry.py` (7 tests, all passing).
 - Updated `knowledge/concepts/dummies-notes/atomic-illustration-catalog.md`: resolved the open storage question — filesystem `registry/<slug>/entry.json` + rebuildable `registry/index.json` via `scripts/concept_registry.py`.
+
+## [2026-06-10] feat | first dummies-notes workflow run (Phase 3 smoke)
+
+- Ran the orchestrator end-to-end on "modular arithmetic": 1 node, atomic; figure
+  illustrated into `registry/modular-arithmetic/figure/` (5 frames, lint clean);
+  blind-reader + fidelity-critic review passed with no repairs; entry promoted to
+  `illustrated`; `graph_check --require-illustrated` clean. 6 agents total.
+- Hardened the workflow script to accept JSON-string args (caller footgun).
+- Updated the seeded-registry test pin: modular-arithmetic is now illustrated.

@@ -187,10 +187,14 @@ class TestSeededRegistry(unittest.TestCase):
         figure_dir = os.path.normpath(os.path.join(self.ROOT, entry["figure"]))
         self.assertTrue(os.path.exists(os.path.join(figure_dir, "figure.json")))
 
-    def test_modular_arithmetic_is_registered(self):
+    def test_modular_arithmetic_is_illustrated(self):
+        # Promoted from `registered` by the first dummies-notes workflow run
+        # (Phase 3 smoke), which illustrated it into registry/modular-arithmetic/figure.
         entry = reg.lookup(self.ROOT, "modular-arithmetic")
         self.assertIsNotNone(entry)
-        self.assertEqual(entry["status"], "registered")
+        self.assertEqual(entry["status"], "illustrated")
+        figure_dir = os.path.normpath(os.path.join(self.ROOT, entry["figure"]))
+        self.assertTrue(os.path.exists(os.path.join(figure_dir, "figure.json")))
 
     def test_index_matches_entries(self):
         index = reg.build_index(self.ROOT)
