@@ -1,0 +1,8 @@
+{
+  "slug": "communication-protocol",
+  "name": "Communication protocol",
+  "definition": "An agreed set of rules two computers follow when talking, so each one knows what kind of message to expect next and what every message means.",
+  "status": "illustrated",
+  "prerequisites": [],
+  "figure": "communication-protocol/figure"
+}

@@ -1,0 +1,5 @@
+{
+  "pass": true,
+  "summary": "All five frames match their runbooks exactly: frame 1 sets up the two computers, the four-rule rulebook, lifelines, and the 'no messages yet' annotation at the specified coordinates; frames 2-5 add one message each with the correct teal highlight on the active speaker and active rule pill, gray dimming on completed rules and messages, correct arrow directions (A->B for messages 1 and 3, B->A for messages 2 and 4), correct labels and annotation positions, and frame 5 replaces the annotation with the coral 'conversation complete' pill at (240,356) 200x30. The blind reader's account matches the commentary's intent in every particular: pre-agreement before any message, ordered turn-taking, each message expected and interpretable because of the shared rules, clean completion. Commentary uses short, vivid sentences ('shared script', 'mystery bytes') faithful to the frames. The final frame clearly shows the end state. Only a cosmetic nit: frame 3's message text uses a straight apostrophe (I'm) where the runbook specifies a right single quote (I’m) — not a real gap.",
+  "gaps": []
+}

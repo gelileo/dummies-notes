@@ -1,0 +1,14 @@
+{
+  "concept_slug": "tcp-connection-lifecycle",
+  "title": "TCP connection lifecycle: three ideas snap together",
+  "archetype": "structural",
+  "playback": "static",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "A shared rule-set scripts the stages, packets carry every line of the script, and a promiseless network is why the ceremony exists.",
+      "runbook": "Single structural composition frame, viewBox 0 0 680 370. Title (th, centered at x=340, y=32): 'Three ideas snap together into the TCP connection lifecycle'. Left column: three prerequisite boxes, each w=250 h=64 rx=8 stroke-width 0.5 at x=40, stacked with 26px gaps — c-purple at y=56 with th 'Communication protocol' (y=84) and ts 'the script both sides follow' (y=104); c-blue at y=146 with th 'Data packets' (y=174) and ts 'each stage travels as packets' (y=194); c-pink at y=236 with th 'Best-effort delivery' (y=264) and ts 'the network promises nothing' (y=284). All child text centered at x=165. Ramps are neutral category colors (purple/blue/pink), one per child, no state meaning. Right side: the parent gets the emphasis — a single larger c-coral box at x=425 y=98 w=220 h=160 rx=10 with th 'TCP connection lifecycle' (y=150), ts 'handshake opens' (y=174), ts 'data flows, confirmed' (y=192), ts 'goodbye closes' (y=210), all centered at x=535. Three arrows (class arr, marker-end, fill none) converge from each child's right edge into the parent's left edge: M294,88 L419,150; M294,178 L419,178; M294,268 L419,206 — top and bottom arrows angle inward so the three visibly meet at one destination. Bottom note (ts, centered x=340, y=330): 'The rules script the stages, packets carry them, and the unreliable net makes each necessary'. This is a map of how the parts fit, not a re-teaching: each child box carries only its name plus a 2-6 word essence of its role in the lifecycle.",
+      "commentary": "The TCP connection lifecycle is not one new idea — it is three familiar ones snapped together. A communication protocol supplies the script: both computers follow the same agreed rules, so the opening greeting, the middle conversation, and the closing goodbye happen in a fixed, expected order. Data packets supply the medium: every line of that script, from the first hello to the last farewell, is just a small labeled chunk sent across the network. And best-effort delivery supplies the reason: the network may lose, duplicate, or reorder any of those chunks, so the handshake, the receipt confirmations, and the careful two-way goodbye are not ceremony — they are how two machines stay certain despite a network that promises nothing. Follow the three arrows and they all land in the same coral box. That convergence is the lifecycle: a scripted conversation, carried by packets, made careful by an unreliable road."
+    }
+  ]
+}

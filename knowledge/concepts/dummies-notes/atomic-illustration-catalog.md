@@ -113,6 +113,14 @@ figure) — the first entry carrying non-empty `prerequisites`
 (`modular-arithmetic`, `prime-numbers`, `asymmetric-cryptography`): the
 registry now persists real graph edges.
 
+## User-run entries
+
+The first user-requested run ("TCP connection lifecycle", maxDepth 1) added
+**communication-protocol** and **data-packets** (illustrated, review-passed),
+**best-effort-delivery** (registered, non-atomic — its figure awaits a deeper
+run), and **tcp-connection-lifecycle** (illustrated, composition figure, edges
+to all three).
+
 ## Open question (Phase 3+)
 
 **Versioning/invalidation**: when a concept's understanding changes, how is a cached

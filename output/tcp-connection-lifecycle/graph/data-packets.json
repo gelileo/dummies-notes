@@ -1,0 +1,11 @@
+{
+  "concept": {
+    "slug": "data-packets",
+    "name": "Data packets",
+    "definition": "Small labeled chunks that a message is chopped into before being sent across a network, each traveling on its own and carrying enough information to be put back in order."
+  },
+  "audience": "a curious adult with no domain background",
+  "atomic": true,
+  "atomic_reason": "One short figure can show the whole mechanism: a message gets chopped into pieces, each piece gets a label with an address and a position number, the pieces travel separately, and the labels let the receiver reassemble them. The only idea it leans on is a network as computers that can send things to each other, which is everyday knowledge for anyone who uses the internet.",
+  "prerequisites": []
+}

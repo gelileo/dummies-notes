@@ -4,6 +4,21 @@
     "status": "illustrated",
     "definition": "A style of secret-keeping that uses two different keys instead of one shared password: one key locks a message and a separate, matching key unlocks it."
   },
+  "best-effort-delivery": {
+    "name": "Best-effort delivery",
+    "status": "registered",
+    "definition": "The way the internet moves packets with no promises: it tries to deliver each one, but packets can be lost, duplicated, delayed, or arrive out of order."
+  },
+  "communication-protocol": {
+    "name": "Communication protocol",
+    "status": "illustrated",
+    "definition": "An agreed set of rules two computers follow when talking, so each one knows what kind of message to expect next and what every message means."
+  },
+  "data-packets": {
+    "name": "Data packets",
+    "status": "illustrated",
+    "definition": "Small labeled chunks that a message is chopped into before being sent across a network, each traveling on its own and carrying enough information to be put back in order."
+  },
   "modular-arithmetic": {
     "name": "Modular arithmetic",
     "status": "illustrated",
@@ -23,5 +38,10 @@
     "name": "RSA encryption",
     "status": "illustrated",
     "definition": "A way to send secret messages using two matching keys: a public key anyone can use to lock a message, and a private key that only the owner keeps and can use to unlock it."
+  },
+  "tcp-connection-lifecycle": {
+    "name": "TCP connection lifecycle",
+    "status": "registered",
+    "definition": "The fixed sequence of stages a TCP conversation between two computers passes through: an opening greeting where both sides agree to talk, a middle where data flows and arrivals are confirmed, and a closing goodbye so both sides know the conversation is over."
   }
 }

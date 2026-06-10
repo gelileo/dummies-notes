@@ -1,0 +1,38 @@
+{
+  "concept_slug": "communication-protocol",
+  "title": "A communication protocol is a shared script for a conversation",
+  "archetype": "illustrative",
+  "playback": "slideshow",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "Before a single message, both machines agree on the same rulebook.",
+      "runbook": "Stable layout for all frames, viewBox 0 0 680 426. Computer A: rect at (40,44) 130x44 rx=6, th label 'computer A' centered at (105,66). Computer B: rect at (510,44) 130x44, label centered at (575,66). Shared rulebook centered between them: rect at (250,30) 180x130 rx=6 class box, ts header 'the agreed rules' at (340,48), four ts rule lines left-aligned at x=266, y=74/96/118/140: '1. say hello first', '2. answer the hello', '3. send the data', '4. confirm it arrived'. Dashed leader lifelines drop from each computer at x=105 and x=575, from y=88 to y=340. This frame is the setup: both computers plain box class, no rule highlighted, no messages drawn. One ts annotation centered at (340,205): 'no messages yet — just a shared agreement'. Later frames keep every coordinate identical and only add messages, change color classes (c-teal = happening now, c-gray = already done), and swap the annotation.",
+      "commentary": "Two computers want to talk. Before anything moves, they share one rulebook. It is a tiny script for the whole conversation: say hello, answer the hello, send the data, confirm it arrived. That shared script is the protocol. Nothing has been sent yet — but both sides already know exactly how the conversation will go."
+    },
+    {
+      "file": "frame-02.svg",
+      "caption": "Rule 1: A speaks first, and B already knows a hello is coming.",
+      "runbook": "Same layout as frame 1. Rule 1 gets a highlight pill: c-teal group with rect (258,63) 164x22 rx=4 behind the rule text; rules 2-4 stay plain. Computer A switches to c-teal (it is speaking); B stays box. First message appears between the lifelines: c-teal group with t label 'hello?' centered at (340,187) and an arr path from (110,200) to (570,200) with marker-end, A to B. Annotation ts at (340,218): 'exactly the opening B expected'. Teal = the rule and message in play right now.",
+      "commentary": "The conversation starts. Rule one says the first message is always a hello. So computer A sends one. Here is the key idea: computer B is not guessing. It read the same rulebook, so it already expects a greeting — nothing else. The message lands, and it means exactly what both sides agreed it means."
+    },
+    {
+      "file": "frame-03.svg",
+      "caption": "Rule 2: B answers, which is exactly what A was waiting for.",
+      "runbook": "Same layout. Rule 1 pill and message 1 fade to c-gray (done). Rule 2 gets the c-teal pill at rect (258,85) 164x22. Computer B switches to c-teal (its turn to speak); A returns to box. Second message: c-teal group, t label 'hello — I\\u2019m listening' at (340,229), arr path from (570,242) to (110,242), B to A. Annotation ts at (340,260): 'the reply A was waiting for'. Gray now means a step that already happened.",
+      "commentary": "Now it is B's turn. Rule two says: answer the hello. B replies, and A was already waiting for exactly this kind of message. Notice the turn-taking. Neither machine talks over the other, because the rulebook says whose move it is at every moment. The first exchange fades to gray — done and understood."
+    },
+    {
+      "file": "frame-04.svg",
+      "caption": "Rule 3: with greetings done, A sends the actual data.",
+      "runbook": "Same layout. Rules 1-2 and messages 1-2 are c-gray. Rule 3 gets the c-teal pill at rect (258,107) 164x22. Computer A is c-teal again (speaking); B is box. Third message: c-teal group, t label 'here is the data' at (340,271), arr path from (110,284) to (570,284), A to B. Annotation ts at (340,302): 'B knows this is data, not a greeting'.",
+      "commentary": "Greetings are done, so the script moves on. Rule three says: now comes the data. A sends it. Because both machines are at the same step of the same script, B knows how to read this message. It is data, not another hello. Without the protocol, these would just be mystery bytes."
+    },
+    {
+      "file": "frame-05.svg",
+      "caption": "Rule 4: B confirms it arrived — the script is finished and both sides know it worked.",
+      "runbook": "Same layout, end state. Rules 1-3 and messages 1-3 are c-gray. Rule 4 gets the c-teal pill at rect (258,129) 164x22. Computer B is c-teal (speaking); A is box. Fourth message: c-teal group, t label 'got it, thanks' at (340,313), arr path from (570,326) to (110,326), B to A. The annotation is replaced by the result: a c-coral pill, rect (240,356) 200x30 rx=15 with t label 'conversation complete' centered at (340,371). Coral marks the goal reached: every message was expected, every message understood.",
+      "commentary": "One last step. Rule four says: confirm the data arrived. B sends its thanks, and the script is complete. Look back at the ladder of messages. Every single one was expected before it arrived, and every one meant the same thing to both machines. That is all a communication protocol is — an agreed script that turns raw messages into a conversation."
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "concept_slug": "data-packets",
+  "title": "A message travels as numbered packets",
+  "archetype": "illustrative",
+  "playback": "slideshow",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "The message is chopped into small numbered packets.",
+      "runbook": "Shared layout for all frames, viewBox 0 0 680 340: three c-gray containers — sender (x=24,y=48,w=160,h=252, ts label 'sender'), network (x=216,y=48,w=248,h=252, ts label 'network'), receiver (x=496,y=48,w=160,h=252, ts label 'receiver') — plus three dashed leader lanes spanning the gap from x=184 to x=496: lane A straight at y=110, lane B straight at y=174, lane C at y=238 with a downward detour (L300,268 L400,268) marking it as the long, slow route. One ts annotation line centered at (340,320) per frame. Packet primitive: rect w=100 h=40 rx=2 with a ts sequence tag '#N' at center-top and a th payload word at center-bottom. Frame 1 content: inside the sender, the full message as a box-class bar (x=44,y=88,w=120,h=32) labeled th 'meet at six'; an arr arrow down (M104,124 L104,142) into a vertical stack of three c-teal packets at x=54, y=148/196/244, tagged #1 'meet', #2 'at', #3 'six'. Network and receiver are empty. Annotation: 'Each piece gets a number — its place in line'.",
+      "commentary": "Here is a message: meet at six. It is too big to send as one lump. So the sender chops it into small pieces. Each piece gets a number stamped on it. The number records where the piece belongs in the original message. These numbered pieces are the packets."
+    },
+    {
+      "file": "frame-02.svg",
+      "caption": "Each packet travels on its own route through the network.",
+      "runbook": "Same containers, lanes, and packet geometry as frame 1. The sender's message bar turns c-gray (already sent); the packet stack leaves the sender. The three c-teal packets now sit on different lanes inside the network at staggered positions to show independent travel: packet #2 'at' far along lane A (rect x=360,y=90), packet #3 'six' midway on lane B (rect x=290,y=154), packet #1 'meet' early on lane C, the slow detour route (rect x=226,y=218). Receiver still empty. Annotation: 'Three pieces, three routes — packet 1 takes the slow one'.",
+      "commentary": "The packets set off. Each one travels on its own. They do not hold hands. The network can send each packet down a different road. Packet 2 found a fast road and is almost there. Packet 1 got the slow road with the long detour. Nobody waits for anybody."
+    },
+    {
+      "file": "frame-03.svg",
+      "caption": "Packets arrive out of order.",
+      "runbook": "Same containers and lanes. Sender keeps the c-gray message bar; network lanes are empty again. The three c-teal packets are now stacked inside the receiver at x=526, y=148/196/244, in ARRIVAL order top to bottom: #2 'at', #3 'six', #1 'meet' — scrambled relative to the original message because #1 took the slow lane C. Annotation: 'They arrive in the order 2, 3, 1 — not the order they were sent'.",
+      "commentary": "The packets land at the receiver. But look at the pile. Packet 2 came first. Packet 3 came next. Packet 1, stuck on the slow road, arrived last. Read top to bottom, the pile says: at, six, meet. That is nonsense. Arrival order cannot be trusted."
+    },
+    {
+      "file": "frame-04.svg",
+      "caption": "The numbers put the message back together.",
+      "runbook": "Same containers and lanes; sender keeps the c-gray message bar; lanes empty. Inside the receiver the packets are re-stacked by their sequence tags, now c-gray (their job is done): #1 'meet' at y=148, #2 'at' at y=196, #3 'six' at y=244. An arr arrow points up (M576,144 L576,126) from the ordered stack into the rebuilt message bar, a c-coral box (x=516,y=88,w=120,h=32) labeled th 'meet at six' — mirroring frame 1's sender layout to close the loop. Annotation: 'The numbers, not arrival times, put the message back in order'.",
+      "commentary": "Now the numbers earn their keep. The receiver ignores when each packet arrived. It sorts the pile by the stamped numbers: one, two, three. The pieces snap back together, and the original message reads cleanly again: meet at six. That is the whole trick — chop, number, send loose, reassemble by number."
+    }
+  ]
+}

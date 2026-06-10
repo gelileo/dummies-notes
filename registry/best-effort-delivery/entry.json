@@ -1,0 +1,10 @@
+{
+  "slug": "best-effort-delivery",
+  "name": "Best-effort delivery",
+  "definition": "The way the internet moves packets with no promises: it tries to deliver each one, but packets can be lost, duplicated, delayed, or arrive out of order.",
+  "status": "registered",
+  "prerequisites": [
+    "data-packets"
+  ],
+  "figure": null
+}

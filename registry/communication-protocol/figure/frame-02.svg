@@ -1,0 +1,98 @@
+<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 426" role="img" font-family="sans-serif">
+  <title>Communication protocol — rule 1, say hello first</title>
+  <desc>Computer A sends the first message, hello, following rule 1 of the shared rulebook. Computer B knows a greeting comes first.</desc>
+  <defs>
+    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- computer A (speaking) -->
+  <g class="c-teal">
+    <rect x="40" y="44" width="130" height="44" rx="6" stroke-width="0.5"/>
+    <text x="105" y="66" class="th" text-anchor="middle" dominant-baseline="central">computer A</text>
+  </g>
+
+  <!-- computer B -->
+  <g class="box">
+    <rect x="510" y="44" width="130" height="44" rx="6" stroke-width="0.5"/>
+    <text x="575" y="66" class="th" text-anchor="middle" dominant-baseline="central">computer B</text>
+  </g>
+
+  <!-- shared rulebook -->
+  <g class="box">
+    <rect x="250" y="30" width="180" height="130" rx="6" stroke-width="0.5"/>
+    <text x="340" y="48" class="ts" text-anchor="middle" dominant-baseline="central">the agreed rules</text>
+  </g>
+  <g class="c-teal">
+    <rect x="258" y="63" width="164" height="22" rx="4" stroke-width="0.5"/>
+    <text x="266" y="74" class="ts" dominant-baseline="central">1. say hello first</text>
+  </g>
+  <text x="266" y="96" class="ts" dominant-baseline="central">2. answer the hello</text>
+  <text x="266" y="118" class="ts" dominant-baseline="central">3. send the data</text>
+  <text x="266" y="140" class="ts" dominant-baseline="central">4. confirm it arrived</text>
+
+  <!-- lifelines -->
+  <path class="leader" d="M105,88 L105,340"/>
+  <path class="leader" d="M575,88 L575,340"/>
+
+  <!-- message 1: A to B -->
+  <g class="c-teal">
+    <text x="340" y="187" class="t" text-anchor="middle" dominant-baseline="central">hello?</text>
+    <path class="arr" d="M110,200 L570,200" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- annotation -->
+  <text x="340" y="218" class="ts" text-anchor="middle" dominant-baseline="central">exactly the opening B expected</text>
+</svg>

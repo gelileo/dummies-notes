@@ -1,0 +1,8 @@
+{
+  "slug": "data-packets",
+  "name": "Data packets",
+  "definition": "Small labeled chunks that a message is chopped into before being sent across a network, each traveling on its own and carrying enough information to be put back in order.",
+  "status": "illustrated",
+  "prerequisites": [],
+  "figure": "data-packets/figure"
+}

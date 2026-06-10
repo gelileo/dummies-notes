@@ -311,3 +311,12 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
   with the output) — the capstone check working as designed. Finding: composition
   figures map structure but don't teach the target's mechanism; deeper runs needed
   for security-core nodes (factoring hardness).
+
+## [2026-06-10] feat | user run: TCP connection lifecycle
+
+- First user-requested topic: 4 nodes, 2 new figures (reviews clean), composition
+  figure, edges persisted, deliverable assembled; graph check clean. 15 agents.
+- Chain review failed with 4 gaps (shipped in chain-review.json) — repeating the
+  RSA pattern: the composition figure doesn't teach the target's own mechanism,
+  and a non-atomic mid-graph node (best-effort-delivery) renders without a figure
+  or stub. Two-topic confirmation of the documented future-work items.

@@ -1,0 +1,5 @@
+{
+  "pass": true,
+  "summary": "No drift: all four frames match their runbooks exactly (shared 680x340 scaffold, three c-gray containers, three dashed lanes with the lane-C detour at y=238/268, packet geometry 100x40 with #N ts tag + th payload, per-frame positions, colour transitions c-teal -> c-gray, the frame-4 c-coral rebuilt message, arrows, and annotation strings all verified coordinate-for-coordinate). The blind reader's account matches the commentary's intent on every beat: chop and number (frame 1), independent routes with #1 on the slow detour (frame 2), out-of-order arrival 2,3,1 (frame 3), re-sort by sequence number and rebuild 'meet at six' (frame 4); the reader even caught the cross-frame consistency between frame-2 progress and frame-3 arrival order. Commentary uses short, vivid sentences ('They do not hold hands', 'the numbers earn their keep') and is faithful to the visuals. Frame 4 closes the loop by mirroring frame 1's sender layout with the reassembled message.",
+  "gaps": []
+}
