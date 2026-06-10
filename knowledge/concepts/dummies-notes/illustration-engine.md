@@ -2,7 +2,7 @@
 title: Illustration engine
 type: concept
 area: dummies-notes
-updated: 2026-06-10
+updated: 2026-06-09
 status: mature
 affects:
   - ".claude/skills/concept-illustrator/SKILL.md"
@@ -65,7 +65,7 @@ The `main()` CLI dispatch now validates path shape before calling backend functi
 - `--viewer` requires a directory; passing a file path prints `ERROR … --viewer needs a figure directory` and exits 1.
 - `--png` requires a single `.svg` file; passing a directory prints `ERROR … --png needs a single .svg file` and exits 1.
 
-Five `TestCli` tests cover these guards plus the happy-path lint and viewer cases. Suite total: 55 tests, 1 skip.
+Five `TestCli` tests cover these guards plus the happy-path lint and viewer cases. Suite total: 57 tests, 1 skip.
 
 ### PNG export and `--theme`
 
@@ -87,7 +87,13 @@ For multi-frame figures, `render.py --viewer out.html` inlines all frame SVGs an
 
 ## Per-figure review protocol
 
-Each figure is reviewed with a blind-reader test (give only the rendered figure to a fresh reader, check comprehension) and a fidelity critic (give concept definition + figure, check correctness). Details in `references/review-protocol.md`. The automated review loop is planned for Phase 3; during Phase 1 both checks are run manually or as a subagent.
+Each figure goes through three checks (details in `references/review-protocol.md`):
+
+1. **Blind-reader test** — give only the rendered figure and caption to a fresh reader; their description is compared against the frame's `commentary` intent. Divergence is a comprehension gap that must be fixed in the figure, not papered over with a longer caption.
+2. **Fidelity critic** — give the concept definition + figure to a fresh reader; any wrong, misleading, or silently assumed claims are fidelity gaps.
+3. **Runbook↔SVG drift reconciliation** — the fidelity critic diffs each frame's rendered SVG against its `runbook` (cell count, colour roles, pointer positions, what changed from the previous frame). A mismatch is drift; repair by regenerating the SVG from the runbook (SVG wrong) or updating the runbook first (concept changed).
+
+The automated review loop is planned for Phase 3; during Phase 1 all three checks are run manually or as a subagent.
 
 ## Color-role scope
 
