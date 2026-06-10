@@ -73,5 +73,20 @@ class TestValidate(unittest.TestCase):
         self.assertTrue(any("own prerequisite" in m for m in errors(d)))
 
 
+class TestSkillContract(unittest.TestCase):
+    SKILL_DIR = os.path.dirname(SCRIPTS_DIR)
+
+    def test_skill_md_references_exist(self):
+        import check_skill_refs
+        self.assertEqual(check_skill_refs.missing_refs(), [])
+
+    def test_skill_md_covers_the_contract(self):
+        with open(os.path.join(self.SKILL_DIR, "SKILL.md"), encoding="utf-8") as fh:
+            text = fh.read()
+        for token in ("decomposition.json", "atomic", "jargon",
+                      "one level", "kebab"):
+            self.assertIn(token, text, f"SKILL.md missing '{token}'")
+
+
 if __name__ == "__main__":
     unittest.main()

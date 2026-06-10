@@ -2,6 +2,14 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat | concept-decompose: SKILL.md contract + reference-integrity check (Phase 2 Task 5)
+
+- Authored `.claude/skills/concept-decompose/SKILL.md`: the skill's operating contract — Job (ONE concept → canonical identity + atomicity verdict + direct prerequisites as `decomposition.json`, one level only, never recurse), a 5-step Workflow (canonicalize/kebab slug + plain definition → atomicity test → list load-bearing prerequisites with the jargon rule → reuse registry slugs → validate to `OK     clean`), and a quality bar (repeatable definitions, no nice-to-knows, no self-cycles). References only shipped paths (`references/decomposition-json.md`, `scripts/validate_decomposition.py`).
+- Created `scripts/check_skill_refs.py`: zero-dep reference-integrity guard mirroring the illustrator's; fails if SKILL.md cites an inline `references/`/`scripts/`/`examples/` path that doesn't exist.
+- Added `TestSkillContract` (2 tests: references exist + contract tokens present) to `scripts/tests/test_validate_decomposition.py`; suite total is now 11 tests, all passing; `check_skill_refs.py` exits 0.
+- Updated `knowledge/concepts/dummies-notes/concept-decomposition.md`: added a `## Skill (Phase 2)` section noting the single-level contract now exists at `.claude/skills/concept-decompose/` and that Workflow recursion is Phase 3.
+- Articles touched: `concepts/dummies-notes/concept-decomposition.md`.
+
 ## [2026-06-10] feat | concept-decompose: decomposition.json schema + zero-dep validator (Phase 2 Task 4)
 
 - Created `.claude/skills/concept-decompose/references/decomposition-json.md`: schema reference for `decomposition.json` — field tables, atomicity rule, slug rules, and a worked RSA example.

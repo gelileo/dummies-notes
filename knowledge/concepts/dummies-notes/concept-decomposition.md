@@ -44,6 +44,19 @@ of already-illustrated foundations.
 - **Identity**: when are two concepts "the same" node (so the figure is
   reused)? Drives the catalog's addressing scheme.
 
-> Status: thin / capture-first. No implementation exists yet; this records the
-> intended design so it isn't lost. Update in the same task as the first
-> `src/decomposition/` code.
+## Skill (Phase 2)
+
+The decomposition primitive now exists as a Claude Code skill at
+`.claude/skills/concept-decompose/`. Its contract is **single-level**: ONE
+concept in → a canonical slug + plain definition + atomicity verdict + direct
+prerequisites out, emitted as a `decomposition.json` (schema in
+`references/decomposition-json.md`, enforced by
+`scripts/validate_decomposition.py`). The skill never recurses — walking
+prerequisites, registry deduplication, and cross-node cycle detection are the
+`dummies-notes` Workflow's job (Phase 3). The jargon rule is operationalized in
+the SKILL.md: any term in a definition the audience wouldn't know becomes its own
+prerequisite.
+
+> Status: thin. The single-level decomposition contract (SKILL.md + schema +
+> validator) has shipped; the recursive graph walk that composes these
+> single-level results lands with the Workflow in Phase 3.
