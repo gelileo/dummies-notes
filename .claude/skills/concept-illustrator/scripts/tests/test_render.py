@@ -335,7 +335,7 @@ class TestReferenceDocs(unittest.TestCase):
                           "## Chart", "## Sequence"],
         "visual-vocabulary.md": ["## List / array cell", "## Pointer", "## Graph node",
                                  "## State styles"],
-        "voice-and-metaphor.md": ["## Voice", "## Metaphor bank"],
+        "voice-and-metaphor.md": ["## Voice", "## Metaphor bank", "## Commentary"],
         "review-protocol.md": ["## Blind-reader test", "## Fidelity critic",
                                "## Repair loop"],
     }

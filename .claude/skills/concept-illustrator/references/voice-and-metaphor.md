@@ -61,3 +61,23 @@ When the concept is not listed, invent a spatial metaphor that makes the mechani
 | Modular arithmetic | A clock face — after reaching 12, you wrap back to 1; 14 o'clock is just 2 o'clock |
 | Public-key encryption | A padlock anyone can close (public key) but only the keyholder can open (private key) |
 | Overflow / wrap-around | An odometer rolling past 999 back to 000 — the number wraps because there are no more digits |
+
+## Commentary
+
+Commentary is the per-frame narration in `figure.json` (`frames[].commentary`). It
+is longer than the one-line `caption` — a short narration paragraph — meant to be
+read aloud for slides and video. It is not shown in the HTML viewer.
+
+- **Prefer simple sentences.** One idea per sentence. Avoid nested clauses and
+  compound-complex sentences. Short sentences, plain words.
+- **Vibrant through metaphor and rhythm, not length.** Engagement comes from a
+  vivid image and good cadence, never from a long sentence.
+- **No unexplained jargon.** An obscure term is a prerequisite to illustrate, not
+  an aside to drop.
+- **Faithful to the frame.** Narrate what this frame actually shows.
+- **Transcript-ready.** It should read naturally when spoken.
+
+Example (a quicksort partition frame):
+
+> Now the real work starts. We walk left to right. The pivot is our yardstick.
+> Every value smaller than it slides into a growing zone on the left.
