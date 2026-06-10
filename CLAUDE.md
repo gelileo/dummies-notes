@@ -61,6 +61,8 @@ Each article's `affects:` globs drive `drift-check`; keep this table in sync.
 | `registry/**` | `concepts/dummies-notes/atomic-illustration-catalog.md` |
 | `.claude/skills/concept-illustrator/SKILL.md` | `concepts/dummies-notes/illustration-engine.md` |
 | `.claude/skills/concept-illustrator/scripts/render.py` | `concepts/dummies-notes/illustration-engine.md` |
+| `.claude/workflows/**` | `concepts/dummies-notes/orchestration-workflow.md` |
+| `scripts/graph_check.py` | `concepts/dummies-notes/orchestration-workflow.md` |
 
 ### When code has no matching article
 

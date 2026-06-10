@@ -2,6 +2,8 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] doc | scope Phase 3 drift mapping + thin orchestration-workflow article
+
 ## [2026-06-10] compile | Phase 2 knowledge-base reconciliation (Task 8)
 
 Phase 2 shipped two production subsystems. This entry summarises what landed and records the knowledge-base articles matured to reflect it.
