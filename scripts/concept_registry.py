@@ -63,6 +63,10 @@ def register(root, slug, name, definition, prerequisites=()):
     existing = lookup(root, slug)
     if existing is not None:
         if existing["definition"].strip() == definition.strip():
+            new_prereqs = list(prerequisites)
+            if new_prereqs and existing.get("prerequisites") != new_prereqs:
+                existing["prerequisites"] = new_prereqs
+                _write_json(_entry_path(root, slug), existing)
             return existing
         raise RegistryError(
             f"slug collision: '{slug}' is already covered with a different "

@@ -228,9 +228,7 @@ const report = await agent(
   `FIGURES = ${JSON.stringify(figures.map(f => f.slug))}\n` +
   `GRAPH_DIR = output/${rootSlug}/graph\n` +
   'Steps, in order:\n' +
-  '1. For each node in NODES: scripts/concept-registry register --slug <slug> --name <name> --definition <definition> ' +
-  '(quote arguments carefully) plus --prereqs <comma-joined prerequisites> when non-empty. ' +
-  'Idempotent re-registration is fine; if one fails with a slug-collision ERROR, record it in collisions and continue.\n' +
+  '1. Register every node in NODES without shell-quoting pitfalls: write NODES to a temp JSON file, then run a short python3 heredoc that does: import sys, json; sys.path.insert(0, "scripts"); import concept_registry as reg; for each node call reg.register("registry", node["slug"], node["name"], node["definition"], node.get("prerequisites") or ()) — catching reg.RegistryError per node and recording collisions. Idempotent re-registration updates prerequisites when provided.\n' +
   '2. For each slug in FIGURES: python3 .claude/skills/concept-illustrator/scripts/render.py registry/<slug>/figure ' +
   '(must be clean), then scripts/concept-registry attach-figure <slug> registry/<slug>/figure.\n' +
   '3. scripts/concept-registry index\n' +

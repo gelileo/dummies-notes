@@ -2,6 +2,13 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] fix | workflow: persist prereqs on re-register; quoting-proof finalize registration
+
+- `scripts/concept_registry.py register()`: idempotent re-registration now updates `prerequisites` when explicitly provided and different from the stored value, persisting graph edges for already-registered concepts without requiring a definition change.
+- `scripts/tests/test_concept_registry.py`: added `test_reregister_updates_prerequisites` to `TestRegisterLookup`; suite total: 35 tests, all passing.
+- `.claude/workflows/dummies-notes.js` Finalize agent step 1: replaced the shell-CLI approach with a python3 heredoc that calls `concept_registry.reg.register` directly, eliminating shell-quoting hazards.
+- Articles touched: `concepts/dummies-notes/atomic-illustration-catalog.md`, `concepts/dummies-notes/orchestration-workflow.md`.
+
 ## [2026-06-10] feat | dummies-notes orchestrator workflow script (Phase 3 Task 3)
 
 - Created `.claude/workflows/dummies-notes.js`: the full BFS orchestration script. Exports `meta` with four phases (Decompose/Illustrate/Review/Finalize). One registry-snapshot agent seeds `covered` map; BFS loop calls `concept-decompose` skill per node with depth cap (`maxDepth` default 2) and node cap (`maxNodes` default 12), both logged as frontier on hit. `pipeline()` per atomic node: illustrate → blind reader + fidelity critic review, ≤ `MAX_REPAIRS` (2) repair iterations, flag-and-continue on still-failing. Finalize agent registers all new nodes with `--prereqs`, attaches figures, rebuilds index, runs `graph_check.py --require-illustrated`. Returns root, graph_dir, nodes, illustrated, flagged, frontier, collisions, graph_check_clean.

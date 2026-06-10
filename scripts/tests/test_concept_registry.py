@@ -60,6 +60,15 @@ class TestRegisterLookup(unittest.TestCase):
             self.assertEqual(entry["prerequisites"],
                              ["modular-arithmetic", "prime-numbers"])
 
+    def test_reregister_updates_prerequisites(self):
+        with tempfile.TemporaryDirectory() as root:
+            reg.register(root, "rsa", "RSA", "Two-key messaging.")
+            entry = reg.register(root, "rsa", "RSA", "Two-key messaging.",
+                                 prerequisites=["modular-arithmetic"])
+            self.assertEqual(entry["prerequisites"], ["modular-arithmetic"])
+            self.assertEqual(reg.lookup(root, "rsa")["prerequisites"],
+                             ["modular-arithmetic"])
+
 
 class TestAttachAndIndex(unittest.TestCase):
     def _figure_dir(self, base):

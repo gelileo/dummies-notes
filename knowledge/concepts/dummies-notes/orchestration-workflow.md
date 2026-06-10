@@ -55,3 +55,5 @@ graph is acyclic, every graph node is registered, and (with
 ## Workflow script status (Phase 3 Task 3)
 
 `.claude/workflows/dummies-notes.js` landed in Phase 3 Task 3. The Run shape above accurately reflects the shipped script: `MAX_DEPTH=2`, `MAX_NODES=12`, `MAX_REPAIRS=2`, `registry-snapshot` agent, BFS loop with frontier logging, `pipeline()` for illustrate/review, and a Finalize agent that calls `--prereqs` on registration and `--require-illustrated` on graph_check.
+
+The Finalize agent registers concepts by writing NODES to a temp JSON file and calling `concept_registry.reg.register` via a python3 heredoc, avoiding shell-quoting hazards that could corrupt definitions or prerequisite slugs containing spaces or special characters.

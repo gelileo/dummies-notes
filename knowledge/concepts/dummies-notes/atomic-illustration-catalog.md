@@ -106,3 +106,5 @@ The registry ships with two entries:
 **Versioning/invalidation**: when a concept's understanding changes, how is a cached
 figure invalidated without breaking chains that reference it? This is a genuine open
 question deferred to Phase 3 or later — it does not block the current shipped state.
+
+Idempotent re-registration now updates prerequisites when explicitly provided, so the workflow can persist graph edges for concepts that were already registered without a definition change.
