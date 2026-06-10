@@ -247,5 +247,51 @@ def main(argv=None):
     return 1 if errors else 0
 
 
+FIGURE_REQUIRED = ("concept_slug", "archetype", "playback", "frames")
+FIGURE_PLAYBACK = ("static", "slideshow")
+
+
+def validate_figure(dir_path, style_path):
+    figure_json = os.path.join(dir_path, "figure.json")
+    if not os.path.exists(figure_json):
+        return [("ERROR", "figure.json missing")]
+    try:
+        data = json.loads(_read(figure_json))
+    except json.JSONDecodeError as exc:
+        return [("ERROR", f"figure.json invalid JSON: {exc}")]
+
+    issues = []
+    for key in FIGURE_REQUIRED:
+        if not data.get(key):
+            issues.append(("ERROR", f"figure.json missing '{key}'"))
+    if data.get("playback") and data["playback"] not in FIGURE_PLAYBACK:
+        issues.append(("ERROR", "playback must be 'static' or 'slideshow'"))
+    frames = data.get("frames") or []
+    if data.get("playback") == "static" and len(frames) != 1:
+        issues.append(("ERROR", "static figures must have exactly one frame"))
+    if data.get("playback") == "slideshow" and len(frames) < 2:
+        issues.append(("ERROR", "slideshow figures must have more than one frame"))
+
+    palette = load_palette(_read(style_path)) if os.path.exists(style_path) else set()
+    viewboxes = set()
+    for frame in frames:
+        name = frame.get("file") if isinstance(frame, dict) else frame
+        fpath = os.path.join(dir_path, name or "")
+        if not name or not os.path.exists(fpath):
+            issues.append(("ERROR", f"frame file missing: {name}"))
+            continue
+        root, parse_issues = _safe_parse(fpath)
+        if root is None:
+            issues += [(lvl, f"{name}: {m}") for lvl, m in parse_issues]
+            continue
+        vb = root.get("viewBox")
+        if vb:
+            viewboxes.add(vb)
+        issues += [(lvl, f"{name}: {m}") for lvl, m in lint_svg(root, palette)]
+    if len(viewboxes) > 1:
+        issues.append(("ERROR", "frames have inconsistent viewBox (frame-consistency rule)"))
+    return issues
+
+
 if __name__ == "__main__":
     sys.exit(main())

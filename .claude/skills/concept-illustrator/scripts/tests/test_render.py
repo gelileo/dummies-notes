@@ -1,5 +1,7 @@
+import json
 import os
 import sys
+import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 
@@ -173,7 +175,6 @@ class TestLintSvgAggregate(unittest.TestCase):
 
 class TestSafeParse(unittest.TestCase):
     def test_doctype_is_rejected(self):
-        import tempfile
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "evil.svg")
             with open(path, "w", encoding="utf-8") as fh:
@@ -196,6 +197,83 @@ class TestShippedAssets(unittest.TestCase):
         errors = [m for lvl, m in render.lint_file(os.path.join(ASSETS, "template.svg"), style)
                   if lvl == "ERROR"]
         self.assertEqual(errors, [], f"template.svg has lint errors: {errors}")
+
+
+class TestValidateFigure(unittest.TestCase):
+    def _write_figure(self, root, frames, data_overrides=None):
+        os.makedirs(root, exist_ok=True)
+        files = []
+        for i, vb in enumerate(frames, 1):
+            name = f"frame-{i:02d}.svg"
+            with open(os.path.join(root, name), "w", encoding="utf-8") as fh:
+                fh.write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}">'
+                         f'<text class="t">Step {i}</text></svg>')
+            files.append({"file": name, "caption": f"Step {i}"})
+        data = {"concept_slug": "x", "archetype": "illustrative",
+                "playback": "slideshow" if len(frames) > 1 else "static", "frames": files}
+        data.update(data_overrides or {})
+        with open(os.path.join(root, "figure.json"), "w", encoding="utf-8") as fh:
+            json.dump(data, fh)
+
+    def test_valid_figure_passes(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._write_figure(d, ["0 0 680 100", "0 0 680 100"])
+            style = os.path.join(ASSETS, "_style.css")
+            errors = [m for lvl, m in render.validate_figure(d, style) if lvl == "ERROR"]
+            self.assertEqual(errors, [])
+
+    def test_inconsistent_viewbox_errors(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._write_figure(d, ["0 0 680 100", "0 0 680 200"])
+            style = os.path.join(ASSETS, "_style.css")
+            errors = [m for lvl, m in render.validate_figure(d, style) if lvl == "ERROR"]
+            self.assertTrue(any("viewBox" in m for m in errors))
+
+    def test_missing_frame_file_errors(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._write_figure(d, ["0 0 680 100"])
+            os.remove(os.path.join(d, "frame-01.svg"))
+            style = os.path.join(ASSETS, "_style.css")
+            errors = [m for lvl, m in render.validate_figure(d, style) if lvl == "ERROR"]
+            self.assertTrue(errors)
+
+    def test_missing_required_field_errors(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._write_figure(d, ["0 0 680 100"])
+            with open(os.path.join(d, "figure.json"), "w") as fh:
+                json.dump({"concept_slug": "x", "playback": "static",
+                           "frames": [{"file": "frame-01.svg"}]}, fh)
+            style = os.path.join(ASSETS, "_style.css")
+            errors = [m for lvl, m in render.validate_figure(d, style) if lvl == "ERROR"]
+            self.assertTrue(any("archetype" in m for m in errors))
+
+
+class TestValidateFigurePlaybackAndViewbox(unittest.TestCase):
+    def test_slideshow_with_one_frame_errors(self):
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "frame-01.svg"), "w", encoding="utf-8") as fh:
+                fh.write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 100">'
+                         '<text class="t">Only one</text></svg>')
+            with open(os.path.join(d, "figure.json"), "w", encoding="utf-8") as fh:
+                json.dump({"concept_slug": "x", "archetype": "illustrative",
+                           "playback": "slideshow",
+                           "frames": [{"file": "frame-01.svg", "caption": "one"}]}, fh)
+            errors = [m for lvl, m in render.validate_figure(d, "/nonexistent.css")
+                      if lvl == "ERROR"]
+            self.assertTrue(any("more than one frame" in m for m in errors))
+
+    def test_missing_viewbox_not_reported_as_inconsistency(self):
+        with tempfile.TemporaryDirectory() as d:
+            for i in (1, 2):
+                with open(os.path.join(d, f"frame-{i:02d}.svg"), "w", encoding="utf-8") as fh:
+                    fh.write(f'<svg xmlns="http://www.w3.org/2000/svg">'
+                             f'<text class="t">Step {i}</text></svg>')
+            with open(os.path.join(d, "figure.json"), "w", encoding="utf-8") as fh:
+                json.dump({"concept_slug": "x", "archetype": "illustrative",
+                           "playback": "slideshow",
+                           "frames": [{"file": "frame-01.svg"}, {"file": "frame-02.svg"}]}, fh)
+            msgs = [m for _, m in render.validate_figure(d, "/nonexistent.css")]
+            self.assertFalse(any("inconsistent viewBox" in m for m in msgs))
 
 
 if __name__ == "__main__":

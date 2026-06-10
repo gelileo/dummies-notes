@@ -9,6 +9,14 @@ Append-only chronological log of significant changes to this project. Each entry
 - Wrote three thin foundational articles capturing the design before code exists: `concept-decomposition`, `illustration-engine`, `atomic-illustration-catalog`.
 - Pre-commit hook and GitHub Action deferred until `git init` (repo is not yet under git).
 
+## [2026-06-09] feat | concept-illustrator: figure.json validation + frame-consistency
+
+- Added `validate_figure(dir_path, style_path)` to `scripts/render.py`: validates required fields, resolves frame files, runs `lint_svg` per frame, enforces frame-consistency (all frames must share identical `viewBox`).
+- Added constants `FIGURE_REQUIRED` and `FIGURE_PLAYBACK` to encode the schema.
+- Created `references/figure-json.md` (field table + rules + example).
+- Added `TestValidateFigure` suite (4 tests) to `scripts/tests/test_render.py`; suite now runs 39 tests total.
+- Updated `knowledge/concepts/dummies-notes/illustration-engine.md` with figure.json contract and linter summary.
+
 ## [2026-06-09] design | dummies_notes architecture spec
 
 - Brainstormed and wrote the architecture design: `docs/superpowers/specs/2026-06-09-dummies-notes-design.md`.

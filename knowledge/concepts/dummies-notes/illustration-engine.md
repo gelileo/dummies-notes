@@ -43,12 +43,21 @@ Restrained system — `viewBox="0 0 680 H"`; two type sizes (`th`/`t` 14px,
 `ts` 12px); sentence case; 0.5 strokes; color encodes *category* via named
 ramps; no gradients/shadows/emoji.
 
+## figure.json contract
+
+Every figure directory pairs its SVG frames with a `figure.json` manifest. Required fields: `concept_slug`, `archetype`, `playback` (`static` | `slideshow`), `frames` (ordered list of `{ file, caption }` objects).
+
+**Frame-consistency rule:** all frames in a slideshow must share the same `viewBox`, so the sequence reads as smooth evolution rather than jump-cuts.
+
+The `validate_figure(dir_path, style_path)` function in `render.py` enforces this contract — it checks required fields, resolves each frame file, runs `lint_svg` on each, and reports an ERROR if `viewBox` values diverge across frames. Reference: `.claude/skills/concept-illustrator/references/figure-json.md`.
+
+## SVG linter (`render.py`)
+
+`lint_svg` / `lint_file` run a suite of checks: correct `viewBox` width (680), text-class presence, no inline `font-size`, no placeholder tokens, palette-only colors, no filters/emoji, sentence-case text, rect bounds, connector fill rules. All checks return `(level, message)` pairs so callers can filter by severity.
+
 ## Open design questions
 
-- Adopt the reference skill's tooling (`template.svg`, `render.py` linter)
-  as-is, or build our own generator? The helper files aren't present yet —
-  only the SKILL.md and sample outputs are in `example/`.
-- How is the per-figure caption generated and tied to the node?
+- How is the per-figure caption generated and tied to the concept node?
+- When does `validate_figure` gate the output pipeline (pre-commit, CI, or inline during generation)?
 
-> Status: thin / capture-first. No implementation yet. Update in the same task
-> as the first `src/illustration/` code.
+> Status: implementation in progress. Updated when `render.py` linter and figure.json validation landed (Task 6 of concept-illustrator Phase 1).
