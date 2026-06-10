@@ -96,7 +96,18 @@ python3 scripts/validate-articles
 python3 scripts/drift-check --warn-only
 ```
 
-**Phases 2–4** (concept-decompose, concept-registry, the dummies-notes Workflow, assembly + map viewer) are **not yet built**. See `docs/superpowers/specs/2026-06-09-dummies-notes-design.md` and `docs/superpowers/plans/`.
+**Phase 2 shipped**: the `concept-decompose` skill (`.claude/skills/concept-decompose/` — single-level decomposition contract, `decomposition.json` schema + validator, golden rsa/modular-arithmetic examples) and the `concept-registry` (`scripts/concept_registry.py` + `scripts/concept-registry` CLI; entries under `registry/`, seeded with quicksort illustrated + modular-arithmetic registered).
+
+```bash
+# decompose tooling
+python3 .claude/skills/concept-decompose/scripts/validate_decomposition.py <decomposition.json>
+python3 -m unittest discover -s .claude/skills/concept-decompose/scripts/tests -p 'test_*.py'
+# registry
+scripts/concept-registry register|lookup|attach-figure|index ...
+python3 -m unittest discover -s scripts/tests -p 'test_*.py'
+```
+
+**Phases 3–4** (the dummies-notes Workflow: recursion + automated review loop; assembly + map viewer over `output/<topic>/`) are **not yet built**. See `docs/superpowers/specs/2026-06-09-dummies-notes-design.md` and `docs/superpowers/plans/`.
 
 `example/` is the original design reference: `concept-illustrator-SKILL.md` plus a finished sample figure (`example-binary-search.svg` + light/dark PNGs). The shipped implementation supersedes it — treat `example/` as historical reference only.
 

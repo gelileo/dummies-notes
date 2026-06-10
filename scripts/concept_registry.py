@@ -18,6 +18,8 @@ import os
 import re
 import sys
 
+# Keep in sync with the identical SLUG_RE in .claude/skills/concept-decompose/scripts/validate_decomposition.py
+# (duplicated on purpose: both tools stay zero-dependency and self-contained).
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_ROOT = os.path.join(os.path.dirname(_HERE), "registry")

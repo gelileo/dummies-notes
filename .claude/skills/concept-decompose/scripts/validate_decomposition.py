@@ -9,6 +9,8 @@ import json
 import re
 import sys
 
+# Keep in sync with the identical SLUG_RE in scripts/concept_registry.py
+# (duplicated on purpose: both tools stay zero-dependency and self-contained).
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CONCEPT_KEYS = ("slug", "name", "definition")
 DEFINITION_WARN_CHARS = 400

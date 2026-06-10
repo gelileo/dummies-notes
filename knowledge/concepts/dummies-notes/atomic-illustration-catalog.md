@@ -63,7 +63,10 @@ decomposition engine. Same slug + same definition → idempotent registration (n
 Same slug + different definition → `RegistryError`; the caller must qualify the slug
 (e.g. `mean-average` vs `mean-unkind`). This is consistent with the identity rule in
 [[concept-decomposition]]: a `decomposition.json` prerequisite and its registry entry
-are the same concept when slug and definition match exactly.
+are the same concept when slug and definition match exactly. The kebab-case slug
+regex is **intentionally duplicated** in `scripts/concept_registry.py` and the
+decompose validator (each tool stays zero-dependency and self-contained); the two
+copies must be kept in sync.
 
 ## CLI
 

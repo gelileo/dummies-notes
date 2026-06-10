@@ -73,7 +73,10 @@ signal, not an aside.
 Two concepts are the same node when their **slug and definition are identical**.
 Same slug + same definition → idempotent (no-op re-registration). Same slug +
 different definition → `RegistryError`; the caller must coin a qualified slug
-(e.g. `mean-average` vs `mean-unkind`). The definition is the contract.
+(e.g. `mean-average` vs `mean-unkind`). The definition is the contract. The
+kebab-case slug regex is **intentionally duplicated** between this skill's
+validator and `scripts/concept_registry.py` (each tool stays zero-dependency
+and self-contained); keep the two copies in sync.
 
 ### Validator gate
 
