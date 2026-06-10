@@ -2,7 +2,7 @@
 title: Illustration engine
 type: concept
 area: dummies-notes
-updated: 2026-06-09
+updated: 2026-06-10
 status: mature
 affects:
   - ".claude/skills/concept-illustrator/SKILL.md"
@@ -51,6 +51,8 @@ Every figure directory pairs its SVG frames with a `figure.json` manifest. Requi
 The generation workflow is **runbook-first** and applies to **every frame — including a single static frame**. For each frame: (1) write the `runbook` — the build-spec capturing archetype layout, box positions/coordinates (planned here, before any SVG), colour roles, and what changes from the previous frame; (2) draw the SVG from the runbook; (3) write the `caption` (terse viewer subtitle) and `commentary` (narration for slides/video). Coordinate and layout planning is done inside the runbook step, before emitting SVG. `caption` is the only text shown in the HTML viewer; `commentary` is not rendered there.
 
 **Frame-consistency rule:** all frames in a slideshow must share the same `viewBox`, so the sequence reads as smooth evolution rather than jump-cuts.
+
+**Closure rule:** a process/sequence figure must end with the result — its final frame shows the end state; for recursive or iterative algorithms a fast-forward frame is fine, collapsing the remaining iterations so the reader sees both the mechanism and that it worked.
 
 The `validate_figure(dir_path, style_path)` function in `render.py` enforces this contract — it checks required fields, resolves each frame file, runs `lint_svg` on each, reports an ERROR if `viewBox` values diverge across frames, and reports an ERROR for any frame where `runbook` or `commentary` is absent, blank/whitespace, or a non-string value (e.g. a number from malformed JSON). A bare-string frame entry (e.g. `"frame-01.svg"` instead of an object) is also an ERROR — every frame must be a `{ file, caption, runbook, commentary }` object. Both fields are **required** on every frame, including single-frame static figures. Reference: `.claude/skills/concept-illustrator/references/figure-json.md`.
 
@@ -110,4 +112,4 @@ The golden quicksort figure at `examples/quicksort/` uses a clarified, unambiguo
 - **`c-gray`** — cells already settled into the left "< pivot" zone.
 - **`box` (default)** — cells not yet scanned.
 
-In the final frame the pivot lands at its resting slot (`c-coral`); everything else becomes `c-gray`. Captions explicitly narrate every swap so no array rearrangement is silent.
+Frame 4 lands the pivot at its resting slot (`c-coral`); everything else becomes `c-gray`. A fifth fast-forward frame closes the figure on the fully sorted array `[1, 2, 3, 5, 8, 9]` — the recursion on both halves collapses, the pivot 3 stays put at index 2 (placed pivots never move), and the coral pays off the dividing-wall metaphor. Captions explicitly narrate every swap so no array rearrangement is silent.

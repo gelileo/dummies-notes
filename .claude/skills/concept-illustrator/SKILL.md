@@ -48,6 +48,11 @@ succeed or fail — don't rush past them.
    color classes, and pointer positions will move between frames. This is the
    **frame-consistency rule**: shared `viewBox`, stable coordinates, moving highlights.
 
+   **End with the result.** A process/sequence figure must close with a frame showing
+   the end state. For recursive or iterative algorithms, a final fast-forward frame is
+   fine: collapse the remaining iterations and show the finished result, so the reader
+   sees the mechanism AND that it worked.
+
    For each frame — including a single static frame — work in this order:
    1. Write the **runbook** (what/why/how this frame is drawn, honoring the
       frame-consistency rule). The runbook is the build-spec for the frame: it captures

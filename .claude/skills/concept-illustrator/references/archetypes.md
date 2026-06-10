@@ -136,6 +136,12 @@ remain `class="box"`. Frame 3: pivot swaps into its final position, turning
 "< pivot" and "> pivot". The pivot cell's x-coordinate is the same in every frame —
 it changes color but stays in place until the final swap.
 
+**End with the result.** A sequence figure must close with a frame showing the end
+state. For a recursive or iterative algorithm, the final frame may fast-forward —
+collapse the remaining iterations and show the finished result. In the quicksort
+example the four frames show one partition pass, and a final fast-forward frame jumps to
+the fully sorted array, so the reader sees both the mechanism and that it worked.
+
 **Frame-consistency rule (stated explicitly):** All frames in a sequence figure must
 share the same `viewBox` dimensions and keep shared elements at identical coordinates.
 Only color classes, pointer positions, and annotation text change between frames. The
