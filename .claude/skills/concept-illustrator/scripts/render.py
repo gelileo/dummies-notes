@@ -56,3 +56,39 @@ def _safe_parse(path):
         return ET.fromstring(raw), []
     except ET.ParseError as exc:
         return None, [("ERROR", f"malformed SVG: {exc}")]
+
+
+def check_canvas_width(root):
+    vb = root.get("viewBox")
+    if not vb:
+        return [("ERROR", "missing viewBox")]
+    parts = vb.split()
+    if len(parts) != 4:
+        return [("ERROR", f"malformed viewBox '{vb}'")]
+    width = _f(parts[2])
+    if width != CANVAS_WIDTH:
+        return [("ERROR", f"viewBox width {width} must be {CANVAS_WIDTH}")]
+    return []
+
+
+def check_text_classes(root):
+    issues = []
+    for el in root.iter():
+        if localname(el.tag) != "text":
+            continue
+        classes = set((el.get("class") or "").split())
+        snippet = (el.text or "").strip()[:20]
+        if not (classes & ALLOWED_TEXT_CLASSES):
+            issues.append(("ERROR", f"<text> '{snippet}' missing class (t/ts/th)"))
+        if el.get("font-size") or "font-size" in (el.get("style") or ""):
+            issues.append(("ERROR", f"<text> '{snippet}' has inline font-size; use t/ts/th"))
+    return issues
+
+
+def check_placeholders(root):
+    blob = " ".join(el.text for el in root.iter() if el.text).lower()
+    return [
+        ("ERROR", f"placeholder token '{tok}' present")
+        for tok in PLACEHOLDER_TOKENS
+        if tok in blob
+    ]
