@@ -37,7 +37,7 @@ identity and a single canonical figure that every chain links to.
   concept it depends on)?
 - **Versioning/invalidation**: when a concept's understanding changes, how is
   the cached figure invalidated without breaking chains that reference it?
-- **Storage**: filesystem, a content store, or a DB — undecided.
+- **Storage**: resolved — `registry/<slug>/entry.json` per concept, plus a rebuildable `registry/index.json` summary. Implemented as the zero-dependency `scripts/concept_registry.py` module (verbs: `register` / `lookup`). Same-slug + same-definition calls are idempotent; same-slug + different-definition raises `RegistryError` and the caller must use a qualified slug (e.g. `mean-average` vs `mean-unkind`).
 
 > Status: thin / capture-first. No implementation yet. Update in the same task
 > as the first `src/catalog/` code.

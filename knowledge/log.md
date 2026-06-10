@@ -112,3 +112,9 @@ Append-only chronological log of significant changes to this project. Each entry
 - Golden quicksort example extended from 4 to 5 frames: added `frame-05.svg` (runbook-first), the fast-forward closure showing the fully sorted `[1, 2, 3, 5, 8, 9]`. The pivot 3 stays coral at index 2 (placed pivots never move — pays off the dividing-wall metaphor); every other cell is gray and sorted. Appended the matching `frame-05` entry (file/caption/runbook/commentary) to `examples/quicksort/figure.json` and rebuilt `figure.html` (now 5 SVGs). Frames 1–4 untouched.
 - Validation: figure lints clean, viewer rebuilt with 5 frames, 57 tests / 1 skip, `check_skill_refs.py` exit 0, articles valid.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
+## [2026-06-10] feat | concept-registry: zero-dep register + lookup (Phase 2 Task 2)
+
+- Created `scripts/concept_registry.py`: `register(root, slug, name, definition, prerequisites=())` and `lookup(root, slug)`. Entries persist at `registry/<slug>/entry.json`. Same-slug + same-definition is idempotent; same-slug + different-definition raises `RegistryError`; invalid slugs (non-kebab-case) and blank name/definition also raise `RegistryError`.
+- Created `scripts/tests/__init__.py` and `scripts/tests/test_concept_registry.py` (7 tests, all passing).
+- Updated `knowledge/concepts/dummies-notes/atomic-illustration-catalog.md`: resolved the open storage question — filesystem `registry/<slug>/entry.json` + rebuildable `registry/index.json` via `scripts/concept_registry.py`.
