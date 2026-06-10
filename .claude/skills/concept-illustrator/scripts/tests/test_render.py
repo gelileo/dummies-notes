@@ -324,5 +324,30 @@ def _has_cairosvg():
         return False
 
 
+REFS = os.path.join(os.path.dirname(SCRIPTS_DIR), "references")
+
+
+class TestReferenceDocs(unittest.TestCase):
+    REQUIRED = {
+        "design-system.md": ["## Palette", "## Color-role conventions", "## Type",
+                             "## Canvas & geometry", "## Banned"],
+        "archetypes.md": ["## Flowchart", "## Structural", "## Illustrative",
+                          "## Chart", "## Sequence"],
+        "visual-vocabulary.md": ["## List / array cell", "## Pointer", "## Graph node",
+                                 "## State styles"],
+        "voice-and-metaphor.md": ["## Voice", "## Metaphor bank"],
+        "review-protocol.md": ["## Blind-reader test", "## Fidelity critic",
+                               "## Repair loop"],
+    }
+
+    def test_required_docs_and_headings(self):
+        for name, headings in self.REQUIRED.items():
+            path = os.path.join(REFS, name)
+            self.assertTrue(os.path.exists(path), f"missing {name}")
+            text = render._read(path)
+            for h in headings:
+                self.assertIn(h, text, f"{name} missing heading '{h}'")
+
+
 if __name__ == "__main__":
     unittest.main()

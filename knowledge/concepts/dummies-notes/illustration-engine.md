@@ -55,9 +55,25 @@ The `validate_figure(dir_path, style_path)` function in `render.py` enforces thi
 
 `lint_svg` / `lint_file` run a suite of checks: correct `viewBox` width (680), text-class presence, no inline `font-size`, no placeholder tokens, palette-only colors, no filters/emoji, sentence-case text, rect bounds, connector fill rules. All checks return `(level, message)` pairs so callers can filter by severity.
 
+## Reference docs
+
+Canonical reference files live in `.claude/skills/concept-illustrator/references/`:
+
+- `references/design-system.md` — palette, color-role conventions, type, canvas geometry, banned decorations.
+- `references/archetypes.md` — flowchart / structural / illustrative / chart / sequence routing.
+- `references/visual-vocabulary.md` — lint-clean primitive snippets (list cell, pointer, node, edge, container, stack frame, function box, state styles) — the one place literal SVG reuse lives.
+- `references/voice-and-metaphor.md` — caption voice + metaphor bank.
+- `references/review-protocol.md` — blind-reader + fidelity-critic fresh-eyes review (automated in Phase 3).
+
 ## Open design questions
 
 - How is the per-figure caption generated and tied to the concept node?
 - When does `validate_figure` gate the output pipeline (pre-commit, CI, or inline during generation)?
 
 > Status: implementation in progress. Updated when `render.py` linter and figure.json validation landed (Task 6 of concept-illustrator Phase 1).
+
+## Color-role scope
+
+Color-role conventions (teal = active, gray = eliminated, coral = target/goal) apply only to **illustrative** and **sequence** figures, where elements carry state. **Structural, flowchart, and chart** figures use ramps for pure category differentiation — prefer purple / blue / pink for neutral categories there to avoid misreading a category as a state. Full rule in `references/design-system.md § Color-role conventions`.
+
+The **graph-node** primitive follows the same convention: `c-teal` for the start/active node, `c-coral` for the goal/target node, `c-gray` for visited/done nodes. See `references/visual-vocabulary.md § Graph node`.
