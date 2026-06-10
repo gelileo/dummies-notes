@@ -57,5 +57,55 @@ class TestPlaceholders(unittest.TestCase):
         self.assertTrue(render.check_placeholders(svg('<text class="t">TODO fix</text>')))
 
 
+PALETTE = {"#1c1c1a", "#0f6e56"}
+
+
+class TestPalette(unittest.TestCase):
+    def test_palette_color_passes(self):
+        out = render.check_palette(svg('<rect fill="#1C1C1A"/>'), PALETTE)
+        self.assertEqual(out, [])
+
+    def test_off_palette_errors(self):
+        out = render.check_palette(svg('<rect fill="#abcdef"/>'), PALETTE)
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_none_and_url_allowed(self):
+        out = render.check_palette(
+            svg('<path fill="none" marker-end="url(#arrow)" stroke="currentColor"/>'),
+            PALETTE,
+        )
+        self.assertEqual(out, [])
+
+    def test_named_color_errors(self):
+        self.assertTrue(render.check_palette(svg('<rect fill="red"/>'), PALETTE))
+
+
+class TestDecoration(unittest.TestCase):
+    def test_filter_errors(self):
+        out = render.check_decoration(svg('<filter id="f"></filter>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_gradient_warns(self):
+        out = render.check_decoration(svg('<linearGradient id="g"></linearGradient>'))
+        self.assertTrue(any(lvl == "WARN" for lvl, _ in out))
+
+    def test_emoji_errors(self):
+        out = render.check_decoration(svg('<text class="t">hot \U0001f525</text>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+
+class TestCaps(unittest.TestCase):
+    def test_sentence_case_passes(self):
+        self.assertEqual(render.check_caps(svg('<text class="t">Binary search</text>')), [])
+
+    def test_all_caps_errors(self):
+        out = render.check_caps(svg('<text class="t">BINARY SEARCH</text>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_title_case_warns(self):
+        out = render.check_caps(svg('<text class="t">Binary Search Tree</text>'))
+        self.assertTrue(any(lvl == "WARN" for lvl, _ in out))
+
+
 if __name__ == "__main__":
     unittest.main()

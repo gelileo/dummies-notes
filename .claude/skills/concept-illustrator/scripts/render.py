@@ -92,3 +92,58 @@ def check_placeholders(root):
         for tok in PLACEHOLDER_TOKENS
         if tok in blob
     ]
+
+
+def _check_color_value(value, palette, attr):
+    v = value.strip().lower()
+    if v in ALLOWED_NONHEX or v.startswith("url("):
+        return []
+    if not re.fullmatch(r"#[0-9a-f]{6}", v):
+        return [("ERROR", f"off-palette {attr} '{value}' (use a hex from the palette)")]
+    if v not in palette:
+        return [("ERROR", f"off-palette {attr} '{value}'")]
+    return []
+
+
+def check_palette(root, palette):
+    issues = []
+    for el in root.iter():
+        for attr in COLOR_ATTRS:
+            if el.get(attr):
+                issues += _check_color_value(el.get(attr), palette, attr)
+        style = el.get("style") or ""
+        for decl in style.split(";"):
+            if ":" in decl:
+                prop, val = decl.split(":", 1)
+                if prop.strip() in COLOR_ATTRS:
+                    issues += _check_color_value(val, palette, prop.strip())
+    return issues
+
+
+def check_decoration(root):
+    issues = []
+    for el in root.iter():
+        name = localname(el.tag)
+        if name == "filter":
+            issues.append(("ERROR", "<filter> not allowed (no shadows/glows)"))
+        elif name in ("linearGradient", "radialGradient"):
+            issues.append(("WARN", f"<{name}> present; allowed only for a physical "
+                                   "property in an illustrative figure"))
+        if el.text and EMOJI.search(el.text):
+            issues.append(("ERROR", "emoji in text not allowed"))
+    return issues
+
+
+def check_caps(root):
+    issues = []
+    for el in root.iter():
+        if localname(el.tag) != "text" or not el.text:
+            continue
+        s = el.text.strip()
+        letters = [c for c in s if c.isalpha()]
+        words = [w for w in s.split() if any(c.isalpha() for c in w)]
+        if len(letters) >= 2 and not any(c.islower() for c in s):
+            issues.append(("ERROR", f"ALL CAPS text '{s[:20]}'; use sentence case"))
+        elif len(words) >= 2 and all(w.lstrip()[0].isupper() for w in words):
+            issues.append(("WARN", f"possible Title Case '{s[:20]}'; prefer sentence case"))
+    return issues
