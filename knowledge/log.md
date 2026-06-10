@@ -125,6 +125,14 @@ Append-only chronological log of significant changes to this project. Each entry
 - `scripts/tests/test_render.py`: added `test_non_string_runbook_errors` and `test_bare_string_frame_errors` to `TestRunbookCommentary`. Suite total: 57 tests, 1 skip.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
 
+## [2026-06-10] feat | concept-registry: seed first entries — quicksort (illustrated) + modular-arithmetic (Phase 2 Task 7)
+
+- Seeded registry via CLI: `quicksort` registered and attached to the Phase 1 golden figure (`.claude/skills/concept-illustrator/examples/quicksort`); `status: illustrated`, relative `figure` path round-trips correctly. `modular-arithmetic` registered with a definition byte-identical to the golden decomposition (`concept-decompose/examples/modular-arithmetic/decomposition.json`); `status: registered`, awaiting its figure.
+- `registry/index.json` rebuilt via `scripts/concept-registry index`; reports 2 concepts; byte-identical after test-suite rebuild (`git status` shows no diff).
+- Added `TestSeededRegistry` (3 tests) to `scripts/tests/test_concept_registry.py`; suite total: 22 tests, all passing. Concept-decompose suite: 14 tests. Concept-illustrator suite: 57 tests, 1 skip.
+- Updated `knowledge/concepts/dummies-notes/atomic-illustration-catalog.md`: noted the registry is live with its first two entries and the byte-identity guarantee; kept `status: thin` since versioning/invalidation is still an open question.
+- Articles touched: `concepts/dummies-notes/atomic-illustration-catalog.md`.
+
 ## [2026-06-10] doc | scope Phase 2 drift mapping (decompose skill, registry)
 
 - Narrowed `concept-decomposition.md` `affects:` from `src/decomposition/**` to the two concrete Phase 2 paths: `.claude/skills/concept-decompose/SKILL.md` and `.claude/skills/concept-decompose/scripts/validate_decomposition.py`.

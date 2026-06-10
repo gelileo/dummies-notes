@@ -1,0 +1,12 @@
+{
+  "modular-arithmetic": {
+    "name": "Modular arithmetic",
+    "status": "registered",
+    "definition": "A way of counting where the numbers wrap back to the start once they reach a fixed limit, the way the hours on a clock jump from 12 back to 1."
+  },
+  "quicksort": {
+    "name": "Quicksort",
+    "status": "illustrated",
+    "definition": "A sorting algorithm that repeatedly partitions an array around a pivot until every piece is sorted."
+  }
+}

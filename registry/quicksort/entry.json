@@ -1,0 +1,8 @@
+{
+  "slug": "quicksort",
+  "name": "Quicksort",
+  "definition": "A sorting algorithm that repeatedly partitions an array around a pivot until every piece is sorted.",
+  "status": "illustrated",
+  "prerequisites": [],
+  "figure": "../.claude/skills/concept-illustrator/examples/quicksort"
+}

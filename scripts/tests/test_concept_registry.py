@@ -168,5 +168,26 @@ class TestRobustness(unittest.TestCase):
             self.assertTrue(os.path.exists(os.path.join(resolved, "figure.json")))
 
 
+class TestSeededRegistry(unittest.TestCase):
+    ROOT = os.path.join(SCRIPTS_DIR, os.pardir, "registry")
+
+    def test_quicksort_is_illustrated_and_figure_exists(self):
+        entry = reg.lookup(self.ROOT, "quicksort")
+        self.assertIsNotNone(entry)
+        self.assertEqual(entry["status"], "illustrated")
+        figure_dir = os.path.normpath(os.path.join(self.ROOT, entry["figure"]))
+        self.assertTrue(os.path.exists(os.path.join(figure_dir, "figure.json")))
+
+    def test_modular_arithmetic_is_registered(self):
+        entry = reg.lookup(self.ROOT, "modular-arithmetic")
+        self.assertIsNotNone(entry)
+        self.assertEqual(entry["status"], "registered")
+
+    def test_index_matches_entries(self):
+        index = reg.build_index(self.ROOT)
+        self.assertIn("quicksort", index)
+        self.assertIn("modular-arithmetic", index)
+
+
 if __name__ == "__main__":
     unittest.main()

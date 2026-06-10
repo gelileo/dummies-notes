@@ -40,5 +40,21 @@ identity and a single canonical figure that every chain links to.
 - **Storage**: resolved — `registry/<slug>/entry.json` per concept, plus a rebuildable `registry/index.json` summary. Implemented as the zero-dependency `scripts/concept_registry.py` module. Entries carry a `status` field (`registered` → `illustrated`) and a `figure` path relative to the registry root (set via `attach_figure`; `None` until a figure is linked). CLI verbs: `register` / `lookup` / `attach-figure` / `index`. Same-slug + same-definition calls are idempotent; same-slug + different-definition raises `RegistryError` and the caller must use a qualified slug (e.g. `mean-average` vs `mean-unkind`). The executable wrapper at `scripts/concept-registry` exposes all verbs from the shell.
 - **Error contract hardening**: `_read_json` now catches `OSError`/`json.JSONDecodeError` and converts them to `RegistryError` ("corrupt registry entry at …") instead of a raw traceback. `build_index` catches `KeyError`/`TypeError` on missing required fields and raises `RegistryError` ("malformed entry for '…'"). Both paths are covered by `TestRobustness` (4 tests).
 
-> Status: thin / capture-first. No implementation yet. Update in the same task
-> as the first `src/catalog/` code.
+## First real entries (Phase 2 Task 7)
+
+The registry is now seeded with two concepts, registered via `scripts/concept-registry`:
+
+- **quicksort** (`status: illustrated`) — linked to the Phase 1 golden figure at
+  `.claude/skills/concept-illustrator/examples/quicksort`; the relative `figure`
+  path round-trips correctly through `lookup`.
+- **modular-arithmetic** (`status: registered`) — identity anchored to the golden
+  decomposition (`concept-decompose/examples/modular-arithmetic/decomposition.json`);
+  its definition is byte-identical to that file's `concept.definition`; awaiting its
+  own figure (Phase 3 or later).
+
+`registry/index.json` is rebuildable at any time via `scripts/concept-registry index`
+and is byte-identical after a rebuild (verified: `git status` shows no diff after the
+test suite calls `build_index`).
+
+> Status: thin. Versioning/invalidation and the content-hash vs. slug-only addressing
+> questions remain open; update to mature once those are resolved.
