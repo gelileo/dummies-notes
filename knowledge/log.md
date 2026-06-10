@@ -2,6 +2,13 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat | graph_check: shape + cross-node cycles + registry coverage (Phase 3 Task 2)
+
+- Created `scripts/graph_check.py`: zero-dep stdlib gate for a concept-graph directory (`decomposition.json` files as produced by the concept-decompose skill). Three checks: `load_graph` (every file parses with `slug` + `atomic`), `find_cycles` (DFS cycle detection across prerequisite edges within the graph), `check_coverage` (every graph node is registered; with `--require-illustrated` every atomic node must be `illustrated`). Frontier prerequisites — no graph file, not registered — are WARNs (not ERRORs), consistent with depth-capped runs.
+- Created `scripts/tests/test_graph_check.py`: 11 tests (TDD — written before the module, confirmed `ModuleNotFoundError`, then all passed). Full suite: 33 tests (22 registry + 11 new), all passing.
+- `knowledge/concepts/dummies-notes/orchestration-workflow.md`: verified article accurately describes the shipped semantics (frontier WARN, `--require-illustrated` flag, shape/cycle/coverage checks); no wording changes needed.
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`.
+
 ## [2026-06-10] doc | scope Phase 3 drift mapping + thin orchestration-workflow article
 
 ## [2026-06-10] compile | Phase 2 knowledge-base reconciliation (Task 8)

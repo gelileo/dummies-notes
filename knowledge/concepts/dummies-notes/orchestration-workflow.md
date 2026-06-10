@@ -50,4 +50,4 @@ graph is acyclic, every graph node is registered, and (with
 `--require-illustrated`) every atomic node has a figure. Frontier prerequisites
 (no graph file, not registered) are WARNs.
 
-> Status: thin / capture-first — written before the code lands in this phase.
+`graph_check.py` ships as of Phase 3 Task 2 with 11 unit tests (33 total across the suite). The `load_graph` / `find_cycles` / `check_coverage` API matches this description exactly.
