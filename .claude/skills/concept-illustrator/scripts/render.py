@@ -9,6 +9,7 @@ import os
 import re
 import sys
 import xml.etree.ElementTree as ET
+from html import escape as _html_escape
 
 CANVAS_WIDTH = 680
 ALLOWED_TEXT_CLASSES = {"t", "ts", "th"}
@@ -291,6 +292,27 @@ def validate_figure(dir_path, style_path):
     if len(viewboxes) > 1:
         issues.append(("ERROR", "frames have inconsistent viewBox (frame-consistency rule)"))
     return issues
+
+
+def build_viewer(dir_path, template_path, out_path):
+    data = json.loads(_read(os.path.join(dir_path, "figure.json")))
+    frames = data.get("frames") or []
+    svgs, captions = [], []
+    for frame in frames:
+        name = frame.get("file") if isinstance(frame, dict) else frame
+        if not name:
+            raise ValueError(f"figure.json frame missing 'file' in {dir_path}")
+        svgs.append(_read(os.path.join(dir_path, name)))
+        captions.append(frame.get("caption", "") if isinstance(frame, dict) else "")
+    frames_js = "[" + ",".join(json.dumps(s) for s in svgs) + "]"
+    captions_js = "[" + ",".join(json.dumps(c) for c in captions) + "]"
+    html = (_read(template_path)
+            .replace("/*FRAMES*/[]", frames_js)
+            .replace("/*CAPTIONS*/[]", captions_js)
+            .replace("{{TITLE}}", _html_escape(data.get("title", "Figure"))))
+    with open(out_path, "w", encoding="utf-8") as handle:
+        handle.write(html)
+    return out_path
 
 
 if __name__ == "__main__":

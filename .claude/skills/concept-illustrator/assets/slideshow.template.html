@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;
+         display:flex; flex-direction:column; align-items:center; gap:1rem; padding:2rem; }
+  #stage svg { max-width:100%; height:auto; }
+  #caption { max-width:680px; text-align:center; opacity:.85; min-height:2.5em; }
+  #bar { display:flex; gap:.5rem; align-items:center; }
+  button { font:inherit; padding:.3rem .8rem; cursor:pointer; }
+  #count { font-variant-numeric:tabular-nums; opacity:.7; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="caption"></div>
+<div id="bar">
+  <button id="prev">&larr; Prev</button>
+  <span id="count"></span>
+  <button id="next">Next &rarr;</button>
+  <button id="play">Auto-play</button>
+</div>
+<script>
+const FRAMES = /*FRAMES*/[];
+const CAPTIONS = /*CAPTIONS*/[];
+let i = 0, timer = null;
+const stage = document.getElementById('stage');
+const caption = document.getElementById('caption');
+const count = document.getElementById('count');
+function show(n){
+  i = (n + FRAMES.length) % FRAMES.length;
+  stage.innerHTML = FRAMES[i];
+  caption.textContent = CAPTIONS[i] || '';
+  count.textContent = (i+1) + ' / ' + FRAMES.length;
+}
+document.getElementById('prev').onclick = () => show(i-1);
+document.getElementById('next').onclick = () => show(i+1);
+document.getElementById('play').onclick = (e) => {
+  if (timer){ clearInterval(timer); timer = null; e.target.textContent = 'Auto-play'; }
+  else { timer = setInterval(() => show(i+1), 1200); e.target.textContent = 'Pause'; }
+};
+show(0);
+</script>
+</body>
+</html>

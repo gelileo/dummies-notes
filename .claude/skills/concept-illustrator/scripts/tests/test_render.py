@@ -276,5 +276,28 @@ class TestValidateFigurePlaybackAndViewbox(unittest.TestCase):
             self.assertFalse(any("inconsistent viewBox" in m for m in msgs))
 
 
+class TestBuildViewer(unittest.TestCase):
+    def test_inlines_all_frames(self):
+        with tempfile.TemporaryDirectory() as d:
+            for i in (1, 2):
+                with open(os.path.join(d, f"frame-{i:02d}.svg"), "w") as fh:
+                    fh.write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 100">'
+                             f'<text class="t">Step {i}</text></svg>')
+            with open(os.path.join(d, "figure.json"), "w") as fh:
+                json.dump({"concept_slug": "x", "archetype": "illustrative",
+                           "playback": "slideshow", "title": "Demo",
+                           "frames": [{"file": "frame-01.svg", "caption": "one"},
+                                      {"file": "frame-02.svg", "caption": "two"}]}, fh)
+            out = os.path.join(d, "figure.html")
+            template = os.path.join(ASSETS, "slideshow.template.html")
+            render.build_viewer(d, template, out)
+            html = render._read(out)
+            self.assertEqual(html.count("<svg"), 2)
+            self.assertIn("Demo", html)
+            self.assertIn("one", html)
+            self.assertIn("two", html)
+            self.assertNotIn("/*FRAMES*/[]", html)
+
+
 if __name__ == "__main__":
     unittest.main()
