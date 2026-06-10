@@ -99,5 +99,95 @@ class TestTopoOrder(unittest.TestCase):
                 asm.topo_order(nodes)
 
 
+TINY_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 100">'
+            '<text class="t">Tiny figure</text></svg>')
+
+
+def make_figure(figure_dir, slug, n_frames=2):
+    os.makedirs(figure_dir, exist_ok=True)
+    frames = []
+    for i in range(1, n_frames + 1):
+        name = f"frame-{i:02d}.svg"
+        with open(os.path.join(figure_dir, name), "w", encoding="utf-8") as fh:
+            fh.write(TINY_SVG)
+        frames.append({"file": name, "caption": f"Step {i}.",
+                       "runbook": f"Frame {i}.", "commentary": f"Step {i}. Simple."})
+    with open(os.path.join(figure_dir, "figure.json"), "w", encoding="utf-8") as fh:
+        json.dump({"concept_slug": slug, "archetype": "illustrative",
+                   "playback": "slideshow" if n_frames > 1 else "static",
+                   "frames": frames}, fh)
+    return figure_dir
+
+
+def make_world(base):
+    """graph: rsa -> [modular-arithmetic(covered), primes(atomic), asym(atomic)];
+    registry: mod covered+illustrated; primes/asym illustrated; rsa registered."""
+    graph = os.path.join(base, "out", "graph")
+    registry = os.path.join(base, "registry")
+    write_decomp(graph, "rsa", False, ["modular-arithmetic", "primes", "asym"])
+    write_decomp(graph, "primes", True)
+    write_decomp(graph, "asym", True)
+    for slug in ("modular-arithmetic", "primes", "asym"):
+        reg.register(registry, slug, slug.title(), f"Plain definition of {slug}.")
+        reg.attach_figure(registry, slug,
+                          make_figure(os.path.join(registry, slug, "figure"), slug))
+    reg.register(registry, "rsa", "Rsa", "Plain definition of rsa.")
+    return graph, registry, os.path.join(base, "out")
+
+
+class TestExplainer(unittest.TestCase):
+    def test_sections_in_bottom_up_order_root_last(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry, out = make_world(base)
+            result, issues = asm.assemble(graph, registry, out)
+            text = open(os.path.join(out, "index.html"), encoding="utf-8").read()
+            for s in ("asym", "primes", "rsa"):
+                self.assertIn(f'<section id="{s}"', text)
+            self.assertLess(text.index('<section id="asym"'), text.index('<section id="rsa"'))
+            self.assertLess(text.index('<section id="primes"'), text.index('<section id="rsa"'))
+
+    def test_atomic_nodes_embed_frames_inline(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry, out = make_world(base)
+            asm.assemble(graph, registry, out)
+            text = open(os.path.join(out, "index.html"), encoding="utf-8").read()
+            # primes + asym: 2 frames each, inline
+            self.assertGreaterEqual(text.count("<svg"), 4)
+
+    def test_covered_prereq_is_linked_not_inlined(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry, out = make_world(base)
+            asm.assemble(graph, registry, out)
+            text = open(os.path.join(out, "index.html"), encoding="utf-8").read()
+            self.assertIn('id="modular-arithmetic"', text)
+            self.assertIn("Already covered", text)
+            self.assertIn("figure.html", text)  # link target
+            # the covered figure's frames are NOT inlined: its viewer link exists
+            viewer = os.path.join(registry, "modular-arithmetic", "figure", "figure.html")
+            self.assertTrue(os.path.exists(viewer))
+
+    def test_intermediate_root_is_caption_only_with_child_links(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry, out = make_world(base)
+            asm.assemble(graph, registry, out)
+            text = open(os.path.join(out, "index.html"), encoding="utf-8").read()
+            rsa = text[text.index('<section id="rsa"'):]
+            self.assertIn('href="#primes"', rsa)
+            self.assertIn("rsa needs primes", rsa)
+
+    def test_frontier_prereq_gets_stub(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "out", "graph")
+            registry = os.path.join(base, "registry")
+            write_decomp(graph, "solo", True, ["mystery-idea"])
+            reg.register(registry, "solo", "Solo", "Plain definition of solo.")
+            reg.attach_figure(registry, "solo",
+                              make_figure(os.path.join(registry, "solo", "figure"), "solo"))
+            asm.assemble(graph, registry, os.path.join(base, "out"))
+            text = open(os.path.join(base, "out", "index.html"), encoding="utf-8").read()
+            self.assertIn("not yet covered", text)
+            self.assertIn("mystery-idea", text)
+
+
 if __name__ == "__main__":
     unittest.main()

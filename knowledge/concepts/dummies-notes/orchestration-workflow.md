@@ -75,4 +75,4 @@ Phase 4 scope (not yet built):
 - **End-to-end chain review**: a cross-node fresh-eyes pass over the full assembled output, not just per-figure review.
 - **Open question carried forward**: figure invalidation and versioning — when an illustrated concept's definition changes, how does the registry detect staleness and trigger a re-illustration?
 
-Assembly is deterministic: `scripts/assemble.py` renders index.html + map.html from the graph + registry — no agent writes HTML.
+Assembly is deterministic: `scripts/assemble.py` renders index.html + map.html from the graph + registry — no agent writes HTML. The explainer (`index.html`) is built bottom-up (prerequisites before dependents, target last): atomic nodes embed their figure frames as inline slideshows; already-covered prerequisites (in the registry but not in this run's graph) are linked to their registry viewer, never re-inlined; intermediate nodes render caption-only with links to their children; frontier prerequisites (not in graph or registry) get an honest stub note.

@@ -2,6 +2,13 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat | assemble.py explainer: bottom-up inline slideshows, covered links, frontier stubs (Phase 4 Task 2)
+
+- `scripts/assemble.py`: added `PAGE_CSS`, `SLIDESHOW_JS`, `load_figure`, `figure_html`, `_children_list`, `_figure_dir_for`, `_ensure_viewer`, `build_explainer`, `classify_prereqs`, `assemble`, and a temporary `build_map` stub. Writes `output/<topic>/index.html` bottom-up: atomic nodes embed inline SVG slideshows; already-covered prereqs are linked to their registry viewer; intermediate nodes render caption-only with child links; frontier prereqs get a stub note.
+- `scripts/tests/test_assemble.py`: added `TINY_SVG`, `make_figure`, `make_world` helpers and `TestExplainer` (5 tests — sections order, inline frames, covered linked, caption-only root, frontier stub). Suite total: 48 tests.
+- `knowledge/concepts/dummies-notes/orchestration-workflow.md`: added explainer semantics sentence (bottom-up slideshows, covered linked, intermediate caption-only, frontier stubs).
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`.
+
 ## [2026-06-10] feat | assemble.py core: graph loading, root detection, bottom-up topological order (Phase 4 Task 1)
 
 - Created `scripts/assemble.py`: deterministic assembler skeleton. Implements `load_full_graph` (reads `*.json` graph files from a directory into `{slug: {name, definition, atomic, prerequisites}}` nodes), `find_root` (the one node unreferenced by others), `topo_order` (Kahn's-style BFS with alphabetical tie-breaking — prerequisites before dependents, root last; raises on cycles). Module docstring and all Task 2–3 imports (`argparse`, `html`, `render`, `DEFAULT_ROOT`, `lookup`) present.
