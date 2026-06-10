@@ -37,7 +37,8 @@ identity and a single canonical figure that every chain links to.
   concept it depends on)?
 - **Versioning/invalidation**: when a concept's understanding changes, how is
   the cached figure invalidated without breaking chains that reference it?
-- **Storage**: resolved — `registry/<slug>/entry.json` per concept, plus a rebuildable `registry/index.json` summary. Implemented as the zero-dependency `scripts/concept_registry.py` module (verbs: `register` / `lookup`). Same-slug + same-definition calls are idempotent; same-slug + different-definition raises `RegistryError` and the caller must use a qualified slug (e.g. `mean-average` vs `mean-unkind`).
+- **Storage**: resolved — `registry/<slug>/entry.json` per concept, plus a rebuildable `registry/index.json` summary. Implemented as the zero-dependency `scripts/concept_registry.py` module. Entries carry a `status` field (`registered` → `illustrated`) and a `figure` path relative to the registry root (set via `attach_figure`; `None` until a figure is linked). CLI verbs: `register` / `lookup` / `attach-figure` / `index`. Same-slug + same-definition calls are idempotent; same-slug + different-definition raises `RegistryError` and the caller must use a qualified slug (e.g. `mean-average` vs `mean-unkind`). The executable wrapper at `scripts/concept-registry` exposes all verbs from the shell.
+- **Error contract hardening**: `_read_json` now catches `OSError`/`json.JSONDecodeError` and converts them to `RegistryError` ("corrupt registry entry at …") instead of a raw traceback. `build_index` catches `KeyError`/`TypeError` on missing required fields and raises `RegistryError` ("malformed entry for '…'"). Both paths are covered by `TestRobustness` (4 tests).
 
 > Status: thin / capture-first. No implementation yet. Update in the same task
 > as the first `src/catalog/` code.

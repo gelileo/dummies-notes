@@ -113,6 +113,22 @@ Append-only chronological log of significant changes to this project. Each entry
 - Validation: figure lints clean, viewer rebuilt with 5 frames, 57 tests / 1 skip, `check_skill_refs.py` exit 0, articles valid.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
 
+## [2026-06-10] fix | concept-registry: harden against corrupted/partial entries (Task 3 amend)
+
+- `scripts/concept_registry.py _read_json`: wraps `open`/`json.load` in a try/except; `OSError` and `json.JSONDecodeError` now raise `RegistryError("corrupt registry entry at …")` instead of propagating a raw traceback.
+- `scripts/concept_registry.py build_index`: added try/except around the required-key lookups; `KeyError`/`TypeError` raises `RegistryError("malformed entry for '…'")`.
+- `scripts/tests/test_concept_registry.py`: added `TestRobustness` (4 tests — corrupt JSON, corrupt-via-CLI, partial entry in index, attach-figure relpath outside root). Suite total: 19 tests, all passing.
+- Articles touched: `concepts/dummies-notes/atomic-illustration-catalog.md`.
+
+## [2026-06-10] feat | concept-registry: attach-figure, index, CLI wrapper (Phase 2 Task 3)
+
+- Added `attach_figure(root, slug, figure_dir)` to `scripts/concept_registry.py`: validates slug is already registered and `figure_dir` contains `figure.json`, then stores the relative path and transitions `status` to `illustrated`.
+- Added `build_index(root)`: scans all `<slug>/entry.json` files under root, writes `registry/index.json`, and returns the summary dict.
+- Added `main(argv=None)` CLI with subcommands `register`, `lookup`, `attach-figure`, and `index`; errors from `RegistryError` print a clean `ERROR` line and return exit code 1.
+- Created executable wrapper `scripts/concept-registry` so all verbs are reachable from the shell without a `python3 -m` prefix.
+- Added `TestAttachAndIndex` (4 tests) and `TestCli` (4 tests) to `scripts/tests/test_concept_registry.py`; suite total is now 15 tests, all passing.
+- Updated `knowledge/concepts/dummies-notes/atomic-illustration-catalog.md`: documented `status` lifecycle, `figure` relative-path field, and all four CLI verbs.
+
 ## [2026-06-10] feat | concept-registry: zero-dep register + lookup (Phase 2 Task 2)
 
 - Created `scripts/concept_registry.py`: `register(root, slug, name, definition, prerequisites=())` and `lookup(root, slug)`. Entries persist at `registry/<slug>/entry.json`. Same-slug + same-definition is idempotent; same-slug + different-definition raises `RegistryError`; invalid slugs (non-kebab-case) and blank name/definition also raise `RegistryError`.
