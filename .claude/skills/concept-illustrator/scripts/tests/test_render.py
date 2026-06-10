@@ -392,5 +392,12 @@ class TestCli(unittest.TestCase):
             self.assertEqual(render.main([self.QS, "--png", os.path.join(d, "o.png")]), 1)
 
 
+class TestFigureJsonDoc(unittest.TestCase):
+    def test_documents_runbook_and_commentary(self):
+        text = render._read(os.path.join(REFS, "figure-json.md"))
+        for token in ("runbook", "commentary", "runbook-first"):
+            self.assertIn(token, text, f"figure-json.md missing '{token}'")
+
+
 if __name__ == "__main__":
     unittest.main()
