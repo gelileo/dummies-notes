@@ -152,6 +152,9 @@ while (queue.length) {
     definition: d.concept.definition,
     atomic: d.atomic,
     prerequisites: d.prerequisites.map(p => p.slug),
+    // full prerequisite objects (incl. why) — the compose-from-children
+    // contract labels each child with the essence of its why
+    prereqMeta: d.prerequisites.map(p => ({ slug: p.slug, name: p.name, definition: p.definition, why: p.why })),
     covered: false,
   }
   for (const p of d.prerequisites) {
@@ -262,10 +265,11 @@ const ASSEMBLE_SCHEMA = {
 
 const rootNode = nodes[rootSlug]
 if (rootNode && rootNode.atomic === false) {
-  const kids = rootNode.prerequisites.map(s => ({
-    slug: s,
-    name: (nodes[s] && nodes[s].name) || s,
-    definition: (nodes[s] && nodes[s].definition) || '',
+  const kids = (rootNode.prereqMeta || rootNode.prerequisites.map(s => ({ slug: s }))).map(k => ({
+    slug: k.slug,
+    name: k.name || (nodes[k.slug] && nodes[k.slug].name) || k.slug,
+    definition: k.definition || (nodes[k.slug] && nodes[k.slug].definition) || '',
+    why: k.why || '',
   }))
   await agent(
     'Follow .claude/skills/concept-illustrator/SKILL.md — the "Composition figures (compose-from-children)" mode.\n' +

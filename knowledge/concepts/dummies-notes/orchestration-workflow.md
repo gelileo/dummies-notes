@@ -59,6 +59,9 @@ review them with fresh eyes, and register everything.
    that per-figure reviews cannot see. Gaps surface as a report; no auto-repair —
    the intent is honest disclosure, not silent patching.
 
+The compose step passes each child's `why` through to the composition
+figure (labels carry the essence of why the parent needs that child).
+
 The script accepts `args` either as an object or a JSON-encoded string (some
 callers stringify it); it parses and falls back gracefully.
 
