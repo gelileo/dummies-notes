@@ -2,10 +2,11 @@
 title: Concept decomposition engine
 type: concept
 area: dummies-notes
-updated: 2026-06-09
+updated: 2026-06-10
 status: thin
 affects:
-  - "src/decomposition/**"
+  - ".claude/skills/concept-decompose/SKILL.md"
+  - ".claude/skills/concept-decompose/scripts/validate_decomposition.py"
 references:
   - "concepts/dummies-notes/illustration-engine.md"
   - "concepts/dummies-notes/atomic-illustration-catalog.md"

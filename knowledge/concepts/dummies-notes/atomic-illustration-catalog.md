@@ -2,10 +2,11 @@
 title: Atomic illustration catalog
 type: concept
 area: dummies-notes
-updated: 2026-06-09
+updated: 2026-06-10
 status: thin
 affects:
-  - "src/catalog/**"
+  - "scripts/concept_registry.py"
+  - "registry/**"
 references:
   - "concepts/dummies-notes/concept-decomposition.md"
   - "concepts/dummies-notes/illustration-engine.md"

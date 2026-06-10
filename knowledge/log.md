@@ -99,6 +99,12 @@ Append-only chronological log of significant changes to this project. Each entry
 - `scripts/tests/test_render.py`: added `test_non_string_runbook_errors` and `test_bare_string_frame_errors` to `TestRunbookCommentary`. Suite total: 57 tests, 1 skip.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
 
+## [2026-06-10] doc | scope Phase 2 drift mapping (decompose skill, registry)
+
+- Narrowed `concept-decomposition.md` `affects:` from `src/decomposition/**` to the two concrete Phase 2 paths: `.claude/skills/concept-decompose/SKILL.md` and `.claude/skills/concept-decompose/scripts/validate_decomposition.py`.
+- Narrowed `atomic-illustration-catalog.md` `affects:` from `src/catalog/**` to `scripts/concept_registry.py` and `registry/**`.
+- Updated CLAUDE.md article-mapping table: replaced two broad rows with four specific rows matching the new globs. Illustration-engine rows unchanged.
+
 ## [2026-06-10] feat | concept-illustrator: closure rule — process figures end with the result
 
 - `SKILL.md § Workflow step 2`: added the **End with the result** rule — a process/sequence figure must close with a frame showing the end state; for recursive or iterative algorithms a final fast-forward frame may collapse the remaining iterations and show the finished result, so the reader sees the mechanism AND that it worked.
