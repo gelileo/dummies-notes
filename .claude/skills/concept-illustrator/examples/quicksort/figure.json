@@ -6,19 +6,27 @@
   "frames": [
     {
       "file": "frame-01.svg",
-      "caption": "Pick the last element as the pivot (3, coral). Everything else will be compared to it."
+      "caption": "Pick the last element as the pivot (3, coral). Everything else will be compared to it.",
+      "runbook": "Six array cells at fixed x = 100, 170, 240, 310, 380, 450 (y=100, w=60, h=40), values left to right [5, 2, 8, 1, 9, 3] with index labels 0-5 below. Cells 0-4 are neutral (.box). Cell 5 (value 3, index 5) is the pivot, drawn coral (c-coral) — this coral cell stays the pivot in every frame. A 'pivot' label with a down-arrow sits above cell 5. No scan or write pointers yet; nothing has moved. This is the starting state.",
+      "commentary": "Quicksort starts by picking one value to sort everything around. We always grab the last one. Here that is the 3, marked in coral. Think of it as a dividing wall. By the end, smaller values will sit on its left and larger ones on its right."
     },
     {
       "file": "frame-02.svg",
-      "caption": "2 is smaller than pivot 3, so it swapped with 5 into the left zone. Now scanning 8."
+      "caption": "2 is smaller than pivot 3, so it swapped with 5 into the left zone. Now scanning 8.",
+      "runbook": "Same six fixed positions. Values are now [2, 5, 8, 1, 9, 3]. Cell 0 (value 2) is gray (c-gray): it was smaller than the pivot and has settled into the left zone. Cell 1 (value 5) is neutral, bumped right by that swap. Cell 2 (value 8) is teal (c-teal), the cell being scanned right now. Cells 3 (1) and 4 (9) are neutral, not yet scanned. Cell 5 (3) stays the coral pivot. Three pointers above the row: 'j (scanning)' over cell 2 (index 2), 'i (write slot)' over cell 1 (index 1), and 'pivot' over cell 5. Changed from frame 1: 2 and 5 swapped, 2 turned gray, the scan reached 8.",
+      "commentary": "Now we walk the array from left to right. The pivot is our yardstick. The 2 came up smaller, so it slid into the left zone and turned gray. The teal box is where we are looking right now: an 8. The little i marks the next open slot waiting for a small value."
     },
     {
       "file": "frame-03.svg",
-      "caption": "1 also swapped into the left zone. Scan done: 2 and 1 sit left of where the pivot will land."
+      "caption": "1 also swapped into the left zone. Scan done: 2 and 1 sit left of where the pivot will land.",
+      "runbook": "Same six fixed positions. Values are now [2, 1, 8, 5, 9, 3]. Cells 0 (value 2) and 1 (value 1) are both gray (c-gray): both were smaller than the pivot and have settled into the left zone. Cells 2 (8), 3 (5), 4 (9) are neutral — bigger than the pivot, left in the right zone. Cell 5 (3) stays the coral pivot. Two pointers above the row: 'i (insert pivot here)' over cell 2 (index 2) — the boundary slot where the pivot will be placed — and 'pivot' over cell 5. No teal scan cell, because the scan is finished. Changed from frame 2: the 1 (then at index 3) swapped with the 5 at the write slot index 1, so index 1 is now 1 and index 3 is now 5; the 1 turned gray, the scan completed, and the write pointer advanced to index 2.",
+      "commentary": "The scan keeps going and finds the 1, also smaller than the pivot. It swaps with the 5 at the open slot, then turns gray. Now the walk is done. Two small values, 2 and 1, sit on the left. Three bigger values wait on the right. The arrow points to the boundary between them, the slot where the wall belongs."
     },
     {
       "file": "frame-04.svg",
-      "caption": "Pivot 3 swapped with 5 into index 2 — its final position. Left [2, 1] and right [5, 8, 9] recurse next."
+      "caption": "Pivot 3 trades places with the 8 at index 2 — its final spot. Right [5, 9, 8] is split off but unsorted; recurse.",
+      "runbook": "Same six fixed positions. Values are now [2, 1, 3, 5, 9, 8]. Cells 0 (2) and 1 (1) are gray (c-gray), the left sub-array. Cell 2 (value 3) is the coral pivot (c-coral), swapped into its final sorted position. Cells 3 (5), 4 (9), 5 (8) are gray (c-gray), the right sub-array — every value there is greater than the pivot, but they are NOT in sorted order. The pointer above cell 2 now reads 'pivot (final)'. Changed from frame 3: the pivot (then at index 5) swapped with the 8 sitting at the boundary slot index 2, so 3 lands at index 2 and the evicted 8 moves to index 5; every cell is now gray except the coral pivot.",
+      "commentary": "Finally the pivot moves. It trades places with the value sitting at the boundary, the 8, which gets pushed to the right end. The 3 clicks into place and will never move again. The wall is built. Everything left of it is smaller, everything right of it is larger. But the right side is only split off, not sorted: 5, 9, 8 are still out of order. That is why quicksort repeats the whole trick on each side until the array is sorted."
     }
   ]
 }

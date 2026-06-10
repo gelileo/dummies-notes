@@ -1,6 +1,6 @@
 <svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 220" role="img" font-family="sans-serif">
   <title>Quicksort — frame 4: pivot swapped into its final position</title>
-  <desc>The pivot (3) swapped with 5 at index 2, landing in its final sorted position. Left sub-array [2, 1] and right sub-array [5, 8, 9] are now ready to recurse.</desc>
+  <desc>The pivot (3) swapped with the 8 at index 2, landing in its final sorted position; the evicted 8 moved to index 5. Left sub-array [2, 1] and right sub-array [5, 9, 8] are partitioned but not yet sorted, ready to recurse.</desc>
   <defs>
     <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
 text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
@@ -75,25 +75,25 @@ rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
     <rect x="170" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
     <text x="200" y="120" class="th" text-anchor="middle" dominant-baseline="central">1</text>
   </g>
-  <!-- Cell 2: value 3 — pivot, swapped into final position c-coral -->
+  <!-- Cell 2: value 3 — pivot, swapped into its final position (traded places with the 8 that sat here) c-coral -->
   <g class="c-coral">
     <rect x="240" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
     <text x="270" y="120" class="th" text-anchor="middle" dominant-baseline="central">3</text>
   </g>
-  <!-- Cell 3: value 5 — right sub-array, settled c-gray -->
+  <!-- Cell 3: value 5 — right zone (greater than pivot), partitioned but not sorted, c-gray -->
   <g class="c-gray">
     <rect x="310" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
     <text x="340" y="120" class="th" text-anchor="middle" dominant-baseline="central">5</text>
   </g>
-  <!-- Cell 4: value 8 — right sub-array, settled c-gray -->
+  <!-- Cell 4: value 9 — right zone (greater than pivot), partitioned but not sorted, c-gray -->
   <g class="c-gray">
     <rect x="380" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
-    <text x="410" y="120" class="th" text-anchor="middle" dominant-baseline="central">8</text>
+    <text x="410" y="120" class="th" text-anchor="middle" dominant-baseline="central">9</text>
   </g>
-  <!-- Cell 5: value 9 — right sub-array, settled c-gray -->
+  <!-- Cell 5: value 8 — right zone, the 8 evicted from index 2 by the pivot swap, c-gray -->
   <g class="c-gray">
     <rect x="450" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
-    <text x="480" y="120" class="th" text-anchor="middle" dominant-baseline="central">9</text>
+    <text x="480" y="120" class="th" text-anchor="middle" dominant-baseline="central">8</text>
   </g>
 
   <!-- Index labels below cells -->
@@ -105,6 +105,6 @@ rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
   <text x="480" y="158" class="ts" text-anchor="middle" dominant-baseline="central">5</text>
 
   <!-- Caption area -->
-  <text x="340" y="190" class="t" text-anchor="middle" dominant-baseline="central">Pivot 3 swapped with 5 into index 2 — its final position. Left [2, 1] and right [5, 8, 9] recurse next.</text>
+  <text x="340" y="190" class="t" text-anchor="middle" dominant-baseline="central">Pivot 3 trades places with the 8 at index 2 — its final spot. Right [5, 9, 8] is split off but unsorted; recurse.</text>
 
 </svg>

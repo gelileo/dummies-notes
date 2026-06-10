@@ -79,15 +79,15 @@ rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
     <rect x="170" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
     <text x="200" y="120" class="th" text-anchor="middle" dominant-baseline="central">1</text>
   </g>
-  <!-- Cell 2: value 5 — right zone, not yet settled (plain box) -->
+  <!-- Cell 2: value 8 — right zone, not yet settled; this is the slot where the pivot will be inserted (plain box) -->
   <g class="box">
     <rect x="240" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
-    <text x="270" y="120" class="th" text-anchor="middle" dominant-baseline="central">5</text>
+    <text x="270" y="120" class="th" text-anchor="middle" dominant-baseline="central">8</text>
   </g>
-  <!-- Cell 3: value 8 — right zone, not yet settled (plain box) -->
+  <!-- Cell 3: value 5 — right zone (1 swapped with the 5 that was here), not yet settled (plain box) -->
   <g class="box">
     <rect x="310" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
-    <text x="340" y="120" class="th" text-anchor="middle" dominant-baseline="central">8</text>
+    <text x="340" y="120" class="th" text-anchor="middle" dominant-baseline="central">5</text>
   </g>
   <!-- Cell 4: value 9 — right zone, not yet settled (plain box) -->
   <g class="box">
