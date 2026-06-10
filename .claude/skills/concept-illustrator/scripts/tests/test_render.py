@@ -183,5 +183,20 @@ class TestSafeParse(unittest.TestCase):
             self.assertTrue(any("DOCTYPE" in m or "ENTITY" in m for _, m in out))
 
 
+ASSETS = os.path.join(os.path.dirname(SCRIPTS_DIR), "assets")
+
+
+class TestShippedAssets(unittest.TestCase):
+    def test_style_css_exists_and_has_palette(self):
+        css = render._read(os.path.join(ASSETS, "_style.css"))
+        self.assertGreaterEqual(len(render.load_palette(css)), 9)
+
+    def test_template_lints_clean(self):
+        style = os.path.join(ASSETS, "_style.css")
+        errors = [m for lvl, m in render.lint_file(os.path.join(ASSETS, "template.svg"), style)
+                  if lvl == "ERROR"]
+        self.assertEqual(errors, [], f"template.svg has lint errors: {errors}")
+
+
 if __name__ == "__main__":
     unittest.main()
