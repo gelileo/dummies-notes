@@ -6,9 +6,9 @@ Grouped by subject area. Each article is a standalone reference. Connections at 
 
 | Article | Summary | Updated |
 | --- | --- | --- |
-| [concepts/dummies-notes/concept-decomposition.md](concepts/dummies-notes/concept-decomposition.md) | Recursive divide-and-conquer that builds a concept dependency graph down to atomic nodes | 2026-06-09 |
+| [concepts/dummies-notes/concept-decomposition.md](concepts/dummies-notes/concept-decomposition.md) | Single-level decompose skill (`.claude/skills/concept-decompose/`): decomposition.json schema, atomicity rule, jargon rule, slug+definition identity, validator gate, golden RSA + modular-arithmetic examples; graph walk is Phase 3 | 2026-06-10 |
 | [concepts/dummies-notes/illustration-engine.md](concepts/dummies-notes/illustration-engine.md) | Shipped skill at `.claude/skills/concept-illustrator/`: runbook-first workflow, runbook + commentary required per frame, linter, figure validator, slideshow viewer, golden quicksort example | 2026-06-09 |
-| [concepts/dummies-notes/atomic-illustration-catalog.md](concepts/dummies-notes/atomic-illustration-catalog.md) | Stores atomic figures so each concept is drawn once and reused across reasoning chains | 2026-06-09 |
+| [concepts/dummies-notes/atomic-illustration-catalog.md](concepts/dummies-notes/atomic-illustration-catalog.md) | Shipped registry (`scripts/concept_registry.py` + `registry/`): slug+definition addressing, registered→illustrated lifecycle, four CLI verbs, corrupt-entry error contract, seeded with quicksort (illustrated) + modular-arithmetic; versioning/invalidation is Phase 3+ | 2026-06-10 |
 
 ## External Systems
 

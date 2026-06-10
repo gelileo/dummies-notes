@@ -2,6 +2,29 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] compile | Phase 2 knowledge-base reconciliation (Task 8)
+
+Phase 2 shipped two production subsystems. This entry summarises what landed and records the knowledge-base articles matured to reflect it.
+
+**Decompose skill + validator + golden examples**
+- `.claude/skills/concept-decompose/SKILL.md`: single-level contract — canonicalize (slug + plain definition) → atomicity test (≤ ~6-frame figure + common-knowledge prerequisites) → list direct prerequisites with `why` (jargon rule: unexplained terms become prerequisites) → reuse registry slugs → validate to `OK     clean`.
+- `references/decomposition-json.md`: full schema for `decomposition.json` (concept/audience/atomic/atomic_reason/prerequisites + why).
+- `scripts/validate_decomposition.py`: zero-dependency validator; 14 tests in `scripts/tests/` (includes `TestSkillContract`, `TestGoldenDecompositions`).
+- `examples/rsa-encryption/decomposition.json`: non-atomic golden with three load-bearing prerequisites; jargon rule demonstrated throughout.
+- `examples/modular-arithmetic/decomposition.json`: atomic golden, clock-metaphor, `prerequisites: []`; slug+definition byte-identical to the RSA prerequisite entry, exercising identity reuse.
+
+**Registry + CLI + seed**
+- `scripts/concept_registry.py`: zero-dependency register/lookup/attach-figure/build-index; identity = slug + definition (idempotent same-definition; collision → qualified slug); `_read_json` and `build_index` raise `RegistryError` on corrupt/malformed entries; 22 tests in `scripts/tests/test_concept_registry.py`.
+- `scripts/concept-registry`: executable shell wrapper exposing all four verbs.
+- `registry/` seeded with `quicksort` (`status: illustrated`, linked to Phase 1 golden figure) and `modular-arithmetic` (`status: registered`, definition matches decompose golden).
+- `registry/index.json` rebuildable and byte-identical after rebuild.
+
+**Articles matured**
+- `concepts/dummies-notes/concept-decomposition.md`: `status: thin` → `mature`. Full skill description, schema table, atomicity rule, jargon rule, slug+definition identity, validator gate, golden examples, explicit Phase 3 scope for graph walk + cross-node cycle detection.
+- `concepts/dummies-notes/atomic-illustration-catalog.md`: `status: thin` → `mature`. Storage layout, entry schema, status lifecycle, slug+definition addressing, portability (relative figure path), CLI verb table, error contract, seeded entries; versioning/invalidation explicitly deferred to Phase 3+ (no longer a stale undecided blocker).
+- `knowledge/index.md`: one-liners for both articles updated to 2026-06-10.
+- Articles touched: `concepts/dummies-notes/concept-decomposition.md`, `concepts/dummies-notes/atomic-illustration-catalog.md`, `knowledge/index.md`.
+
 ## [2026-06-10] feat | concept-decompose: golden decompositions — rsa (non-atomic) + modular-arithmetic (atomic) (Phase 2 Task 6)
 
 - Authored `.claude/skills/concept-decompose/examples/rsa-encryption/decomposition.json`: non-atomic, with three load-bearing prerequisites (`modular-arithmetic`, `prime-numbers`, `asymmetric-cryptography`), each with a plain definition + `why`. Definitions obey the jargon rule — no "coprime"/"totient" or any unexplained term; the two-key idea, wrap-around counting, and primes are kept plain.

@@ -3,7 +3,7 @@ title: Atomic illustration catalog
 type: concept
 area: dummies-notes
 updated: 2026-06-10
-status: thin
+status: mature
 affects:
   - "scripts/concept_registry.py"
   - "registry/**"
@@ -26,35 +26,80 @@ underpins binary search, entropy, and pH. Regenerating its figure each time is
 wasteful and inconsistent. The catalog gives each atomic concept a stable
 identity and a single canonical figure that every chain links to.
 
-## Open design questions (resolve as code lands)
+## Storage layout
 
-- **Addressing**: how is a figure keyed — by a normalized concept identity, by
-  content hash, by both? This is the same identity question raised in
-  [[concept-decomposition]] and must be answered consistently.
-- **Portability**: figures are self-contained SVGs (per the
-  [[illustration-engine]] output contract), so a catalog entry is portable by
-  construction. What metadata travels with it (caption, archetype, the
-  concept it depends on)?
-- **Versioning/invalidation**: when a concept's understanding changes, how is
-  the cached figure invalidated without breaking chains that reference it?
-- **Storage**: resolved — `registry/<slug>/entry.json` per concept, plus a rebuildable `registry/index.json` summary. Implemented as the zero-dependency `scripts/concept_registry.py` module. Entries carry a `status` field (`registered` → `illustrated`) and a `figure` path relative to the registry root (set via `attach_figure`; `None` until a figure is linked). CLI verbs: `register` / `lookup` / `attach-figure` / `index`. Same-slug + same-definition calls are idempotent; same-slug + different-definition raises `RegistryError` and the caller must use a qualified slug (e.g. `mean-average` vs `mean-unkind`). The executable wrapper at `scripts/concept-registry` exposes all verbs from the shell.
-- **Error contract hardening**: `_read_json` now catches `OSError`/`json.JSONDecodeError` and converts them to `RegistryError` ("corrupt registry entry at …") instead of a raw traceback. `build_index` catches `KeyError`/`TypeError` on missing required fields and raises `RegistryError` ("malformed entry for '…'"). Both paths are covered by `TestRobustness` (4 tests).
+The registry is implemented as the zero-dependency `scripts/concept_registry.py`
+module. One directory per concept under `registry/`:
 
-## First real entries (Phase 2 Task 7)
+```
+registry/
+  <slug>/
+    entry.json      # single concept entry
+  index.json        # rebuildable summary of all entries
+```
 
-The registry is now seeded with two concepts, registered via `scripts/concept-registry`:
+`registry/index.json` is rebuilt via `scripts/concept-registry index` and is
+byte-identical after a rebuild (no diff after the test suite calls `build_index`).
+
+## Entry schema and status lifecycle
+
+Each `entry.json` carries: `slug`, `name`, `definition`, `status`, `prerequisites`,
+and `figure`.
+
+| Status | Meaning |
+|---|---|
+| `registered` | identity established; no figure yet |
+| `illustrated` | `figure` path is set; concept is fully catalogued |
+
+The `figure` field stores the path to the figure directory **relative to the
+registry root**. This keeps entries portable: they point at self-contained figure
+directories (each with `figure.json` + SVG frames), and the relative path
+round-trips correctly through `lookup` regardless of where the repo is checked out.
+
+## Addressing: slug + definition
+
+A concept is keyed by its **slug and definition together** — the same rule as the
+decomposition engine. Same slug + same definition → idempotent registration (no-op).
+Same slug + different definition → `RegistryError`; the caller must qualify the slug
+(e.g. `mean-average` vs `mean-unkind`). This is consistent with the identity rule in
+[[concept-decomposition]]: a `decomposition.json` prerequisite and its registry entry
+are the same concept when slug and definition match exactly.
+
+## CLI
+
+The executable wrapper `scripts/concept-registry` exposes four verbs from the shell
+(no `python3 -m` prefix needed):
+
+| Verb | Effect |
+|---|---|
+| `register` | create a new entry; idempotent on same definition |
+| `lookup` | print the entry JSON for a slug |
+| `attach-figure` | set the `figure` path and transition status to `illustrated` |
+| `index` | rebuild `registry/index.json` from all entries |
+
+Errors from `RegistryError` print a clean `ERROR` line and exit 1.
+
+## Error contract
+
+`_read_json` catches `OSError` / `json.JSONDecodeError` and raises
+`RegistryError("corrupt registry entry at …")` instead of a raw traceback.
+`build_index` catches `KeyError` / `TypeError` on missing required fields and raises
+`RegistryError("malformed entry for '…'")`. Both paths are covered by
+`TestRobustness` (4 tests in `scripts/tests/test_concept_registry.py`).
+
+## Seeded entries (Phase 2)
+
+The registry ships with two entries:
 
 - **quicksort** (`status: illustrated`) — linked to the Phase 1 golden figure at
-  `.claude/skills/concept-illustrator/examples/quicksort`; the relative `figure`
-  path round-trips correctly through `lookup`.
-- **modular-arithmetic** (`status: registered`) — identity anchored to the golden
-  decomposition (`concept-decompose/examples/modular-arithmetic/decomposition.json`);
-  its definition is byte-identical to that file's `concept.definition`; awaiting its
-  own figure (Phase 3 or later).
+  `.claude/skills/concept-illustrator/examples/quicksort`. The relative `figure` path
+  round-trips correctly through `lookup`.
+- **modular-arithmetic** (`status: registered`) — definition byte-identical to the
+  golden decomposition at `.claude/skills/concept-decompose/examples/modular-arithmetic/decomposition.json`;
+  awaiting its own figure in Phase 3 or later.
 
-`registry/index.json` is rebuildable at any time via `scripts/concept-registry index`
-and is byte-identical after a rebuild (verified: `git status` shows no diff after the
-test suite calls `build_index`).
+## Open question (Phase 3+)
 
-> Status: thin. Versioning/invalidation and the content-hash vs. slug-only addressing
-> questions remain open; update to mature once those are resolved.
+**Versioning/invalidation**: when a concept's understanding changes, how is a cached
+figure invalidated without breaking chains that reference it? This is a genuine open
+question deferred to Phase 3 or later — it does not block the current shipped state.
