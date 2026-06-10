@@ -1,0 +1,14 @@
+{
+  "concept_slug": "rsa-encryption",
+  "title": "RSA encryption: three ideas snap together",
+  "archetype": "structural",
+  "playback": "static",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "Primes forge the keys, wrap-around math runs the lock, and the two-key blueprint is the shape RSA fills in.",
+      "runbook": "Single structural composition frame, viewBox 0 0 680 370. Title (th, centered at x=340, y=32): 'Three ideas snap together into RSA encryption'. Left column: three prerequisite boxes, each w=250 h=64 rx=8 stroke-width 0.5 at x=40, stacked with 26px gaps — c-purple at y=56 with th 'Modular arithmetic' (y=84) and ts 'the lock-and-unlock math' (y=104); c-blue at y=146 with th 'Prime numbers' (y=174) and ts 'secret primes forge the keys' (y=194); c-pink at y=236 with th 'Asymmetric cryptography' (y=264) and ts 'the two-key blueprint' (y=284). All child text centered at x=165. Ramps are neutral category colors (purple/blue/pink), one per child, no state meaning. Right side: the parent gets the emphasis — a single larger c-coral box at x=430 y=98 w=210 h=160 rx=10 with th 'RSA encryption' (y=158), ts 'public key locks' (y=182), ts 'private key unlocks' (y=200), all centered at x=535. Three arrows (class arr, marker-end, fill none) converge from each child's right edge into the parent's left edge: M294,88 L424,150; M294,178 L424,178; M294,268 L424,206 — top and bottom arrows angle inward so the three visibly meet at one destination. Bottom note (ts, centered x=340, y=330): 'RSA fills in the two-key blueprint: primes build the key pair, wrap-around math turns it'. This is a map of how the parts fit, not a re-teaching: each child box carries only its name plus a 2-6 word essence of its role in RSA.",
+      "commentary": "RSA encryption is not one new idea — it is three familiar ones snapped together. Asymmetric cryptography supplies the blueprint: two different keys, one that locks and one that unlocks. Prime numbers supply the raw material: two large secret primes are multiplied to forge that key pair, and the difficulty of un-multiplying them is the whole source of safety. Modular arithmetic supplies the machinery: locking and unlocking are wrap-around calculations, the kind where numbers loop like hours on a clock. Follow the three arrows and they all land in the same coral box. That convergence is RSA: the two-key pattern, built from primes, run on wrap-around math."
+    }
+  ]
+}

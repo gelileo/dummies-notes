@@ -1,0 +1,14 @@
+{
+  "concept_slug": "prime-numbers",
+  "title": "A prime number's dots never form a full rectangle",
+  "archetype": "illustrative",
+  "playback": "static",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "12 dots snap into a 3 × 4 rectangle, so 12 breaks apart. 7 dots always leave a hole — that is what makes 7 prime.",
+      "runbook": "Single static illustrative frame, viewBox 0 0 680 408. Metaphor: a number is a pile of dots; multiplying two smaller numbers = arranging the dots into a full rows-times-columns rectangle. Title (th, centered x=340 y=32): 'Can the dots form a full rectangle?'. Two side-by-side panels (plain .box rects, w=272 h=210 y=56, rx=6): LEFT panel at x=52 shows 12 dots (panel title th '12 dots' at x=188 y=80) arranged in a complete 3-row by 4-column grid of gray (c-gray) circles r=10, columns x=134/170/206/242, rows y=118/154/190, with a dashed leader rect (x=116 y=100 w=144 h=110) outlining the completed rectangle; labels under the grid: t '12 = 3 × 4 — a full rectangle' (x=188 y=234) and ts 'two smaller numbers build it: not prime' (x=188 y=252). Gray = breaks apart / eliminated. RIGHT panel at x=356 shows 7 dots (panel title th '7 dots' at x=492 y=80) in a failed 2-row by 4-column attempt: coral (c-coral) circles r=10 at columns x=438/474/510/546, top row y=136 (4 dots), bottom row y=172 (3 dots at x=438/474/510), and a dashed empty circle (class leader, fill none) at x=546 y=172 marking the missing dot, with a dashed leader rect (x=420 y=118 w=144 h=74) outlining the attempted rectangle; ts 'one dot short' under the hole at x=546 y=206; labels: t 'no rectangle makes exactly 7' (x=492 y=234) and ts '7 is prime — like 2, 3, 5, 11' (x=492 y=252). Coral = prime / the target. BOTTOM strip: t 'the same test, run on 2 through 12' centered x=340 y=298; eleven number cells for 2..12 (w=40 h=32 rx=2, y=312, x=80+48k, value th centered at x+20 y=328); primes 2, 3, 5, 7, 11 are c-coral, composites 4, 6, 8, 9, 10, 12 are c-gray — same color roles as the panels. Legend ts centered x=340 y=368: 'coral numbers never fill a rectangle — those are the primes'. No arrows needed; stroke-width 0.5 on all shapes; all text classed th/t/ts, sentence case.",
+      "commentary": "Picture a number as a pile of dots. Multiplying two smaller numbers is the same as arranging those dots into a full rectangle. Twelve plays along: three rows of four, every slot filled. So 12 breaks apart into 3 times 4 — it is not prime. Now try seven. Two rows of four? One dot is missing. Three rows? Worse. However you arrange seven dots, the rectangle never closes. Only a single flat line works, and a line is not two smaller numbers. That stubbornness is what prime means. Run the same test on every number up to twelve and the primes light up in coral: 2, 3, 5, 7, and 11. They are the numbers that refuse to break apart."
+    }
+  ]
+}

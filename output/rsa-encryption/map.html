@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RSA encryption — concept map</title>
+<style>
+:root{color-scheme:light dark}
+body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;padding:1.5rem}
+.canvas{position:relative;margin:0 auto}
+.edges{position:absolute;inset:0;z-index:0}
+.edges line{stroke:rgba(127,127,127,.55);stroke-width:1.5}
+.node{position:absolute;z-index:1;width:200px;border:1px solid rgba(127,127,127,.5);
+      border-radius:8px;padding:.5rem;background:Canvas;text-align:center}
+.node .thumb svg{max-width:170px;height:auto;display:block;margin:0 auto}
+.node .badge{font-size:.72em;opacity:.7;display:block;margin-top:.2rem}
+.node.covered{border-style:dashed} .node.frontier{border-style:dotted;opacity:.75}
+h1{text-align:center}
+</style></head><body>
+<h1>RSA encryption — concept map</h1>
+<div class="canvas" style="width:730px;height:520px">
+<svg class="edges" viewBox="0 0 730 520" width="730" height="520">
+<line x1="365" y1="170" x2="365" y2="260"/>
+<line x1="365" y1="170" x2="595" y2="260"/>
+<line x1="365" y1="170" x2="135" y2="260"/>
+</svg>
+<div class="node" data-node="rsa-encryption" style="left:265px;top:20px"><a href="index.html#rsa-encryption"><strong>RSA encryption</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 370" role="img" font-family="sans-serif">
+  <title>RSA encryption: three ideas snap together</title>
+  <desc>Three prerequisite concepts — modular arithmetic, prime numbers, and asymmetric cryptography — converge by arrows into one emphasized box labeled RSA encryption.</desc>
+  <defs>
+    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <text class="th" x="340" y="32" text-anchor="middle">Three ideas snap together into RSA encryption</text>
+
+  <!-- prerequisite: modular arithmetic -->
+  <g class="c-purple">
+    <rect x="40" y="56" width="250" height="64" rx="8" stroke-width="0.5"/>
+    <text class="th" x="165" y="84" text-anchor="middle">Modular arithmetic</text>
+    <text class="ts" x="165" y="104" text-anchor="middle">the lock-and-unlock math</text>
+  </g>
+
+  <!-- prerequisite: prime numbers -->
+  <g class="c-blue">
+    <rect x="40" y="146" width="250" height="64" rx="8" stroke-width="0.5"/>
+    <text class="th" x="165" y="174" text-anchor="middle">Prime numbers</text>
+    <text class="ts" x="165" y="194" text-anchor="middle">secret primes forge the keys</text>
+  </g>
+
+  <!-- prerequisite: asymmetric cryptography -->
+  <g class="c-pink">
+    <rect x="40" y="236" width="250" height="64" rx="8" stroke-width="0.5"/>
+    <text class="th" x="165" y="264" text-anchor="middle">Asymmetric cryptography</text>
+    <text class="ts" x="165" y="284" text-anchor="middle">the two-key blueprint</text>
+  </g>
+
+  <!-- converging arrows -->
+  <path class="arr" marker-end="url(#arrow)" d="M294,88 L424,150" fill="none"/>
+  <path class="arr" marker-end="url(#arrow)" d="M294,178 L424,178" fill="none"/>
+  <path class="arr" marker-end="url(#arrow)" d="M294,268 L424,206" fill="none"/>
+
+  <!-- parent: RSA encryption (emphasized destination) -->
+  <g class="c-coral">
+    <rect x="430" y="98" width="210" height="160" rx="10" stroke-width="0.5"/>
+    <text class="th" x="535" y="158" text-anchor="middle">RSA encryption</text>
+    <text class="ts" x="535" y="182" text-anchor="middle">public key locks</text>
+    <text class="ts" x="535" y="200" text-anchor="middle">private key unlocks</text>
+  </g>
+
+  <text class="ts" x="340" y="330" text-anchor="middle">RSA fills in the two-key blueprint: primes build the key pair, wrap-around math turns it</text>
+</svg>
+</div><span class="badge">composite</span></div>
+<div class="node" data-node="asymmetric-cryptography" style="left:35px;top:260px"><a href="index.html#asymmetric-cryptography"><strong>Asymmetric cryptography</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 320" role="img" font-family="sans-serif">
+  <title>Asymmetric cryptography: a matching pair of keys</title>
+  <desc>Two different keys are made as a matching pair: a public key shared with everyone that can only lock, and a private key kept secret that can only unlock. The message sits readable at the sender.</desc>
+  <defs>
+    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- top band: the key pair -->
+  <g class="c-teal">
+    <rect x="40" y="36" width="250" height="66" rx="6" stroke-width="0.5"/>
+    <circle cx="68" cy="70" r="9" stroke-width="0.5"/>
+    <rect x="77" y="68" width="18" height="4" rx="1" stroke-width="0.5"/>
+    <rect x="88" y="72" width="3" height="6" stroke-width="0.5"/>
+    <rect x="94" y="72" width="3" height="5" stroke-width="0.5"/>
+    <text x="104" y="56" class="th" dominant-baseline="central">Public key</text>
+    <text x="104" y="74" class="ts" dominant-baseline="central">shared with everyone</text>
+    <text x="104" y="90" class="ts" dominant-baseline="central">it can only lock</text>
+  </g>
+  <g class="c-coral">
+    <rect x="390" y="36" width="250" height="66" rx="6" stroke-width="0.5"/>
+    <circle cx="418" cy="70" r="9" stroke-width="0.5"/>
+    <rect x="427" y="68" width="18" height="4" rx="1" stroke-width="0.5"/>
+    <rect x="438" y="72" width="3" height="6" stroke-width="0.5"/>
+    <rect x="444" y="72" width="3" height="5" stroke-width="0.5"/>
+    <text x="454" y="56" class="th" dominant-baseline="central">Private key</text>
+    <text x="454" y="74" class="ts" dominant-baseline="central">kept secret at home</text>
+    <text x="454" y="90" class="ts" dominant-baseline="central">it can only unlock</text>
+  </g>
+  <path class="leader" d="M290,69 L390,69"/>
+  <text x="340" y="58" class="ts" text-anchor="middle" dominant-baseline="central">matching pair</text>
+
+  <!-- journey band: the message at the sender, still readable -->
+  <g class="c-teal">
+    <rect x="50" y="180" width="140" height="60" rx="4" stroke-width="0.5"/>
+    <text x="120" y="204" class="th" text-anchor="middle" dominant-baseline="central">meet at noon</text>
+    <text x="120" y="224" class="ts" text-anchor="middle" dominant-baseline="central">anyone can read it</text>
+  </g>
+
+  <!-- frame note -->
+  <text x="340" y="274" class="ts" text-anchor="middle" dominant-baseline="central">One key is handed out to anyone who asks; its twin never leaves home</text>
+</svg>
+</div><span class="badge">atomic</span></div>
+<div class="node covered" data-node="modular-arithmetic" style="left:265px;top:260px"><a href="index.html#modular-arithmetic"><strong>Modular arithmetic</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 480" role="img" font-family="sans-serif">
+  <title>Modular arithmetic — frame 1: counting up to the limit</title>
+  <desc>A count strip reads 10, 11, 12, 13, 14 above a 12-position clock dial. The count has reached 12, highlighted teal on both the strip and the dial; up to the limit the two agree.</desc>
+  <defs>
+    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <!-- Title -->
+  <text x="340" y="32" class="th" text-anchor="middle" dominant-baseline="central">Counting that wraps at 12</text>
+
+  <!-- Count strip -->
+  <text x="160" y="84" class="ts" text-anchor="end" dominant-baseline="central">counting up</text>
+  <g class="c-gray">
+    <rect x="176" y="66" width="56" height="36" rx="2" stroke-width="0.5"/>
+    <text x="204" y="84" class="th" text-anchor="middle" dominant-baseline="central">10</text>
+  </g>
+  <g class="c-gray">
+    <rect x="244" y="66" width="56" height="36" rx="2" stroke-width="0.5"/>
+    <text x="272" y="84" class="th" text-anchor="middle" dominant-baseline="central">11</text>
+  </g>
+  <g class="c-teal">
+    <rect x="312" y="66" width="56" height="36" rx="2" stroke-width="0.5"/>
+    <text x="340" y="84" class="th" text-anchor="middle" dominant-baseline="central">12</text>
+  </g>
+  <g class="box">
+    <rect x="380" y="66" width="56" height="36" rx="2" stroke-width="0.5"/>
+    <text x="408" y="84" class="th" text-anchor="middle" dominant-baseline="central">13</text>
+  </g>
+  <g class="box">
+    <rect x="448" y="66" width="56" height="36" rx="2" stroke-width="0.5"/>
+    <text x="476" y="84" class="th" text-anchor="middle" dominant-baseline="central">14</text>
+  </g>
+
+  <!-- Dial: dashed rim, twelve fixed nodes -->
+  <circle class="leader" cx="340" cy="280" r="110"/>
+  <g class="c-teal">
+    <circle cx="340" cy="170" r="17" stroke-width="0.5"/>
+    <text x="340" y="170" class="th" text-anchor="middle" dominant-baseline="central">12</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="395" cy="185" r="17" stroke-width="0.5"/>
+    <text x="395" y="185" class="th" text-anchor="middle" dominant-baseline="central">1</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="435" cy="225" r="17" stroke-width="0.5"/>
+    <text x="435" y="225" class="th" text-anchor="middle" dominant-baseline="central">2</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="450" cy="280" r="17" stroke-width="0.5"/>
+    <text x="450" y="280" class="th" text-anchor="middle" dominant-baseline="central">3</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="435" cy="335" r="17" stroke-width="0.5"/>
+    <text x="435" y="335" class="th" text-anchor="middle" dominant-baseline="central">4</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="395" cy="375" r="17" stroke-width="0.5"/>
+    <text x="395" y="375" class="th" text-anchor="middle" dominant-baseline="central">5</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="340" cy="390" r="17" stroke-width="0.5"/>
+    <text x="340" y="390" class="th" text-anchor="middle" dominant-baseline="central">6</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="285" cy="375" r="17" stroke-width="0.5"/>
+    <text x="285" y="375" class="th" text-anchor="middle" dominant-baseline="central">7</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="245" cy="335" r="17" stroke-width="0.5"/>
+    <text x="245" y="335" class="th" text-anchor="middle" dominant-baseline="central">8</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="230" cy="280" r="17" stroke-width="0.5"/>
+    <text x="230" y="280" class="th" text-anchor="middle" dominant-baseline="central">9</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="245" cy="225" r="17" stroke-width="0.5"/>
+    <text x="245" y="225" class="th" text-anchor="middle" dominant-baseline="central">10</text>
+  </g>
+  <g class="c-gray">
+    <circle cx="285" cy="185" r="17" stroke-width="0.5"/>
+    <text x="285" y="185" class="th" text-anchor="middle" dominant-baseline="central">11</text>
+  </g>
+  <text x="312" y="148" class="ts" text-anchor="end" dominant-baseline="central">the limit</text>
+  <text x="340" y="280" class="ts" text-anchor="middle" dominant-baseline="central">the dial has only 12 places</text>
+
+  <!-- Bottom annotation -->
+  <text x="340" y="440" class="t" text-anchor="middle" dominant-baseline="central">Up to the limit, nothing special: count 12, land on 12.</text>
+</svg>
+</div><span class="badge">already covered</span></div>
+<div class="node" data-node="prime-numbers" style="left:495px;top:260px"><a href="index.html#prime-numbers"><strong>Prime numbers</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 408" role="img" font-family="sans-serif">
+  <title>Prime numbers</title>
+  <desc>12 dots form a full 3 by 4 rectangle, but 7 dots always leave a hole — numbers whose dots never fill a rectangle are prime.</desc>
+  <defs>
+    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="340" y="32" class="th" text-anchor="middle" dominant-baseline="central">Can the dots form a full rectangle?</text>
+
+  <!-- ============ Left panel: 12 dots — composite ============ -->
+  <g class="box">
+    <rect x="52" y="56" width="272" height="210" rx="6" stroke-width="0.5"/>
+  </g>
+  <text x="188" y="80" class="th" text-anchor="middle" dominant-baseline="central">12 dots</text>
+
+  <!-- Dashed outline of the completed rectangle -->
+  <rect class="leader" x="116" y="100" width="144" height="110" rx="4"/>
+
+  <!-- 3 rows x 4 columns of gray dots (gray = breaks apart, not prime) -->
+  <g class="c-gray">
+    <circle cx="134" cy="118" r="10" stroke-width="0.5"/>
+    <circle cx="170" cy="118" r="10" stroke-width="0.5"/>
+    <circle cx="206" cy="118" r="10" stroke-width="0.5"/>
+    <circle cx="242" cy="118" r="10" stroke-width="0.5"/>
+    <circle cx="134" cy="154" r="10" stroke-width="0.5"/>
+    <circle cx="170" cy="154" r="10" stroke-width="0.5"/>
+    <circle cx="206" cy="154" r="10" stroke-width="0.5"/>
+    <circle cx="242" cy="154" r="10" stroke-width="0.5"/>
+    <circle cx="134" cy="190" r="10" stroke-width="0.5"/>
+    <circle cx="170" cy="190" r="10" stroke-width="0.5"/>
+    <circle cx="206" cy="190" r="10" stroke-width="0.5"/>
+    <circle cx="242" cy="190" r="10" stroke-width="0.5"/>
+  </g>
+
+  <text x="188" y="234" class="t" text-anchor="middle" dominant-baseline="central">12 = 3 × 4 — a full rectangle</text>
+  <text x="188" y="252" class="ts" text-anchor="middle" dominant-baseline="central">two smaller numbers build it: not prime</text>
+
+  <!-- ============ Right panel: 7 dots — prime ============ -->
+  <g class="box">
+    <rect x="356" y="56" width="272" height="210" rx="6" stroke-width="0.5"/>
+  </g>
+  <text x="492" y="80" class="th" text-anchor="middle" dominant-baseline="central">7 dots</text>
+
+  <!-- Dashed outline of the attempted 2 x 4 rectangle -->
+  <rect class="leader" x="420" y="118" width="144" height="74" rx="4"/>
+
+  <!-- 7 coral dots (coral = prime, the target) in a failed 2 x 4 attempt -->
+  <g class="c-coral">
+    <circle cx="438" cy="136" r="10" stroke-width="0.5"/>
+    <circle cx="474" cy="136" r="10" stroke-width="0.5"/>
+    <circle cx="510" cy="136" r="10" stroke-width="0.5"/>
+    <circle cx="546" cy="136" r="10" stroke-width="0.5"/>
+    <circle cx="438" cy="172" r="10" stroke-width="0.5"/>
+    <circle cx="474" cy="172" r="10" stroke-width="0.5"/>
+    <circle cx="510" cy="172" r="10" stroke-width="0.5"/>
+  </g>
+  <!-- The hole: the missing 8th dot -->
+  <circle class="leader" cx="546" cy="172" r="10"/>
+  <text x="546" y="206" class="ts" text-anchor="middle" dominant-baseline="central">one dot short</text>
+
+  <text x="492" y="234" class="t" text-anchor="middle" dominant-baseline="central">no rectangle makes exactly 7</text>
+  <text x="492" y="252" class="ts" text-anchor="middle" dominant-baseline="central">7 is prime — like 2, 3, 5, 11</text>
+
+  <!-- ============ Bottom strip: the same test on 2..12 ============ -->
+  <text x="340" y="298" class="t" text-anchor="middle" dominant-baseline="central">the same test, run on 2 through 12</text>
+
+  <g class="c-coral">
+    <rect x="80" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="100" y="328" class="th" text-anchor="middle" dominant-baseline="central">2</text>
+  </g>
+  <g class="c-coral">
+    <rect x="128" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="148" y="328" class="th" text-anchor="middle" dominant-baseline="central">3</text>
+  </g>
+  <g class="c-gray">
+    <rect x="176" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="196" y="328" class="th" text-anchor="middle" dominant-baseline="central">4</text>
+  </g>
+  <g class="c-coral">
+    <rect x="224" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="244" y="328" class="th" text-anchor="middle" dominant-baseline="central">5</text>
+  </g>
+  <g class="c-gray">
+    <rect x="272" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="292" y="328" class="th" text-anchor="middle" dominant-baseline="central">6</text>
+  </g>
+  <g class="c-coral">
+    <rect x="320" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="340" y="328" class="th" text-anchor="middle" dominant-baseline="central">7</text>
+  </g>
+  <g class="c-gray">
+    <rect x="368" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="388" y="328" class="th" text-anchor="middle" dominant-baseline="central">8</text>
+  </g>
+  <g class="c-gray">
+    <rect x="416" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="436" y="328" class="th" text-anchor="middle" dominant-baseline="central">9</text>
+  </g>
+  <g class="c-gray">
+    <rect x="464" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="484" y="328" class="th" text-anchor="middle" dominant-baseline="central">10</text>
+  </g>
+  <g class="c-coral">
+    <rect x="512" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="532" y="328" class="th" text-anchor="middle" dominant-baseline="central">11</text>
+  </g>
+  <g class="c-gray">
+    <rect x="560" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="580" y="328" class="th" text-anchor="middle" dominant-baseline="central">12</text>
+  </g>
+
+  <text x="340" y="368" class="ts" text-anchor="middle" dominant-baseline="central">coral numbers never fill a rectangle — those are the primes</text>
+
+</svg>
+</div><span class="badge">atomic</span></div>
+</div></body></html>

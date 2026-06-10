@@ -1,0 +1,26 @@
+{
+  "concept_slug": "asymmetric-cryptography",
+  "title": "Asymmetric cryptography: one key locks, its twin unlocks",
+  "archetype": "illustrative",
+  "playback": "slideshow",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "Two different keys are made as a matching pair.",
+      "runbook": "Stable layout shared by all frames, viewBox 0 0 680 320. Top band: two key cards joined by a dashed leader at y=69 labeled 'matching pair' (ts, centered at x=340, y=58). Left card c-teal at x=40 y=36 w=250 h=66: key glyph (circle bow cx=68 cy=70 r=9, shaft rect x=77 y=68 w=18 h=4, two teeth rects at x=88 and x=94), title 'Public key' (th), subtitles 'shared with everyone' and 'it can only lock' (ts), text column starts x=104. Right card c-coral at x=390 y=36 w=250 h=66, mirrored glyph at cx=418, title 'Private key', subtitles 'kept secret at home' and 'it can only unlock', text column x=454. Journey band below: only the sender's message box exists in this frame — c-teal rect x=50 y=180 w=140 h=60 with th 'meet at noon' (y=204) and ts 'anyone can read it' (y=224), both centered at x=120. Bottom note (ts, centered x=340 y=274): 'One key is handed out to anyone who asks; its twin never leaves home'. Color roles for the whole figure: teal = open/readable side, coral = the secret private key, gray = locked/unreadable. Boxes for the locked copy and the receiver appear in later frames at fixed coordinates; nothing moves between frames, elements only appear or change class.",
+      "commentary": "Asymmetric cryptography starts with a strange idea. Instead of one shared password, you make two different keys as a matched set. One is the public key. You hand copies to anyone who asks. It can only snap a lock shut. The other is the private key. It never leaves home. It is the only key that can open that lock. Down below, our message sits at the sender, still readable by anyone."
+    },
+    {
+      "file": "frame-02.svg",
+      "caption": "Anyone can lock a message with the public key — even the sender can't reopen it.",
+      "runbook": "Same layout and coordinates as frame 1; both key cards and the sender's teal message box unchanged. Add the locking step: a horizontal arrow (arr, marker-end) from the message box at M194,210 L264,210, and an L-bend arrow from the public key card's bottom center down into the gap between the boxes (M165,104 L165,148 L229,148 L229,198) labeled 'locks it' (ts at x=237 y=170, start-anchored, beside the vertical segment so the line never crosses the label). Add the in-transit box: c-gray rect x=270 y=180 w=140 h=60 with th ciphertext 'xk9 f27 qz4' (y=204) and ts 'locked gibberish' (y=224), centered at x=340. A closed padlock sits on its top edge: c-gray body rect x=328 y=162 w=24 h=18 rx=3 with a shackle path (arr class, no marker) arcing from (334,162) to (346,162). Bottom note changes to: 'Snapped shut with the public key — even the sender can't reopen it'. No coordinates move; the only new meaning is the gray locked state appearing mid-journey.",
+      "commentary": "Now the sender uses the public key. Think of it as a padlock anyone can snap shut. Click — the message is sealed. What travels across the wire is gray gibberish under a closed lock. Here is the twist that makes this asymmetric. Locking and unlocking are different keys. So even the sender, holding the public key, cannot reopen the box they just sealed."
+    },
+    {
+      "file": "frame-03.svg",
+      "caption": "Only the matching private key unlocks it.",
+      "runbook": "Same layout as frame 2; key cards, sender box, lock arrow, and the gray locked box with its padlock all unchanged at identical coordinates. Add the unlocking step, mirroring the locking step: a horizontal arrow (arr, marker-end) from the locked box at M414,210 L484,210, and an L-bend arrow from the private key card's bottom center down into the gap (M515,104 L515,148 L449,148 L449,198) labeled 'unlocks it' (ts at x=441 y=170, end-anchored, beside the vertical segment). Add the destination box: c-teal rect x=490 y=180 w=140 h=60 with th 'meet at noon' (y=204) and ts 'readable again' (y=224), centered at x=560 — teal returns because the message is back on the open/readable side, and it matches the sender's original. Bottom note changes to: 'Only the matching private key fits the lock — eavesdroppers saw nothing'. End state: the full journey reads left to right as readable, locked, readable, with each key arrow pointing at the step it alone can perform.",
+      "commentary": "The locked box arrives at the keyholder. Out comes the private key — the twin that never left home. It is the only key in the world that fits this lock. The lid opens and the message reads 'meet at noon' again. Anyone who grabbed it along the way got nothing but gibberish. That is the whole trick: one key locks, and only its secret twin unlocks."
+    }
+  ]
+}

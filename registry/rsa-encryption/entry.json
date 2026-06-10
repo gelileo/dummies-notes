@@ -1,0 +1,12 @@
+{
+  "slug": "rsa-encryption",
+  "name": "RSA encryption",
+  "definition": "A way to send secret messages using two matching keys: a public key anyone can use to lock a message, and a private key that only the owner keeps and can use to unlock it.",
+  "status": "illustrated",
+  "prerequisites": [
+    "modular-arithmetic",
+    "prime-numbers",
+    "asymmetric-cryptography"
+  ],
+  "figure": "rsa-encryption/figure"
+}

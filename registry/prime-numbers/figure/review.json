@@ -1,0 +1,5 @@
+{
+  "pass": true,
+  "summary": "No runbook drift: frame-01.svg matches its runbook exactly — viewBox 680x408, title text, left panel (12 gray dots in a 3x4 grid at cols 134/170/206/242, rows 118/154/190, dashed leader rect 116,100 144x110, labels at y=234/252), right panel (7 coral dots in a failed 2x4 attempt, dashed hole circle at 546,172, 'one dot short' at 546,206, leader rect 420,118 144x74), and the bottom strip of eleven cells for 2..12 at x=80+48k with coral primes 2/3/5/7/11 and gray composites 4/6/8/9/10/12, plus the coral legend line at y=368. Stroke-width 0.5 everywhere, no arrows used. The blind reader's account (rectangle-of-dots metaphor, 12 composite vs 7 prime, color-coded strip, correct classifications, self-contained pass) matches the commentary's intent with no divergence. Commentary uses short, vivid sentences faithful to the frame. The single static frame shows the end state, so closure holds.",
+  "gaps": []
+}

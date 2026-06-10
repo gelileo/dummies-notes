@@ -1,0 +1,5 @@
+{
+  "pass": true,
+  "summary": "No runbook drift: every element in frames 1-3 (key cards, glyph geometry, message boxes, L-bend key arrows, padlock, labels, footer notes) matches its runbook coordinates, colors, and text exactly, and the cumulative build (elements only appear, nothing moves) holds. The blind reader's account — teal public key that only locks, coral private key that only unlocks, 'meet at noon' locked into gray gibberish under a padlock, then unlocked back to readable with eavesdroppers seeing nothing — matches the commentary's intent precisely. Commentary is in short, vivid, faithful sentences (padlock-anyone-can-snap-shut metaphor, 'Click — the message is sealed'). Frame 3 closes with the full readable → locked → readable journey, each key arrow pointing at the one step it can perform.",
+  "gaps": []
+}

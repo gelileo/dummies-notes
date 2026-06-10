@@ -1,0 +1,11 @@
+{
+  "concept": {
+    "slug": "asymmetric-cryptography",
+    "name": "Asymmetric cryptography",
+    "definition": "A style of secret-keeping that uses two different keys instead of one shared password: one key locks a message and a separate, matching key unlocks it."
+  },
+  "audience": "a curious adult with no domain background",
+  "atomic": true,
+  "atomic_reason": "The two-key idea clicks in one short figure: a padlock anyone can snap shut versus the single key that opens it, contrasted with one shared password. Everything it leans on, like locks, keys, and keeping a message secret, is everyday knowledge.",
+  "prerequisites": []
+}

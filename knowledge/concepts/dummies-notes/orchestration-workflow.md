@@ -72,6 +72,22 @@ clock-face figure illustrated into `registry/modular-arithmetic/figure/`;
 blind-reader + fidelity-critic review passed with no repairs; entry promoted to
 `illustrated`; `graph_check --require-illustrated` clean. 6 agents total.
 
+## First full run (Phase 4)
+
+"RSA encryption" with `maxDepth: 1` (2026-06-10): 4 nodes — modular-arithmetic
+linked (covered-stop), prime-numbers + asymmetric-cryptography decomposed and
+illustrated (reviews passed), a composition figure for the root, prerequisite
+edges persisted to the registry, deliverable assembled. 14 agents.
+
+**The chain review failed honestly** (`output/rsa-encryption/chain-review.json`,
+4 gaps) — its job working as designed: the per-figure reviews were clean, but
+the chain reviewer caught graph-level pedagogy gaps, chiefly that a composition
+figure maps how the parts fit without teaching the target's own *mechanism*,
+and that the depth-capped run never illustrated factoring-hardness. Recorded
+finding for future work: a non-atomic target may need a mechanism figure of its
+own in addition to the composition map, and deeper runs surface the missing
+nodes. Gaps ship alongside the output as the spec prescribes.
+
 ## graph_check
 
 `scripts/graph_check.py` (zero-dep; imports `concept_registry.lookup`) is the

@@ -1,0 +1,11 @@
+{
+  "concept": {
+    "slug": "prime-numbers",
+    "name": "Prime numbers",
+    "definition": "Whole numbers bigger than 1 that cannot be made by multiplying two smaller whole numbers together, like 2, 3, 5, and 7."
+  },
+  "audience": "a curious adult with no domain background",
+  "atomic": true,
+  "atomic_reason": "The only idea a prime number rests on is multiplying small whole numbers, which a curious adult already knows. One short figure — trying to arrange a number of dots into a neat rectangle and finding that some counts only ever fit in a single row — makes the mechanism click without any sub-figure.",
+  "prerequisites": []
+}

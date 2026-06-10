@@ -104,6 +104,15 @@ The registry ships with two entries:
   `registry/modular-arithmetic/figure/` (review passed, `review.json` in the figure
   dir), and attached it — the first figure produced end-to-end by the orchestrator.
 
+## Phase 4 entries
+
+The RSA run added three entries: **prime-numbers** and
+**asymmetric-cryptography** (both `illustrated`, review-passed figures) and
+**rsa-encryption** (`illustrated` with a compose-from-children composition
+figure) — the first entry carrying non-empty `prerequisites`
+(`modular-arithmetic`, `prime-numbers`, `asymmetric-cryptography`): the
+registry now persists real graph edges.
+
 ## Open question (Phase 3+)
 
 **Versioning/invalidation**: when a concept's understanding changes, how is a cached

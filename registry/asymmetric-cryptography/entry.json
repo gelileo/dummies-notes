@@ -1,0 +1,8 @@
+{
+  "slug": "asymmetric-cryptography",
+  "name": "Asymmetric cryptography",
+  "definition": "A style of secret-keeping that uses two different keys instead of one shared password: one key locks a message and a separate, matching key unlocks it.",
+  "status": "illustrated",
+  "prerequisites": [],
+  "figure": "asymmetric-cryptography/figure"
+}

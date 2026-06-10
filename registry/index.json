@@ -1,12 +1,27 @@
 {
+  "asymmetric-cryptography": {
+    "name": "Asymmetric cryptography",
+    "status": "illustrated",
+    "definition": "A style of secret-keeping that uses two different keys instead of one shared password: one key locks a message and a separate, matching key unlocks it."
+  },
   "modular-arithmetic": {
     "name": "Modular arithmetic",
     "status": "illustrated",
     "definition": "A way of counting where the numbers wrap back to the start once they reach a fixed limit, the way the hours on a clock jump from 12 back to 1."
   },
+  "prime-numbers": {
+    "name": "Prime numbers",
+    "status": "illustrated",
+    "definition": "Whole numbers bigger than 1 that cannot be made by multiplying two smaller whole numbers together, like 2, 3, 5, and 7."
+  },
   "quicksort": {
     "name": "Quicksort",
     "status": "illustrated",
     "definition": "A sorting algorithm that repeatedly partitions an array around a pivot until every piece is sorted."
+  },
+  "rsa-encryption": {
+    "name": "RSA encryption",
+    "status": "illustrated",
+    "definition": "A way to send secret messages using two matching keys: a public key anyone can use to lock a message, and a private key that only the owner keeps and can use to unlock it."
   }
 }

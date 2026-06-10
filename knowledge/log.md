@@ -284,3 +284,14 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
   `illustrated`; `graph_check --require-illustrated` clean. 6 agents total.
 - Hardened the workflow script to accept JSON-string args (caller footgun).
 - Updated the seeded-registry test pin: modular-arithmetic is now illustrated.
+
+## [2026-06-10] feat | first full dummies-notes run (Phase 4 acceptance)
+
+- "RSA encryption" (maxDepth 1): covered-stop on modular-arithmetic; prime-numbers
+  + asymmetric-cryptography illustrated (reviews clean); composition figure for the
+  root; prerequisite edges persisted; output/rsa-encryption/index.html + map.html
+  assembled; graph check clean. 14 agents.
+- Chain review FAILED with 4 substantive graph-level gaps (chain-review.json ships
+  with the output) — the capstone check working as designed. Finding: composition
+  figures map structure but don't teach the target's mechanism; deeper runs needed
+  for security-core nodes (factoring hardness).

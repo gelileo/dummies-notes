@@ -1,0 +1,168 @@
+<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 408" role="img" font-family="sans-serif">
+  <title>Prime numbers</title>
+  <desc>12 dots form a full 3 by 4 rectangle, but 7 dots always leave a hole — numbers whose dots never fill a rectangle are prime.</desc>
+  <defs>
+    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="340" y="32" class="th" text-anchor="middle" dominant-baseline="central">Can the dots form a full rectangle?</text>
+
+  <!-- ============ Left panel: 12 dots — composite ============ -->
+  <g class="box">
+    <rect x="52" y="56" width="272" height="210" rx="6" stroke-width="0.5"/>
+  </g>
+  <text x="188" y="80" class="th" text-anchor="middle" dominant-baseline="central">12 dots</text>
+
+  <!-- Dashed outline of the completed rectangle -->
+  <rect class="leader" x="116" y="100" width="144" height="110" rx="4"/>
+
+  <!-- 3 rows x 4 columns of gray dots (gray = breaks apart, not prime) -->
+  <g class="c-gray">
+    <circle cx="134" cy="118" r="10" stroke-width="0.5"/>
+    <circle cx="170" cy="118" r="10" stroke-width="0.5"/>
+    <circle cx="206" cy="118" r="10" stroke-width="0.5"/>
+    <circle cx="242" cy="118" r="10" stroke-width="0.5"/>
+    <circle cx="134" cy="154" r="10" stroke-width="0.5"/>
+    <circle cx="170" cy="154" r="10" stroke-width="0.5"/>
+    <circle cx="206" cy="154" r="10" stroke-width="0.5"/>
+    <circle cx="242" cy="154" r="10" stroke-width="0.5"/>
+    <circle cx="134" cy="190" r="10" stroke-width="0.5"/>
+    <circle cx="170" cy="190" r="10" stroke-width="0.5"/>
+    <circle cx="206" cy="190" r="10" stroke-width="0.5"/>
+    <circle cx="242" cy="190" r="10" stroke-width="0.5"/>
+  </g>
+
+  <text x="188" y="234" class="t" text-anchor="middle" dominant-baseline="central">12 = 3 × 4 — a full rectangle</text>
+  <text x="188" y="252" class="ts" text-anchor="middle" dominant-baseline="central">two smaller numbers build it: not prime</text>
+
+  <!-- ============ Right panel: 7 dots — prime ============ -->
+  <g class="box">
+    <rect x="356" y="56" width="272" height="210" rx="6" stroke-width="0.5"/>
+  </g>
+  <text x="492" y="80" class="th" text-anchor="middle" dominant-baseline="central">7 dots</text>
+
+  <!-- Dashed outline of the attempted 2 x 4 rectangle -->
+  <rect class="leader" x="420" y="118" width="144" height="74" rx="4"/>
+
+  <!-- 7 coral dots (coral = prime, the target) in a failed 2 x 4 attempt -->
+  <g class="c-coral">
+    <circle cx="438" cy="136" r="10" stroke-width="0.5"/>
+    <circle cx="474" cy="136" r="10" stroke-width="0.5"/>
+    <circle cx="510" cy="136" r="10" stroke-width="0.5"/>
+    <circle cx="546" cy="136" r="10" stroke-width="0.5"/>
+    <circle cx="438" cy="172" r="10" stroke-width="0.5"/>
+    <circle cx="474" cy="172" r="10" stroke-width="0.5"/>
+    <circle cx="510" cy="172" r="10" stroke-width="0.5"/>
+  </g>
+  <!-- The hole: the missing 8th dot -->
+  <circle class="leader" cx="546" cy="172" r="10"/>
+  <text x="546" y="206" class="ts" text-anchor="middle" dominant-baseline="central">one dot short</text>
+
+  <text x="492" y="234" class="t" text-anchor="middle" dominant-baseline="central">no rectangle makes exactly 7</text>
+  <text x="492" y="252" class="ts" text-anchor="middle" dominant-baseline="central">7 is prime — like 2, 3, 5, 11</text>
+
+  <!-- ============ Bottom strip: the same test on 2..12 ============ -->
+  <text x="340" y="298" class="t" text-anchor="middle" dominant-baseline="central">the same test, run on 2 through 12</text>
+
+  <g class="c-coral">
+    <rect x="80" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="100" y="328" class="th" text-anchor="middle" dominant-baseline="central">2</text>
+  </g>
+  <g class="c-coral">
+    <rect x="128" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="148" y="328" class="th" text-anchor="middle" dominant-baseline="central">3</text>
+  </g>
+  <g class="c-gray">
+    <rect x="176" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="196" y="328" class="th" text-anchor="middle" dominant-baseline="central">4</text>
+  </g>
+  <g class="c-coral">
+    <rect x="224" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="244" y="328" class="th" text-anchor="middle" dominant-baseline="central">5</text>
+  </g>
+  <g class="c-gray">
+    <rect x="272" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="292" y="328" class="th" text-anchor="middle" dominant-baseline="central">6</text>
+  </g>
+  <g class="c-coral">
+    <rect x="320" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="340" y="328" class="th" text-anchor="middle" dominant-baseline="central">7</text>
+  </g>
+  <g class="c-gray">
+    <rect x="368" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="388" y="328" class="th" text-anchor="middle" dominant-baseline="central">8</text>
+  </g>
+  <g class="c-gray">
+    <rect x="416" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="436" y="328" class="th" text-anchor="middle" dominant-baseline="central">9</text>
+  </g>
+  <g class="c-gray">
+    <rect x="464" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="484" y="328" class="th" text-anchor="middle" dominant-baseline="central">10</text>
+  </g>
+  <g class="c-coral">
+    <rect x="512" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="532" y="328" class="th" text-anchor="middle" dominant-baseline="central">11</text>
+  </g>
+  <g class="c-gray">
+    <rect x="560" y="312" width="40" height="32" rx="2" stroke-width="0.5"/>
+    <text x="580" y="328" class="th" text-anchor="middle" dominant-baseline="central">12</text>
+  </g>
+
+  <text x="340" y="368" class="ts" text-anchor="middle" dominant-baseline="central">coral numbers never fill a rectangle — those are the primes</text>
+
+</svg>
