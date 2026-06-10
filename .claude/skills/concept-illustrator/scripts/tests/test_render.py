@@ -349,5 +349,12 @@ class TestReferenceDocs(unittest.TestCase):
                 self.assertIn(h, text, f"{name} missing heading '{h}'")
 
 
+class TestSkillRefs(unittest.TestCase):
+    def test_all_referenced_paths_exist(self):
+        sys.path.insert(0, SCRIPTS_DIR)
+        import check_skill_refs
+        self.assertEqual(check_skill_refs.missing_refs(), [])
+
+
 if __name__ == "__main__":
     unittest.main()
