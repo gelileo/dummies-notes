@@ -94,6 +94,9 @@ decompose, never to assume — an obscure term becomes its own prerequisite node
      is the payoff, so it earns a real "here's how it all assembles" picture;
    - an interactive concept map — nodes carry figure thumbnails, edges are the
      dependency/reference links — over the same registry.
+
+   Both are written to `output/<topic>/`: the explainer to `index.html`, the map
+   to `map.html`.
 6. **Chain review (end-to-end, fresh agent)** — a `concept-reviewer` agent reads
    the *assembled* notes bottom-up and reports graph-level gaps: leaps between
    concepts, a prerequisite the chain assumes but never illustrates, or a path that
@@ -204,7 +207,7 @@ exist. Becoming real means authoring them and extending the contract:
 scripts/concept-registry              # registry CLI (lookup/put/index)
 registry/<slug>/                      # figure.json, frame-NN.svg, caption.md  (+ index.json)
 viewer/                               # slideshow.html, map.html
-output/<topic>/                       # generated notes.html + map.html
+output/<topic>/                       # generated index.html (explainer) + map.html
 ```
 
 ## Build phases
