@@ -356,5 +356,41 @@ class TestSkillRefs(unittest.TestCase):
         self.assertEqual(check_skill_refs.missing_refs(), [])
 
 
+class TestGoldenExample(unittest.TestCase):
+    def test_quicksort_figure_is_valid(self):
+        root = os.path.join(os.path.dirname(SCRIPTS_DIR), "examples", "quicksort")
+        style = os.path.join(ASSETS, "_style.css")
+        errors = [m for lvl, m in render.validate_figure(root, style) if lvl == "ERROR"]
+        self.assertEqual(errors, [], f"golden quicksort figure has errors: {errors}")
+
+
+class TestCli(unittest.TestCase):
+    QS = os.path.join(os.path.dirname(SCRIPTS_DIR), "examples", "quicksort")
+
+    def test_lint_clean_figure_dir_returns_0(self):
+        self.assertEqual(render.main([self.QS, "--style", os.path.join(ASSETS, "_style.css")]), 0)
+
+    def test_lint_dirty_file_returns_1(self):
+        dirty = os.path.join(SCRIPTS_DIR, "tests", "fixtures", "dirty.svg")
+        self.assertEqual(render.main([dirty, "--style", os.path.join(ASSETS, "_style.css")]), 1)
+
+    def test_viewer_on_file_errors_cleanly(self):
+        with tempfile.TemporaryDirectory() as d:
+            f = os.path.join(d, "f.svg")
+            with open(f, "w") as fh:
+                fh.write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 100"/>')
+            self.assertEqual(render.main([f, "--viewer", os.path.join(d, "out.html")]), 1)
+
+    def test_viewer_on_dir_writes_html(self):
+        with tempfile.TemporaryDirectory() as d:
+            out = os.path.join(d, "out.html")
+            self.assertEqual(render.main([self.QS, "--viewer", out]), 0)
+            self.assertTrue(os.path.exists(out))
+
+    def test_png_on_dir_errors_cleanly(self):
+        with tempfile.TemporaryDirectory() as d:
+            self.assertEqual(render.main([self.QS, "--png", os.path.join(d, "o.png")]), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

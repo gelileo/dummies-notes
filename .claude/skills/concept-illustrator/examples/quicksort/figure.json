@@ -1,0 +1,24 @@
+{
+  "concept_slug": "quicksort",
+  "title": "Quicksort partitions around a pivot",
+  "archetype": "illustrative",
+  "playback": "slideshow",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "Pick the last element as the pivot (3, coral). Everything else will be compared to it."
+    },
+    {
+      "file": "frame-02.svg",
+      "caption": "2 is smaller than pivot 3, so it swapped with 5 into the left zone. Now scanning 8."
+    },
+    {
+      "file": "frame-03.svg",
+      "caption": "1 also swapped into the left zone. Scan done: 2 and 1 sit left of where the pivot will land."
+    },
+    {
+      "file": "frame-04.svg",
+      "caption": "Pivot 3 swapped with 5 into index 2 — its final position. Left [2, 1] and right [5, 8, 9] recurse next."
+    }
+  ]
+}

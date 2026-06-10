@@ -51,13 +51,13 @@ Every code change that alters behaviour, config, models, or architecture **must 
 
 ### Article mapping — update these when the matching code changes
 
-Populated as modules land. Each article's `affects:` globs drive `drift-check`; keep this table in sync.
+Each article's `affects:` globs drive `drift-check`; keep this table in sync.
 
 | When you change... | Update this article |
 | --- | --- |
-| The concept dependency-graph / decomposition logic | `concepts/dummies-notes/concept-decomposition.md` |
-| Figure generation, SVG output, archetype routing | `concepts/dummies-notes/illustration-engine.md` |
-| Storage/lookup/addressing of reusable atomic figures | `concepts/dummies-notes/atomic-illustration-catalog.md` |
+| `.claude/skills/concept-decompose/**` | `concepts/dummies-notes/concept-decomposition.md` |
+| `.claude/skills/concept-illustrator/**` | `concepts/dummies-notes/illustration-engine.md` |
+| `src/catalog/**`, `registry/**` | `concepts/dummies-notes/atomic-illustration-catalog.md` |
 
 ### When code has no matching article
 
@@ -69,18 +69,37 @@ After implementing, ask: "does anything in `knowledge/` now contradict what I bu
 
 ## Current state
 
-Greenfield. No source code, git repo, or build tooling exists yet — **do not invent build/lint/test commands**. The living-doc tooling is in place and works:
+This is a git repo on `main`. The living-doc pre-commit hook and GitHub Action are installed and active.
+
+**Phase 1 shipped**: the `concept-illustrator` skill lives at `.claude/skills/concept-illustrator/`:
+- `SKILL.md` — the skill contract
+- `assets/` — `template.svg`, `_style.css`, `slideshow.template.html`
+- `references/` — design-system, archetypes, visual-vocabulary, voice-and-metaphor, review-protocol, figure-json
+- `scripts/render.py` — SVG lint + figure-dir validation + slideshow viewer builder + optional PNG export
+- `examples/quicksort/` — the golden reference figure (4-frame slideshow)
+- `scripts/tests/` — unit tests
+
+Real commands:
 
 ```bash
-python3 scripts/validate-articles    # validate frontmatter of all knowledge articles
-python3 scripts/drift-check --help    # code↔article drift check (needs a git repo with a base ref)
+# run the illustrator's test suite
+python3 -m unittest discover -s .claude/skills/concept-illustrator/scripts/tests -p 'test_*.py'
+
+# lint one SVG / validate a figure dir / build its viewer
+python3 .claude/skills/concept-illustrator/scripts/render.py <file.svg|figure-dir> [--viewer out.html]
+
+# validate knowledge frontmatter / drift
+python3 scripts/validate-articles
+python3 scripts/drift-check --warn-only
 ```
 
-The pre-commit hook and GitHub Action from living-doc are **not yet installed** — they require `git init` first (this is not a git repo). Add them (`.pre-commit-config.yaml` / `.github/workflows/`) once the repo is initialized.
+**Phases 2–4** (concept-decompose, concept-registry, the dummies-notes Workflow, assembly + map viewer) are **not yet built**. See `docs/superpowers/specs/2026-06-09-dummies-notes-design.md` and `docs/superpowers/plans/`.
 
-`example/` is reference-only: `concept-illustrator-SKILL.md` is the **design reference** for the illustration engine, with a finished sample figure (`example-binary-search.svg` + light/dark PNGs). Note its referenced helper files (`scripts/render.py`, `assets/template.svg`, …) are *not* present — only the SKILL.md and outputs were copied in.
+`example/` is the original design reference: `concept-illustrator-SKILL.md` plus a finished sample figure (`example-binary-search.svg` + light/dark PNGs). The shipped implementation supersedes it — treat `example/` as historical reference only.
 
-### Illustration conventions (target spec, from `example/`)
+### Illustration conventions
+
+These conventions are the **shipped implementation** in `.claude/skills/concept-illustrator/references/` (design-system.md, archetypes.md, visual-vocabulary.md, voice-and-metaphor.md). The golden example figure at `examples/quicksort/` demonstrates them in practice.
 
 - **Archetype routing on the verb, not the noun**: flowchart (steps), structural (containment), illustrative (intuition — the default & most valuable; invent a spatial metaphor), chart (quantities). One archetype per figure.
 - **Self-contained SVG**: embedded `<style>` + arrow marker, renders standalone, light+dark via `@media (prefers-color-scheme:dark)`.

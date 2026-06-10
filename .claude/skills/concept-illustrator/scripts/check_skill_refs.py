@@ -10,7 +10,8 @@ REF = re.compile(r"`((?:assets|references|scripts|examples)/[^`]+)`")
 
 
 def missing_refs():
-    text = open(os.path.join(SKILL_DIR, "SKILL.md"), encoding="utf-8").read()
+    with open(os.path.join(SKILL_DIR, "SKILL.md"), encoding="utf-8") as fh:
+        text = fh.read()
     out = []
     for rel in sorted(set(REF.findall(text))):
         if not os.path.exists(os.path.join(SKILL_DIR, rel)):

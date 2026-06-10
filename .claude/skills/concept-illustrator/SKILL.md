@@ -87,8 +87,9 @@ succeed or fail — don't rush past them.
    ```
    python3 scripts/render.py path/to/frame.svg --png out.png --theme light --scale 2
    ```
-   `--theme dark` forces the dark palette; static rasterizers don't evaluate the media
-   query, so the theme must be chosen at export time. Needs `cairosvg` or `rsvg-convert`.
+   PNG export currently rasterizes the document's default (light) rendering; the `--theme`
+   flag is reserved — forced dark-theme rasterization is a future enhancement (static
+   rasterizers don't evaluate the dark-mode media query). Needs `cairosvg` or `rsvg-convert`.
 
 9. **Deliver the figure directory**, not pasted SVG source. The directory contains
    `figure.json` and `frame-NN.svg` files; include the generated `figure.html` viewer

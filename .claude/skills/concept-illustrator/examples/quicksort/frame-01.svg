@@ -1,0 +1,110 @@
+<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 220" role="img" font-family="sans-serif">
+  <title>Quicksort — frame 1: pick the pivot</title>
+  <desc>The unsorted array [5, 2, 8, 1, 9, 3]. The last element, 3, is chosen as the pivot and highlighted in coral.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="340" y="32" class="th" text-anchor="middle" dominant-baseline="central">Quicksort — one partition pass</text>
+
+  <!-- Pivot label above last cell (coral = pivot throughout) -->
+  <text x="480" y="65" class="ts" text-anchor="middle" dominant-baseline="central">pivot</text>
+  <path class="arr" d="M480,75 L480,95"/>
+
+  <!-- Array cells — positions: x = 100, 170, 240, 310, 380, 450; y=100, h=40, w=60 -->
+  <!-- Cell 0: value 5 — neutral, not yet scanned -->
+  <g class="box">
+    <rect x="100" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
+    <text x="130" y="120" class="th" text-anchor="middle" dominant-baseline="central">5</text>
+  </g>
+  <!-- Cell 1: value 2 — neutral, not yet scanned -->
+  <g class="box">
+    <rect x="170" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
+    <text x="200" y="120" class="th" text-anchor="middle" dominant-baseline="central">2</text>
+  </g>
+  <!-- Cell 2: value 8 — neutral, not yet scanned -->
+  <g class="box">
+    <rect x="240" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
+    <text x="270" y="120" class="th" text-anchor="middle" dominant-baseline="central">8</text>
+  </g>
+  <!-- Cell 3: value 1 — neutral, not yet scanned -->
+  <g class="box">
+    <rect x="310" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
+    <text x="340" y="120" class="th" text-anchor="middle" dominant-baseline="central">1</text>
+  </g>
+  <!-- Cell 4: value 9 — neutral, not yet scanned -->
+  <g class="box">
+    <rect x="380" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
+    <text x="410" y="120" class="th" text-anchor="middle" dominant-baseline="central">9</text>
+  </g>
+  <!-- Cell 5: value 3 — pivot, c-coral (fixed reference; stays coral every frame) -->
+  <g class="c-coral">
+    <rect x="450" y="100" width="60" height="40" rx="2" stroke-width="0.5"/>
+    <text x="480" y="120" class="th" text-anchor="middle" dominant-baseline="central">3</text>
+  </g>
+
+  <!-- Index labels below cells -->
+  <text x="130" y="158" class="ts" text-anchor="middle" dominant-baseline="central">0</text>
+  <text x="200" y="158" class="ts" text-anchor="middle" dominant-baseline="central">1</text>
+  <text x="270" y="158" class="ts" text-anchor="middle" dominant-baseline="central">2</text>
+  <text x="340" y="158" class="ts" text-anchor="middle" dominant-baseline="central">3</text>
+  <text x="410" y="158" class="ts" text-anchor="middle" dominant-baseline="central">4</text>
+  <text x="480" y="158" class="ts" text-anchor="middle" dominant-baseline="central">5</text>
+
+  <!-- Caption area -->
+  <text x="340" y="190" class="t" text-anchor="middle" dominant-baseline="central">Pick the last element as the pivot (3, coral). Everything else will be compared to it.</text>
+
+</svg>

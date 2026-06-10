@@ -236,10 +236,16 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     if args.viewer:
+        if not os.path.isdir(args.path):
+            print(f"ERROR  {args.path}: --viewer needs a figure directory")
+            return 1
         build_viewer(args.path, args.template, args.viewer)
         print(f"OK     wrote viewer: {args.viewer}")
         return 0
     if args.png:
+        if not (os.path.isfile(args.path) and args.path.endswith(".svg")):
+            print(f"ERROR  {args.path}: --png needs a single .svg file")
+            return 1
         export_png(args.path, args.png, args.theme, args.scale)
         print(f"OK     wrote PNG: {args.png}")
         return 0
