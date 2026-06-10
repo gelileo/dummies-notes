@@ -55,7 +55,11 @@ prerequisites out, emitted as a `decomposition.json` (schema in
 prerequisites, registry deduplication, and cross-node cycle detection are the
 `dummies-notes` Workflow's job (Phase 3). The jargon rule is operationalized in
 the SKILL.md: any term in a definition the audience wouldn't know becomes its own
-prerequisite.
+prerequisite. Two golden decompositions under
+`.claude/skills/concept-decompose/examples/` cover both atomicity branches —
+`rsa-encryption` (non-atomic, with load-bearing prerequisites) and
+`modular-arithmetic` (atomic, the clock metaphor) — and share the
+`modular-arithmetic` identity to demonstrate slug-plus-definition reuse.
 
 > Status: thin. The single-level decomposition contract (SKILL.md + schema +
 > validator) has shipped; the recursive graph walk that composes these

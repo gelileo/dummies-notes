@@ -1,0 +1,30 @@
+{
+  "concept": {
+    "slug": "rsa-encryption",
+    "name": "RSA encryption",
+    "definition": "A way to send secret messages using two matching keys: a public key anyone can use to lock a message, and a private key that only the owner keeps and can use to unlock it."
+  },
+  "audience": "a curious adult with no domain background",
+  "atomic": false,
+  "atomic_reason": "RSA leans on several ideas that each need their own picture first: arithmetic that wraps around like a clock, the special role of numbers that can't be split into smaller whole-number pieces, and the trick of using two different keys instead of one shared secret. No single short figure can carry all of that, so it must be broken down.",
+  "prerequisites": [
+    {
+      "slug": "modular-arithmetic",
+      "name": "Modular arithmetic",
+      "definition": "A way of counting where the numbers wrap back to the start once they reach a fixed limit, the way the hours on a clock jump from 12 back to 1.",
+      "why": "RSA locks and unlocks a message by doing wrap-around calculations, so you cannot follow how it works without first seeing how counting that wraps around behaves."
+    },
+    {
+      "slug": "prime-numbers",
+      "name": "Prime numbers",
+      "definition": "Whole numbers bigger than 1 that cannot be made by multiplying two smaller whole numbers together, like 2, 3, 5, and 7.",
+      "why": "RSA builds each pair of keys by secretly multiplying two large prime numbers, and its safety rests on how hard it is to find those primes again, so the reader must first know what a prime number is."
+    },
+    {
+      "slug": "asymmetric-cryptography",
+      "name": "Asymmetric cryptography",
+      "definition": "A style of secret-keeping that uses two different keys instead of one shared password: one key locks a message and a separate, matching key unlocks it.",
+      "why": "RSA is one specific recipe for this two-key idea, so the reader needs the general two-key picture before the particular way RSA fills it in makes sense."
+    }
+  ]
+}

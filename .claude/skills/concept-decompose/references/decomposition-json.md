@@ -31,6 +31,10 @@ Kebab-case (`^[a-z0-9]+(-[a-z0-9]+)*$`). On a meaning collision, qualify the slu
 
 ## Example
 
+This block illustrates the *shape* only. For canonical wording — including the
+authoritative definitions for these slugs (identity = slug + definition) — the
+`examples/*/decomposition.json` files are the source of truth.
+
 ```json
 {
   "concept": {

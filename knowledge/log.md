@@ -2,6 +2,16 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat | concept-decompose: golden decompositions — rsa (non-atomic) + modular-arithmetic (atomic) (Phase 2 Task 6)
+
+- Authored `.claude/skills/concept-decompose/examples/rsa-encryption/decomposition.json`: non-atomic, with three load-bearing prerequisites (`modular-arithmetic`, `prime-numbers`, `asymmetric-cryptography`), each with a plain definition + `why`. Definitions obey the jargon rule — no "coprime"/"totient" or any unexplained term; the two-key idea, wrap-around counting, and primes are kept plain.
+- Authored `.claude/skills/concept-decompose/examples/modular-arithmetic/decomposition.json`: atomic, `prerequisites: []`, `atomic_reason` cites the one-figure clock-face test. Its `concept` slug + definition are literally identical to the `modular-arithmetic` prerequisite entry in the rsa example, exercising the slug+definition = identity rule.
+- Both validate `OK     clean` (exit 0).
+- Added `TestGoldenDecompositions` (3 tests: rsa valid/non-atomic, modular-arithmetic valid/atomic, identity consistent across the two files) to `scripts/tests/test_validate_decomposition.py`; suite total is now 14 tests, all passing; `check_skill_refs.py` exits 0.
+- Added a "Files in this skill" pointer in SKILL.md to both example files so the refs checker stays green.
+- Updated `knowledge/concepts/dummies-notes/concept-decomposition.md`: noted the golden examples cover both atomicity branches and share the `modular-arithmetic` identity.
+- Articles touched: `concepts/dummies-notes/concept-decomposition.md`.
+
 ## [2026-06-10] feat | concept-decompose: SKILL.md contract + reference-integrity check (Phase 2 Task 5)
 
 - Authored `.claude/skills/concept-decompose/SKILL.md`: the skill's operating contract — Job (ONE concept → canonical identity + atomicity verdict + direct prerequisites as `decomposition.json`, one level only, never recurse), a 5-step Workflow (canonicalize/kebab slug + plain definition → atomicity test → list load-bearing prerequisites with the jargon rule → reuse registry slugs → validate to `OK     clean`), and a quality bar (repeatable definitions, no nice-to-knows, no self-cycles). References only shipped paths (`references/decomposition-json.md`, `scripts/validate_decomposition.py`).

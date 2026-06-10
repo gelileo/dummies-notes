@@ -88,5 +88,33 @@ class TestSkillContract(unittest.TestCase):
             self.assertIn(token, text, f"SKILL.md missing '{token}'")
 
 
+class TestGoldenDecompositions(unittest.TestCase):
+    EXAMPLES = os.path.join(os.path.dirname(SCRIPTS_DIR), "examples")
+
+    def _load(self, slug):
+        import json
+        path = os.path.join(self.EXAMPLES, slug, "decomposition.json")
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh)
+
+    def test_rsa_is_valid_and_non_atomic(self):
+        data = self._load("rsa-encryption")
+        self.assertEqual([m for lvl, m in vd.validate(data) if lvl == "ERROR"], [])
+        self.assertFalse(data["atomic"])
+        self.assertGreaterEqual(len(data["prerequisites"]), 2)
+
+    def test_modular_arithmetic_is_valid_and_atomic(self):
+        data = self._load("modular-arithmetic")
+        self.assertEqual([m for lvl, m in vd.validate(data) if lvl == "ERROR"], [])
+        self.assertTrue(data["atomic"])
+        self.assertEqual(data["prerequisites"], [])
+
+    def test_identity_is_consistent_across_examples(self):
+        rsa = self._load("rsa-encryption")
+        mod = self._load("modular-arithmetic")
+        rsa_slugs = {p["slug"] for p in rsa["prerequisites"]}
+        self.assertIn(mod["concept"]["slug"], rsa_slugs)
+
+
 if __name__ == "__main__":
     unittest.main()

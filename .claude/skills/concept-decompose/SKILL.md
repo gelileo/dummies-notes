@@ -89,3 +89,8 @@ atomic, and which prerequisites are genuinely load-bearing.
 - `scripts/validate_decomposition.py` — zero-dependency validator. Importable
   (`validate(data)` → `(level, message)` tuples) and runnable as a CLI; exits
   non-zero on any ERROR.
+- `examples/rsa-encryption/decomposition.json` and
+  `examples/modular-arithmetic/decomposition.json` — the two golden
+  decompositions to pattern yours on: the first non-atomic (with prerequisites),
+  the second atomic (the clock metaphor, `prerequisites: []`). They share the
+  `modular-arithmetic` identity (same slug + definition) to show reuse.
