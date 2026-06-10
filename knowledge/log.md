@@ -2,6 +2,19 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] fix | assemble.py: empty-graph diagnostic + negative-path tests (review follow-ups)
+
+- `scripts/assemble.py load_full_graph`: after the `for fname` loop, if `nodes` and `issues` are both empty, appends `("ERROR", "no decomposition files found in <graph_dir>")`. This prevents a silent crash inside `find_root` when the graph directory exists but holds no `.json` files; `main` prints the ERROR and exits 1.
+- `scripts/tests/test_assemble.py`: appended `TestDegradation` (4 tests): atomic node with a broken figure shows "Figure pending"; covered entry with a missing figure dir degrades to "figure pending"; adversarial `<script>` tags in name/definition are HTML-escaped (no raw `<script>` in output); empty graph dir causes `main` to return 1. Suite total: 57 tests, all passing.
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`.
+
+## [2026-06-10] feat | assemble.py concept map + CLI (Phase 4 Task 3)
+
+- `scripts/assemble.py`: replaced the `build_map` stub with the real implementation. `MAP_CSS`, `_NODE_W/_NODE_H/_COL_W/_ROW_H` constants; `_depths` (BFS from root, assigns depth 0 to root and depth+1 to each prerequisite); `_thumb` (loads first frame SVG for illustrated nodes); `build_map` (layers nodes by depth, positions them on a canvas, draws `<line>` edges for each prerequisite, embeds thumbnail for illustrated nodes, links every node to `index.html#<slug>`). Added `main(argv=None)` CLI (`graph_dir`, `--registry`, `--out`) and `if __name__ == "__main__": sys.exit(main())` guard.
+- `scripts/tests/test_assemble.py`: appended `TestMap` (3 tests — data-node per concept + edge count, links to explainer, illustrated thumbnails) and `TestCli` (2 tests — exit 0 with both files, exit 1 on missing graph). Suite total: 53 tests.
+- `knowledge/concepts/dummies-notes/orchestration-workflow.md`: added map semantics sentence (nodes layered by depth from the root, illustrated nodes carry first-frame thumbnails, click-through to the explainer sections).
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`.
+
 ## [2026-06-10] feat | assemble.py explainer: bottom-up inline slideshows, covered links, frontier stubs (Phase 4 Task 2)
 
 - `scripts/assemble.py`: added `PAGE_CSS`, `SLIDESHOW_JS`, `load_figure`, `figure_html`, `_children_list`, `_figure_dir_for`, `_ensure_viewer`, `build_explainer`, `classify_prereqs`, `assemble`, and a temporary `build_map` stub. Writes `output/<topic>/index.html` bottom-up: atomic nodes embed inline SVG slideshows; already-covered prereqs are linked to their registry viewer; intermediate nodes render caption-only with child links; frontier prereqs get a stub note.

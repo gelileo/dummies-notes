@@ -59,6 +59,8 @@ def load_full_graph(graph_dir):
             "prerequisites": [p for p in (data.get("prerequisites") or [])
                               if isinstance(p, dict) and p.get("slug")],
         }
+    if not nodes and not issues:
+        issues.append(("ERROR", f"no decomposition files found in {graph_dir}"))
     return nodes, issues
 
 
@@ -270,5 +272,124 @@ def assemble(graph_dir, registry_root, out_dir):
             "covered": sorted(covered), "frontier": sorted(frontier)}, issues
 
 
+MAP_CSS = """
+:root{color-scheme:light dark}
+body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;padding:1.5rem}
+.canvas{position:relative;margin:0 auto}
+.edges{position:absolute;inset:0;z-index:0}
+.edges line{stroke:rgba(127,127,127,.55);stroke-width:1.5}
+.node{position:absolute;z-index:1;width:200px;border:1px solid rgba(127,127,127,.5);
+      border-radius:8px;padding:.5rem;background:Canvas;text-align:center}
+.node .thumb svg{max-width:170px;height:auto;display:block;margin:0 auto}
+.node .badge{font-size:.72em;opacity:.7;display:block;margin-top:.2rem}
+.node.covered{border-style:dashed} .node.frontier{border-style:dotted;opacity:.75}
+h1{text-align:center}
+"""
+
+_NODE_W, _NODE_H, _COL_W, _ROW_H = 200, 150, 230, 240
+
+
+def _depths(order, nodes, covered, frontier, root):
+    """Layer per node: root at 0, prerequisites below their dependents."""
+    depth = {root: 0}
+    changed = True
+    while changed:
+        changed = False
+        for slug, node in nodes.items():
+            if slug not in depth:
+                continue
+            for p in node["prerequisites"]:
+                target = depth[slug] + 1
+                if depth.get(p["slug"], -1) < target:
+                    depth[p["slug"]] = target
+                    changed = True
+    for slug in list(nodes) + list(covered) + list(frontier):
+        depth.setdefault(slug, 1)
+    return depth
+
+
+def _thumb(slug, registry_root):
+    entry = lookup(registry_root, slug)
+    figure_dir = _figure_dir_for(entry, registry_root)
+    frames = load_figure(figure_dir) if figure_dir else None
+    return f'<div class="thumb">{frames[0][0]}</div>' if frames else ""
+
+
 def build_map(order, nodes, covered, frontier, registry_root, root):
-    return "<!doctype html><title>map stub (replaced in Task 3)</title>"
+    depth = _depths(order, nodes, covered, frontier, root)
+    layers = {}
+    for slug, d in depth.items():
+        layers.setdefault(d, []).append(slug)
+    for d in layers:
+        layers[d].sort()
+    width = max(len(v) for v in layers.values()) * _COL_W + 40
+    height = (max(layers) + 1) * _ROW_H + 40
+    pos = {}
+    for d, slugs in layers.items():
+        offset = (width - len(slugs) * _COL_W) / 2
+        for i, slug in enumerate(slugs):
+            pos[slug] = (offset + i * _COL_W + (_COL_W - _NODE_W) / 2, 20 + d * _ROW_H)
+
+    edges = []
+    for slug, node in nodes.items():
+        for p in node["prerequisites"]:
+            if p["slug"] in pos:
+                x1, y1 = pos[slug][0] + _NODE_W / 2, pos[slug][1] + _NODE_H
+                x2, y2 = pos[p["slug"]][0] + _NODE_W / 2, pos[p["slug"]][1]
+                edges.append(f'<line x1="{x1:.0f}" y1="{y1:.0f}" '
+                             f'x2="{x2:.0f}" y2="{y2:.0f}"/>')
+
+    node_divs = []
+    for slug, (x, y) in pos.items():
+        if slug in nodes:
+            name, badge, cls = nodes[slug]["name"], \
+                ("atomic" if nodes[slug]["atomic"] else "composite"), ""
+        elif slug in covered:
+            name, badge, cls = covered[slug]["name"], "already covered", " covered"
+        else:
+            name, badge, cls = slug, "frontier — not yet covered", " frontier"
+        thumb = _thumb(slug, registry_root) if cls != " frontier" else ""
+        node_divs.append(
+            f'<div class="node{cls}" data-node="{html.escape(slug)}" '
+            f'style="left:{x:.0f}px;top:{y:.0f}px">'
+            f'<a href="index.html#{html.escape(slug)}"><strong>'
+            f"{html.escape(name)}</strong></a>{thumb}"
+            f'<span class="badge">{badge}</span></div>')
+
+    title = html.escape(nodes[root]["name"])
+    return "\n".join([
+        "<!doctype html>", '<html lang="en"><head><meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width, initial-scale=1">',
+        f"<title>{title} — concept map</title>",
+        f"<style>{MAP_CSS}</style></head><body>",
+        f"<h1>{title} — concept map</h1>",
+        f'<div class="canvas" style="width:{width:.0f}px;height:{height:.0f}px">',
+        f'<svg class="edges" viewBox="0 0 {width:.0f} {height:.0f}" '
+        f'width="{width:.0f}" height="{height:.0f}">', *edges, "</svg>",
+        *node_divs, "</div></body></html>"])
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        prog="assemble",
+        description="assemble output/<topic>/index.html + map.html from a graph")
+    parser.add_argument("graph_dir")
+    parser.add_argument("--registry", default=DEFAULT_ROOT)
+    parser.add_argument("--out", required=True)
+    args = parser.parse_args(argv)
+    try:
+        result, issues = assemble(args.graph_dir, args.registry, args.out)
+    except ValueError as exc:
+        print(f"ERROR  {exc}")
+        return 1
+    for level, message in issues:
+        print(f"{level:<6} {message}")
+    if result is None:
+        return 1
+    print(f"OK     assembled {result['sections']} section(s) -> "
+          f"{os.path.join(args.out, 'index.html')} + map.html")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -189,5 +189,101 @@ class TestExplainer(unittest.TestCase):
             self.assertIn("mystery-idea", text)
 
 
+class TestMap(unittest.TestCase):
+    def test_map_has_node_per_concept_and_edges(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry, out = make_world(base)
+            asm.assemble(graph, registry, out)
+            text = open(os.path.join(out, "map.html"), encoding="utf-8").read()
+            for slug in ("rsa", "primes", "asym", "modular-arithmetic"):
+                self.assertIn(f'data-node="{slug}"', text)
+            self.assertEqual(text.count("<line"), 3)  # rsa -> its 3 prereqs
+
+    def test_map_nodes_link_to_explainer_sections(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry, out = make_world(base)
+            asm.assemble(graph, registry, out)
+            text = open(os.path.join(out, "map.html"), encoding="utf-8").read()
+            self.assertIn('href="index.html#primes"', text)
+
+    def test_illustrated_nodes_carry_thumbnails(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry, out = make_world(base)
+            asm.assemble(graph, registry, out)
+            text = open(os.path.join(out, "map.html"), encoding="utf-8").read()
+            self.assertGreaterEqual(text.count("<svg"), 3)  # primes, asym, mod thumbs
+
+
+class TestCli(unittest.TestCase):
+    def test_cli_assembles_and_exits_0(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry, out = make_world(base)
+            rc = asm.main([graph, "--registry", registry, "--out", out])
+            self.assertEqual(rc, 0)
+            self.assertTrue(os.path.exists(os.path.join(out, "index.html")))
+            self.assertTrue(os.path.exists(os.path.join(out, "map.html")))
+
+    def test_cli_missing_graph_exits_1(self):
+        with tempfile.TemporaryDirectory() as base:
+            rc = asm.main(["/nonexistent", "--registry", base,
+                           "--out", os.path.join(base, "o")])
+            self.assertEqual(rc, 1)
+
+
+class TestDegradation(unittest.TestCase):
+    def test_atomic_node_with_missing_frame_shows_pending(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "out", "graph")
+            registry = os.path.join(base, "registry")
+            write_decomp(graph, "solo", True)
+            reg.register(registry, "solo", "Solo", "Plain definition of solo.")
+            fig = make_figure(os.path.join(registry, "solo", "figure"), "solo")
+            os.remove(os.path.join(fig, "frame-01.svg"))  # break the figure
+            reg.attach_figure(registry, "solo", fig)
+            asm.assemble(graph, registry, os.path.join(base, "out"))
+            text = open(os.path.join(base, "out", "index.html"), encoding="utf-8").read()
+            self.assertIn("Figure pending", text)
+
+    def test_covered_entry_with_missing_figure_dir_degrades(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "out", "graph")
+            registry = os.path.join(base, "registry")
+            write_decomp(graph, "top", False, ["ghosty"])
+            reg.register(registry, "top", "Top", "Plain definition of top.")
+            reg.register(registry, "ghosty", "Ghosty", "Plain definition of ghosty.")
+            fig = make_figure(os.path.join(registry, "ghosty", "figure"), "ghosty")
+            reg.attach_figure(registry, "ghosty", fig)
+            import shutil
+            shutil.rmtree(fig)  # figure dir vanishes after attach
+            asm.assemble(graph, registry, os.path.join(base, "out"))
+            text = open(os.path.join(base, "out", "index.html"), encoding="utf-8").read()
+            self.assertIn("figure pending", text)
+
+    def test_adversarial_text_is_escaped(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "out", "graph")
+            registry = os.path.join(base, "registry")
+            os.makedirs(graph)
+            evil = '<script>alert(1)</script>'
+            data = {"concept": {"slug": "evil", "name": f"Evil {evil}",
+                                "definition": f"Def {evil}"},
+                    "audience": "x", "atomic": True, "atomic_reason": "r.",
+                    "prerequisites": []}
+            with open(os.path.join(graph, "evil.json"), "w", encoding="utf-8") as fh:
+                json.dump(data, fh)
+            reg.register(registry, "evil", f"Evil {evil}", f"Def {evil}")
+            asm.assemble(graph, registry, os.path.join(base, "out"))
+            text = open(os.path.join(base, "out", "index.html"), encoding="utf-8").read()
+            self.assertNotIn("<script>alert(1)</script>", text)
+            self.assertIn("&lt;script&gt;", text)
+
+    def test_empty_graph_dir_reports_clean_error(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "g")
+            os.makedirs(graph)
+            rc = asm.main([graph, "--registry", base, "--out", os.path.join(base, "o")])
+            self.assertEqual(rc, 1)
+
+
 if __name__ == "__main__":
     unittest.main()
