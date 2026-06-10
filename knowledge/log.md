@@ -2,6 +2,12 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat | dummies-notes orchestrator workflow script (Phase 3 Task 3)
+
+- Created `.claude/workflows/dummies-notes.js`: the full BFS orchestration script. Exports `meta` with four phases (Decompose/Illustrate/Review/Finalize). One registry-snapshot agent seeds `covered` map; BFS loop calls `concept-decompose` skill per node with depth cap (`maxDepth` default 2) and node cap (`maxNodes` default 12), both logged as frontier on hit. `pipeline()` per atomic node: illustrate → blind reader + fidelity critic review, ≤ `MAX_REPAIRS` (2) repair iterations, flag-and-continue on still-failing. Finalize agent registers all new nodes with `--prereqs`, attaches figures, rebuilds index, runs `graph_check.py --require-illustrated`. Returns root, graph_dir, nodes, illustrated, flagged, frontier, collisions, graph_check_clean.
+- `knowledge/concepts/dummies-notes/orchestration-workflow.md`: verified "Run shape (Phase 3)" section accurately describes the shipped script — no wording changes needed.
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`.
+
 ## [2026-06-10] feat | graph_check: shape + cross-node cycles + registry coverage (Phase 3 Task 2)
 
 - Created `scripts/graph_check.py`: zero-dep stdlib gate for a concept-graph directory (`decomposition.json` files as produced by the concept-decompose skill). Three checks: `load_graph` (every file parses with `slug` + `atomic`), `find_cycles` (DFS cycle detection across prerequisite edges within the graph), `check_coverage` (every graph node is registered; with `--require-illustrated` every atomic node must be `illustrated`). Frontier prerequisites — no graph file, not registered — are WARNs (not ERRORs), consistent with depth-capped runs.
