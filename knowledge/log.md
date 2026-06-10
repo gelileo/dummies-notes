@@ -2,6 +2,14 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat | concept-decompose: decomposition.json schema + zero-dep validator (Phase 2 Task 4)
+
+- Created `.claude/skills/concept-decompose/references/decomposition-json.md`: schema reference for `decomposition.json` — field tables, atomicity rule, slug rules, and a worked RSA example.
+- Created `.claude/skills/concept-decompose/scripts/validate_decomposition.py`: zero-dep stdlib validator; `validate(data)` returns `(level, message)` tuples; CLI exits 1 on any ERROR, 2 on wrong usage.
+- Created `.claude/skills/concept-decompose/scripts/tests/test_validate_decomposition.py`: 9 tests (TDD — written first, all passing after validator landed).
+- Updated `knowledge/concepts/dummies-notes/concept-decomposition.md`: resolved the open atomicity-test question with the shipped rule (one figure ≤ ~6 frames + common-knowledge prerequisites; jargon ⇒ prerequisite; enforced by `validate_decomposition.py`).
+- Articles touched: `concepts/dummies-notes/concept-decomposition.md`.
+
 ## [2026-06-09] compile | adopt living-doc + seed vision articles
 
 - Adopted the living-documentation methodology (https://github.com/mpklu/living-doc) on this greenfield repo: installed `knowledge/`, `schemas/`, `scripts/` (drift-check, validate-articles), and `actions/drift-check/`.

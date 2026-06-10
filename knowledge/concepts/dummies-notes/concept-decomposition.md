@@ -33,9 +33,12 @@ of already-illustrated foundations.
 
 ## Open design questions (resolve as code lands)
 
-- **Atomicity test**: what signal stops the recursion? Candidate: "one
-  archetype figure (see [[illustration-engine]]) can express it without
-  needing a sub-figure." Needs a concrete, checkable definition.
+- **Atomicity test**: a concept is atomic when (a) one figure of ≤ ~6 frames
+  explains its mechanism without needing a sub-figure, and (b) its remaining
+  prerequisites are common knowledge for the audience. Non-atomic ⇒ at least
+  one prerequisite. **Jargon is a decomposition signal**: a term the audience
+  wouldn't know must become a prerequisite, never an aside. Output shape is
+  enforced by `validate_decomposition.py`.
 - **Dependency discovery**: LLM-proposed prerequisites vs. a curated graph vs.
   hybrid. How are cycles detected and broken?
 - **Identity**: when are two concepts "the same" node (so the figure is
