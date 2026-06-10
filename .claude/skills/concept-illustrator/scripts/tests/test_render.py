@@ -107,5 +107,81 @@ class TestCaps(unittest.TestCase):
         self.assertTrue(any(lvl == "WARN" for lvl, _ in out))
 
 
+class TestBounds(unittest.TestCase):
+    def test_in_bounds_passes(self):
+        out = render.check_bounds(svg('<rect x="10" y="10" width="100" height="50"/>'))
+        self.assertEqual(out, [])
+
+    def test_overflow_width_errors(self):
+        out = render.check_bounds(svg('<rect x="600" y="10" width="200" height="50"/>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_overflow_height_errors(self):
+        out = render.check_bounds(svg('<rect x="10" y="150" width="100" height="100"/>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_missing_x_defaults_to_zero_and_overflow_errors(self):
+        out = render.check_bounds(svg('<rect width="1000" height="50"/>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+
+class TestConnectorFill(unittest.TestCase):
+    def test_styled_connector_relying_on_css_passes(self):
+        # class arr gets fill:none from the stylesheet; no inline fill is correct
+        out = render.check_connector_fill(svg('<path class="arr" marker-end="url(#arrow)"/>'))
+        self.assertEqual(out, [])
+
+    def test_connector_with_fill_none_passes(self):
+        out = render.check_connector_fill(
+            svg('<path class="arr" fill="none" marker-end="url(#arrow)"/>')
+        )
+        self.assertEqual(out, [])
+
+    def test_styled_connector_with_solid_fill_errors(self):
+        out = render.check_connector_fill(svg('<path class="arr" fill="#1c1c1a"/>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_marker_only_connector_requires_fill_none(self):
+        out = render.check_connector_fill(svg('<path marker-end="url(#arrow)" d="M0,0 L9,0"/>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_marker_only_connector_with_fill_none_passes(self):
+        out = render.check_connector_fill(
+            svg('<path marker-end="url(#arrow)" fill="none" d="M0,0 L9,0"/>')
+        )
+        self.assertEqual(out, [])
+
+
+class TestLintFile(unittest.TestCase):
+    def test_reads_dirty_fixture_and_reports_errors(self):
+        path = os.path.join(SCRIPTS_DIR, "tests", "fixtures", "dirty.svg")
+        out = render.lint_file(path, "/nonexistent-style.css")
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+
+class TestLintSvgAggregate(unittest.TestCase):
+    def test_clean_svg_has_no_errors(self):
+        root = svg('<text class="t">Binary search</text>')
+        errors = [m for lvl, m in render.lint_svg(root, PALETTE) if lvl == "ERROR"]
+        self.assertEqual(errors, [])
+
+    def test_dirty_svg_collects_errors(self):
+        root = svg('<text>UNCLASSED</text>', viewbox="0 0 500 200")
+        errors = [m for lvl, m in render.lint_svg(root, PALETTE) if lvl == "ERROR"]
+        self.assertGreaterEqual(len(errors), 2)
+
+
+class TestSafeParse(unittest.TestCase):
+    def test_doctype_is_rejected(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "evil.svg")
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write('<?xml version="1.0"?><!DOCTYPE svg [<!ENTITY x "x">]>'
+                         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 100"/>')
+            out = render.lint_file(path, "/nonexistent-style.css")
+            self.assertTrue(any("DOCTYPE" in m or "ENTITY" in m for _, m in out))
+
+
 if __name__ == "__main__":
     unittest.main()

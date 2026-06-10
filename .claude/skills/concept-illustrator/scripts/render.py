@@ -147,3 +147,105 @@ def check_caps(root):
         elif len(words) >= 2 and all(w.lstrip()[0].isupper() for w in words):
             issues.append(("WARN", f"possible Title Case '{s[:20]}'; prefer sentence case"))
     return issues
+
+
+def check_bounds(root):
+    parts = (root.get("viewBox") or "").split()
+    if len(parts) != 4:
+        return []
+    width, height = _f(parts[2]), _f(parts[3])
+    issues = []
+    for el in root.iter():
+        if localname(el.tag) != "rect":
+            continue
+        x = _f(el.get("x"))
+        y = _f(el.get("y"))
+        x = 0.0 if x is None else x
+        y = 0.0 if y is None else y
+        w, h = _f(el.get("width")), _f(el.get("height"))
+        if w is not None and (x < -0.5 or x + w > width + 0.5):
+            issues.append(("ERROR", f"rect exceeds canvas width (x={x}, w={w})"))
+        if h is not None and (y < -0.5 or y + h > height + 0.5):
+            issues.append(("ERROR", f"rect exceeds canvas height (y={y}, h={h})"))
+    return issues
+
+
+def check_connector_fill(root):
+    issues = []
+    for el in root.iter():
+        if localname(el.tag) != "path":
+            continue
+        classes = set((el.get("class") or "").split())
+        styled_connector = bool(classes & {"arr", "leader"})
+        marker_connector = bool(el.get("marker-end")) and not styled_connector
+        fill = (el.get("fill") or "").strip().lower()
+        if styled_connector and fill and fill != "none":
+            issues.append(("ERROR", 'connector <path> has a conflicting inline fill; '
+                                    'the arr/leader class already sets fill="none"'))
+        elif marker_connector and fill != "none":
+            issues.append(("ERROR", 'connector <path> with marker-end must set fill="none"'))
+    return issues
+
+
+def lint_svg(root, palette):
+    issues = []
+    issues += check_canvas_width(root)
+    issues += check_text_classes(root)
+    issues += check_placeholders(root)
+    issues += check_palette(root, palette)
+    issues += check_decoration(root)
+    issues += check_caps(root)
+    issues += check_bounds(root)
+    issues += check_connector_fill(root)
+    return issues
+
+
+def lint_file(svg_path, style_path):
+    root, issues = _safe_parse(svg_path)
+    if root is None:
+        return issues
+    palette = load_palette(_read(style_path)) if os.path.exists(style_path) else set()
+    return lint_svg(root, palette)
+
+
+def _print_issues(label, issues):
+    errors = [m for lvl, m in issues if lvl == "ERROR"]
+    warns = [m for lvl, m in issues if lvl == "WARN"]
+    for m in errors:
+        print(f"ERROR  {label}: {m}")
+    for m in warns:
+        print(f"WARN   {label}: {m}")
+    if not errors and not warns:
+        print(f"OK     {label}: clean")
+    return len(errors)
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="concept-illustrator SVG/figure tool")
+    parser.add_argument("path", help="path to a .svg file or a figure directory")
+    parser.add_argument("--style", default=DEFAULT_STYLE, help="path to _style.css")
+    parser.add_argument("--figure", action="store_true", help="validate a figure dir")
+    parser.add_argument("--viewer", metavar="OUT", help="write a slideshow HTML to OUT")
+    parser.add_argument("--template", default=DEFAULT_TEMPLATE)
+    parser.add_argument("--png", metavar="OUT", help="export PNG to OUT")
+    parser.add_argument("--theme", default="light", choices=["light", "dark"])
+    parser.add_argument("--scale", type=float, default=2.0)
+    args = parser.parse_args(argv)
+
+    if args.viewer:
+        build_viewer(args.path, args.template, args.viewer)
+        print(f"OK     wrote viewer: {args.viewer}")
+        return 0
+    if args.png:
+        export_png(args.path, args.png, args.theme, args.scale)
+        print(f"OK     wrote PNG: {args.png}")
+        return 0
+    if args.figure or os.path.isdir(args.path):
+        errors = _print_issues(args.path, validate_figure(args.path, args.style))
+    else:
+        errors = _print_issues(args.path, lint_file(args.path, args.style))
+    return 1 if errors else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
