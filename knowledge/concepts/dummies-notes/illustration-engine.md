@@ -2,7 +2,7 @@
 title: Illustration engine
 type: concept
 area: dummies-notes
-updated: 2026-06-09
+updated: 2026-06-10
 status: mature
 affects:
   - ".claude/skills/concept-illustrator/SKILL.md"
@@ -52,7 +52,7 @@ The generation workflow is **runbook-first** and applies to **every frame — in
 
 **Frame-consistency rule:** all frames in a slideshow must share the same `viewBox`, so the sequence reads as smooth evolution rather than jump-cuts.
 
-The `validate_figure(dir_path, style_path)` function in `render.py` enforces this contract — it checks required fields, resolves each frame file, runs `lint_svg` on each, and reports an ERROR if `viewBox` values diverge across frames. Reference: `.claude/skills/concept-illustrator/references/figure-json.md`.
+The `validate_figure(dir_path, style_path)` function in `render.py` enforces this contract — it checks required fields, resolves each frame file, runs `lint_svg` on each, reports an ERROR if `viewBox` values diverge across frames, and reports an ERROR for any frame where `runbook` or `commentary` is absent, blank/whitespace, or a non-string value (e.g. a number from malformed JSON). A bare-string frame entry (e.g. `"frame-01.svg"` instead of an object) is also an ERROR — every frame must be a `{ file, caption, runbook, commentary }` object. Both fields are **required** on every frame, including single-frame static figures. Reference: `.claude/skills/concept-illustrator/references/figure-json.md`.
 
 ## SVG linter (`render.py`)
 
@@ -65,7 +65,7 @@ The `main()` CLI dispatch now validates path shape before calling backend functi
 - `--viewer` requires a directory; passing a file path prints `ERROR … --viewer needs a figure directory` and exits 1.
 - `--png` requires a single `.svg` file; passing a directory prints `ERROR … --png needs a single .svg file` and exits 1.
 
-Five `TestCli` tests cover these guards plus the happy-path lint and viewer cases. Suite total: 52 tests, 1 skip.
+Five `TestCli` tests cover these guards plus the happy-path lint and viewer cases. Suite total: 55 tests, 1 skip.
 
 ### PNG export and `--theme`
 

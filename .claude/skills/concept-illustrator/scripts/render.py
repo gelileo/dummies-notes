@@ -285,6 +285,14 @@ def validate_figure(dir_path, style_path):
     viewboxes = set()
     for frame in frames:
         name = frame.get("file") if isinstance(frame, dict) else frame
+        if isinstance(frame, dict):
+            for field in ("runbook", "commentary"):
+                val = frame.get(field)
+                if not isinstance(val, str) or not val.strip():
+                    issues.append(("ERROR", f"{name or '?'}: frame missing '{field}'"))
+        else:
+            issues.append(("ERROR", f"frame must be an object with file, caption, "
+                                    f"runbook, commentary (got: {frame!r})"))
         fpath = os.path.join(dir_path, name or "")
         if not name or not os.path.exists(fpath):
             issues.append(("ERROR", f"frame file missing: {name}"))

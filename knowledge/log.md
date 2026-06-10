@@ -79,10 +79,22 @@ Append-only chronological log of significant changes to this project. Each entry
 - Updated `illustration-engine.md` with `## Golden quicksort example — color-model (revised)` section.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
 
+## [2026-06-09] feat | concept-illustrator: enforce runbook + commentary per frame in validate_figure
+
+- `scripts/render.py validate_figure`: added per-frame check — reports ERROR if `runbook` or `commentary` is absent or blank for any frame (including single-frame static figures).
+- `scripts/tests/test_render.py`: updated `_write_figure` helper to include `runbook`/`commentary` on every generated frame; added `TestRunbookCommentary` (3 tests). Suite total: 55 tests, 1 skip.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
 ## [2026-06-09] fix | concept-illustrator: workflow-clarity fixes (runbook scope + coordinate planning)
 
 - `SKILL.md § Workflow step 2`: changed "For each frame, work in this order" to "For each frame — including a single static frame — work in this order:" so the runbook-first sub-sequence unambiguously applies to static figures, not just sequences.
 - `SKILL.md § Workflow step 2 runbook sub-step`: folded coordinate/layout planning into the runbook sub-step (archetype layout, box positions/coordinates, colour roles, what changes from the previous frame); the box-width formula now appears there, before any SVG.
 - `SKILL.md § Workflow`: replaced the separate "Plan coordinates before writing SVG" step with a blockquote note clarifying that coordinate planning happens inside the runbook step, not after drawing. Renumbered subsequent steps (old 4–9 → new 3–8).
 - `references/figure-json.md`: trimmed the `runbook` row's Notes cell to just the definition; the standalone bold **runbook-first** paragraph below the table continues to carry the ordering rule.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
+## [2026-06-10] fix | concept-illustrator: harden per-frame runbook/commentary check in validate_figure
+
+- `scripts/render.py validate_figure`: replaced the `(frame.get(field) or "").strip()` pattern with `isinstance(val, str) and val.strip()`, so non-string values (e.g. `123`) are caught as missing rather than raising `AttributeError`. Added an `else` branch for bare-string frames (e.g. `"frame-01.svg"`) so they now report ERROR ("frame must be an object …") instead of silently bypassing the runbook/commentary check.
+- `scripts/tests/test_render.py`: added `test_non_string_runbook_errors` and `test_bare_string_frame_errors` to `TestRunbookCommentary`. Suite total: 57 tests, 1 skip.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.

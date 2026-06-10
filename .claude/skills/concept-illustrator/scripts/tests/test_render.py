@@ -208,7 +208,9 @@ class TestValidateFigure(unittest.TestCase):
             with open(os.path.join(root, name), "w", encoding="utf-8") as fh:
                 fh.write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}">'
                          f'<text class="t">Step {i}</text></svg>')
-            files.append({"file": name, "caption": f"Step {i}"})
+            files.append({"file": name, "caption": f"Step {i}",
+                          "runbook": f"Frame {i}: draw step {i}.",
+                          "commentary": f"This is step {i}. It moves the idea forward."})
         data = {"concept_slug": "x", "archetype": "illustrative",
                 "playback": "slideshow" if len(frames) > 1 else "static", "frames": files}
         data.update(data_overrides or {})
@@ -397,6 +399,62 @@ class TestFigureJsonDoc(unittest.TestCase):
         text = render._read(os.path.join(REFS, "figure-json.md"))
         for token in ("runbook", "commentary", "runbook-first"):
             self.assertIn(token, text, f"figure-json.md missing '{token}'")
+
+
+class TestRunbookCommentary(unittest.TestCase):
+    def _figure(self, d, blank=None):
+        with open(os.path.join(d, "frame-01.svg"), "w", encoding="utf-8") as fh:
+            fh.write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 100">'
+                     '<text class="t">A</text></svg>')
+        frame = {"file": "frame-01.svg", "caption": "c",
+                 "runbook": "Draw cell A.", "commentary": "Here is A. It is simple."}
+        if blank:
+            frame[blank] = ""
+        with open(os.path.join(d, "figure.json"), "w", encoding="utf-8") as fh:
+            json.dump({"concept_slug": "x", "archetype": "illustrative",
+                       "playback": "static", "frames": [frame]}, fh)
+
+    def test_complete_frame_passes(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._figure(d)
+            errs = [m for lvl, m in render.validate_figure(d, "/nonexistent.css") if lvl == "ERROR"]
+            self.assertEqual(errs, [])
+
+    def test_blank_runbook_errors(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._figure(d, blank="runbook")
+            errs = [m for lvl, m in render.validate_figure(d, "/nonexistent.css") if lvl == "ERROR"]
+            self.assertTrue(any("runbook" in m for m in errs))
+
+    def test_blank_commentary_errors(self):
+        with tempfile.TemporaryDirectory() as d:
+            self._figure(d, blank="commentary")
+            errs = [m for lvl, m in render.validate_figure(d, "/nonexistent.css") if lvl == "ERROR"]
+            self.assertTrue(any("commentary" in m for m in errs))
+
+    def test_non_string_runbook_errors(self):
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "frame-01.svg"), "w", encoding="utf-8") as fh:
+                fh.write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 100">'
+                         '<text class="t">A</text></svg>')
+            with open(os.path.join(d, "figure.json"), "w", encoding="utf-8") as fh:
+                json.dump({"concept_slug": "x", "archetype": "illustrative",
+                           "playback": "static",
+                           "frames": [{"file": "frame-01.svg", "caption": "c",
+                                       "runbook": 123, "commentary": "Here is A."}]}, fh)
+            errs = [m for lvl, m in render.validate_figure(d, "/nonexistent.css") if lvl == "ERROR"]
+            self.assertTrue(any("runbook" in m for m in errs))
+
+    def test_bare_string_frame_errors(self):
+        with tempfile.TemporaryDirectory() as d:
+            with open(os.path.join(d, "frame-01.svg"), "w", encoding="utf-8") as fh:
+                fh.write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 100">'
+                         '<text class="t">A</text></svg>')
+            with open(os.path.join(d, "figure.json"), "w", encoding="utf-8") as fh:
+                json.dump({"concept_slug": "x", "archetype": "illustrative",
+                           "playback": "static", "frames": ["frame-01.svg"]}, fh)
+            errs = [m for lvl, m in render.validate_figure(d, "/nonexistent.css") if lvl == "ERROR"]
+            self.assertTrue(any("must be an object" in m for m in errs))
 
 
 if __name__ == "__main__":
