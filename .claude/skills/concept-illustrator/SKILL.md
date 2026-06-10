@@ -48,22 +48,35 @@ succeed or fail — don't rush past them.
    color classes, and pointer positions will move between frames. This is the
    **frame-consistency rule**: shared `viewBox`, stable coordinates, moving highlights.
 
-3. **Plan coordinates before writing SVG.** Decide box positions, widths (from the
-   longest label — see the width rule below), and canvas height. Coordinate mistakes are
-   the most common failure mode.
+   For each frame — including a single static frame — work in this order:
+   1. Write the **runbook** (what/why/how this frame is drawn, honoring the
+      frame-consistency rule). The runbook is the build-spec for the frame: it captures
+      the archetype layout, box positions and coordinates (plan them here, before any
+      SVG — `width ≥ max(title_chars × 8, subtitle_chars × 7) + 24` for each box),
+      colour roles, and what changes from the previous frame. The runbook is persisted
+      in `figure.json` and is human-editable for re-runs; it is the ground truth a
+      fidelity review diffs the rendered SVG against.
+   2. Draw the **SVG** from the runbook.
+   3. Write the **caption** (terse subtitle shown in the HTML viewer) and the
+      **commentary** (short narration paragraph for slides/video, per the
+      `## Commentary` section of `references/voice-and-metaphor.md`).
 
-4. **Start from the template.** Use `assets/template.svg` as the starting point for each frame file. It already
+   > **Coordinate planning** is done when you write the runbook (above), before
+   > emitting SVG — see the box-width rule in step 1 and in "Core rules" below.
+   > Coordinate mistakes are the most common layout failure mode.
+
+3. **Start from the template.** Use `assets/template.svg` as the starting point for each frame file. It already
    contains the embedded stylesheet, the arrow marker, and the `cd-svg` wrapper class.
    Fill in `<title>`, `<desc>`, the `viewBox` height, and the content. Never hand-write
    the `<style>` block — it lives in the template and in `assets/_style.css`.
 
-5. **Use the design system.** Colors, classes, and type rules are in
+4. **Use the design system.** Colors, classes, and type rules are in
    `references/design-system.md`. The short version is in "Core rules" below.
    Voice and metaphor guidance is in `references/voice-and-metaphor.md`;
    vocabulary for common primitives (cells, pointers, graph nodes) is in
    `references/visual-vocabulary.md`.
 
-6. **Validate before delivering.** Run the linter — it is dependency-free and catches
+5. **Validate before delivering.** Run the linter — it is dependency-free and catches
    clipped content, labels past the edge, unclassed text, and frame-consistency errors.
    ```
    # one frame
@@ -76,14 +89,14 @@ succeed or fail — don't rush past them.
    Fix every ERROR and review every WARN. A clean lint is required before handing the
    figure to the user.
 
-7. **Review.** Run the protocol in `references/review-protocol.md`: blind-reader test
+6. **Review.** Run the protocol in `references/review-protocol.md`: blind-reader test
    (give only the rendered figure to a fresh reader, check comprehension) and fidelity
    critic (give concept definition + figure, check correctness). The automated review
    loop arrives in Phase 3; during development, run both checks manually or as a
    subagent. A figure with a comprehension gap gets regenerated with the critique as a
    constraint — captions are context, not a crutch.
 
-8. **Export PNG only if asked.** For slides or video:
+7. **Export PNG only if asked.** For slides or video:
    ```
    python3 scripts/render.py path/to/frame.svg --png out.png --theme light --scale 2
    ```
@@ -91,7 +104,7 @@ succeed or fail — don't rush past them.
    flag is reserved — forced dark-theme rasterization is a future enhancement (static
    rasterizers don't evaluate the dark-mode media query). Needs `cairosvg` or `rsvg-convert`.
 
-9. **Deliver the figure directory**, not pasted SVG source. The directory contains
+8. **Deliver the figure directory**, not pasted SVG source. The directory contains
    `figure.json` and `frame-NN.svg` files; include the generated `figure.html` viewer
    when the figure has multiple frames.
 
@@ -131,7 +144,12 @@ The output is a **figure directory** containing:
 
 - `figure.json` — manifest (see `references/figure-json.md`): `concept_slug`, `archetype`,
   `playback` (`static` or `slideshow`), and an ordered `frames` array where each entry
-  has `file` and `caption`. In `figure.json`, `archetype` is one of the four visual kinds — `illustrative`, `flowchart`, `structural`, `chart`. A multi-frame figure is NOT a separate archetype: keep `archetype` as the visual kind (usually `illustrative`) and set `playback: "slideshow"`.
+  has `file`, `caption`, `runbook`, and `commentary` (all required). `caption` is the
+  only text shown in the HTML viewer; `commentary` is narration for slides/video and is
+  not rendered in the viewer. In `figure.json`, `archetype` is one of the four visual
+  kinds — `illustrative`, `flowchart`, `structural`, `chart`. A multi-frame figure is
+  NOT a separate archetype: keep `archetype` as the visual kind (usually `illustrative`)
+  and set `playback: "slideshow"`.
 - `frame-01.svg`, `frame-02.svg`, … — one SVG per frame, each a complete standalone file
   built from `assets/template.svg`.
 

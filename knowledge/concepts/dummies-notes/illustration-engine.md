@@ -46,7 +46,9 @@ ramps; no gradients/shadows/emoji.
 
 ## figure.json contract
 
-Every figure directory pairs its SVG frames with a `figure.json` manifest. Required fields: `concept_slug`, `archetype`, `playback` (`static` | `slideshow`), `frames` (ordered list of `{ file, caption }` objects).
+Every figure directory pairs its SVG frames with a `figure.json` manifest. Required fields: `concept_slug`, `archetype`, `playback` (`static` | `slideshow`), `frames` (ordered list of `{ file, caption, runbook, commentary }` objects).
+
+The generation workflow is **runbook-first** and applies to **every frame — including a single static frame**. For each frame: (1) write the `runbook` — the build-spec capturing archetype layout, box positions/coordinates (planned here, before any SVG), colour roles, and what changes from the previous frame; (2) draw the SVG from the runbook; (3) write the `caption` (terse viewer subtitle) and `commentary` (narration for slides/video). Coordinate and layout planning is done inside the runbook step, before emitting SVG. `caption` is the only text shown in the HTML viewer; `commentary` is not rendered there.
 
 **Frame-consistency rule:** all frames in a slideshow must share the same `viewBox`, so the sequence reads as smooth evolution rather than jump-cuts.
 
@@ -63,7 +65,7 @@ The `main()` CLI dispatch now validates path shape before calling backend functi
 - `--viewer` requires a directory; passing a file path prints `ERROR … --viewer needs a figure directory` and exits 1.
 - `--png` requires a single `.svg` file; passing a directory prints `ERROR … --png needs a single .svg file` and exits 1.
 
-Five `TestCli` tests cover these guards plus the happy-path lint and viewer cases. Suite total: 51 tests, 1 skip.
+Five `TestCli` tests cover these guards plus the happy-path lint and viewer cases. Suite total: 52 tests, 1 skip.
 
 ### PNG export and `--theme`
 

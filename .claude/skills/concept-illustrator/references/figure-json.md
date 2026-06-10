@@ -18,7 +18,7 @@ Each item in `frames`:
 |-------|------|----------|-------|
 | `file` | string | yes | the frame's SVG filename |
 | `caption` | string | yes | terse subtitle shown under the frame in the HTML viewer |
-| `runbook` | string | yes | build-spec for the frame: what/why/how it is drawn. Written first (runbook-first), drives SVG generation, the ground truth a fidelity review diffs the rendered SVG against. Human-editable for re-runs. |
+| `runbook` | string | yes | build-spec for the frame: what/why/how it is drawn; the ground truth a fidelity review diffs the SVG against; human-editable for re-runs |
 | `commentary` | string | yes | rich narration for slides/video. Accessible, simple sentences. Caption is the viewer subtitle; commentary is narration-only and is NOT rendered in the HTML viewer. |
 
 Rules:

@@ -63,6 +63,13 @@ Append-only chronological log of significant changes to this project. Each entry
 - Scoped `illustration-engine.md` `affects:` from the broad `concept-illustrator/**` glob to exactly `SKILL.md` and `scripts/render.py`; reference docs and assets no longer trigger article drift checks.
 - Updated CLAUDE.md article-mapping table to two specific rows matching the new globs.
 
+## [2026-06-09] docs | concept-illustrator: runbook-first workflow + runbook/commentary in output contract
+
+- `SKILL.md § Workflow step 2`: added explicit runbook-first per-frame order — write runbook (what/why/how, honoring frame-consistency) → draw SVG → write caption + commentary. Noted runbook is persisted in `figure.json` and human-editable for re-runs.
+- `SKILL.md § Output contract`: expanded `frames` entry description to list all four required per-frame fields (`file`, `caption`, `runbook`, `commentary`); noted `caption` is the only text shown in the HTML viewer; `commentary` is narration-only for slides/video.
+- `knowledge/concepts/dummies-notes/illustration-engine.md`: updated `## figure.json contract` to reflect `{ file, caption, runbook, commentary }` and added runbook-first sentence.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
 ## [2026-06-09] fix | quicksort figure: color-semantics + silent-swap review
 
 - Revised all four frames in `examples/quicksort/` to use an unambiguous color model: `c-coral` = pivot (constant throughout), `c-teal` = current scan target (one cell, never the pivot), `c-gray` = settled left-zone cells, `box` = not-yet-scanned.
@@ -70,4 +77,12 @@ Append-only chronological log of significant changes to this project. Each entry
 - Rewrote all four captions to explicitly narrate every swap; no array rearrangement is silent.
 - Updated `CLAUDE.md § Current state` to reflect reality: git repo on `main`, pre-commit hook + GitHub Action installed, Phase 1 shipped, correct command references, phases 2–4 not yet built.
 - Updated `illustration-engine.md` with `## Golden quicksort example — color-model (revised)` section.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
+## [2026-06-09] fix | concept-illustrator: workflow-clarity fixes (runbook scope + coordinate planning)
+
+- `SKILL.md § Workflow step 2`: changed "For each frame, work in this order" to "For each frame — including a single static frame — work in this order:" so the runbook-first sub-sequence unambiguously applies to static figures, not just sequences.
+- `SKILL.md § Workflow step 2 runbook sub-step`: folded coordinate/layout planning into the runbook sub-step (archetype layout, box positions/coordinates, colour roles, what changes from the previous frame); the box-width formula now appears there, before any SVG.
+- `SKILL.md § Workflow`: replaced the separate "Plan coordinates before writing SVG" step with a blockquote note clarifying that coordinate planning happens inside the runbook step, not after drawing. Renumbered subsequent steps (old 4–9 → new 3–8).
+- `references/figure-json.md`: trimmed the `runbook` row's Notes cell to just the definition; the standalone bold **runbook-first** paragraph below the table continues to carry the ordering rule.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
