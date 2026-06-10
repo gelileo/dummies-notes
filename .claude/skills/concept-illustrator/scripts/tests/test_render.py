@@ -299,5 +299,30 @@ class TestBuildViewer(unittest.TestCase):
             self.assertNotIn("/*FRAMES*/[]", html)
 
 
+import shutil
+
+
+class TestPngExport(unittest.TestCase):
+    def test_png_export_when_backend_available(self):
+        if not (shutil.which("rsvg-convert") or _has_cairosvg()):
+            self.skipTest("no rasterizer backend installed")
+        with tempfile.TemporaryDirectory() as d:
+            svg_path = os.path.join(d, "f.svg")
+            with open(svg_path, "w") as fh:
+                fh.write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 100">'
+                         '<rect x="0" y="0" width="680" height="100"/></svg>')
+            out = os.path.join(d, "f.png")
+            render.export_png(svg_path, out, "light", 2.0)
+            self.assertTrue(os.path.exists(out) and os.path.getsize(out) > 0)
+
+
+def _has_cairosvg():
+    try:
+        import cairosvg  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
 if __name__ == "__main__":
     unittest.main()

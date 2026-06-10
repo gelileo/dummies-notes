@@ -7,6 +7,8 @@ import argparse
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 import xml.etree.ElementTree as ET
 from html import escape as _html_escape
@@ -313,6 +315,23 @@ def build_viewer(dir_path, template_path, out_path):
     with open(out_path, "w", encoding="utf-8") as handle:
         handle.write(html)
     return out_path
+
+
+def export_png(svg_path, png_path, theme="light", scale=2.0):
+    """Rasterize via rsvg-convert or cairosvg. Static rasterizers don't evaluate
+    the dark-mode media query, so 'theme' is reserved for a future forced-theme
+    pass; for now both backends render the document's default (light)."""
+    if shutil.which("rsvg-convert"):
+        subprocess.run(
+            ["rsvg-convert", "-z", str(scale), "-o", png_path, svg_path], check=True
+        )
+        return png_path
+    try:
+        import cairosvg
+    except ImportError:
+        raise SystemExit("PNG export needs 'rsvg-convert' or 'cairosvg' installed")
+    cairosvg.svg2png(url=svg_path, write_to=png_path, scale=scale)
+    return png_path
 
 
 if __name__ == "__main__":
