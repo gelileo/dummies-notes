@@ -339,7 +339,7 @@ class TestReferenceDocs(unittest.TestCase):
                                  "## State styles"],
         "voice-and-metaphor.md": ["## Voice", "## Metaphor bank", "## Commentary"],
         "review-protocol.md": ["## Blind-reader test", "## Fidelity critic",
-                               "## Repair loop"],
+                               "## Repair loop", "## Runbook drift"],
     }
 
     def test_required_docs_and_headings(self):

@@ -15,7 +15,10 @@ same procedure as a manual or subagent process for use during development.
 1. Render the figure to PNG (or export the SVG frames as a slideshow).
 2. Give a fresh agent — or a colleague who has not seen the storyboard — **only the
    rendered figure and its caption**. Do not share the concept definition, the
-   storyboard plan, or any generation notes.
+   storyboard plan, or any generation notes. The blind-reader sees ONLY the rendered
+   figure (and at most the terse caption) — never the runbook or commentary; its read
+   is compared against the `commentary`'s intent, and divergence is a comprehension
+   gap.
 3. Ask: "What does this teach? What is the mechanism it is showing? What is
    confusing or unclear?"
 4. Compare the agent's answer to the **intended concept**. If the agent describes a
@@ -47,6 +50,13 @@ A silently assumed prerequisite (a term or mechanism the figure uses but never
 explains) is flagged as a **missing prerequisite node** — return it to
 `concept-decompose` to add the node to the graph, rather than patching the caption.
 
+### Commentary quality
+
+Check that the frame's `commentary` is accessible, vibrant, uses simple sentences,
+and is faithful to the frame's visual content. Flag run-on or compound-complex
+sentences — commentary that requires several re-reads to parse will not survive the
+blind-reader test.
+
 ---
 
 ## Repair loop
@@ -75,3 +85,16 @@ explains) is flagged as a **missing prerequisite node** — return it to
 **What does not count as repair:** adding a long explanatory caption to compensate
 for a figure that does not work visually. Captions are context, not a crutch. If the
 image alone fails the blind-reader test, fix the image.
+
+---
+
+## Runbook drift
+
+Each frame's `runbook` (in `figure.json`) is the ground truth of intent. The
+fidelity critic diffs the rendered SVG against its runbook: cell count, colour
+roles, pointer positions, what changed from the previous frame. A mismatch is
+drift. Two repair branches:
+
+- **SVG is wrong** → regenerate that frame from its runbook.
+- **Runbook is wrong or outdated** (the concept changed) → fix the runbook, then
+  re-run; regeneration redraws from it.
