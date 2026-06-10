@@ -2,6 +2,22 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] compile | Phase 4 shipped — the dummies-notes system is complete
+
+All four phases of the original spec are now built. This entry records what landed across Phase 4 and the final state of the system.
+
+**Assembler (`scripts/assemble.py`)** — deterministic deliverable builder: `load_full_graph` / `find_root` / `topo_order` (Kahn's BFS, alphabetical tie-breaking); `build_explainer` (bottom-up inline slideshows, covered links, frontier stubs); `build_map` (nodes layered by depth, first-frame thumbnails, prerequisite edges, click-through to explainer); CLI (`graph_dir`, `--registry`, `--out`). 18 tests added (suite total 57), all passing.
+
+**Compose-from-children mode** — added to `.claude/skills/concept-illustrator/SKILL.md`: single-frame structural composition figure for a non-atomic parent whose children are already illustrated; used by the Assemble phase to author the root figure.
+
+**Assemble + ChainReview phases** — wired into `.claude/workflows/dummies-notes.js` as the final two phases of the full pipeline. Assemble: compose-from-children agent for non-atomic roots + `scripts/assemble.py` runner. ChainReview: fresh agent writes `output/<root>/chain-review.json`; gaps reported, no auto-repair (honest disclosure, not silent patching). Return object gains `index_html`, `map_html`, `chain_review_pass`, `chain_gaps`.
+
+**Both deliverables produced**:
+- `output/modular-arithmetic/` — atomic, chain review passed clean.
+- `output/rsa-encryption/` — full run (4 nodes, maxDepth 1): covered-stop on modular-arithmetic, prime-numbers + asymmetric-cryptography illustrated, composition figure for root. Chain review **failed honestly** — 4 documented graph-level gaps shipped in `chain-review.json`. Capstone check working as designed: composition figures map structure but don't teach the target's own mechanism; deeper runs are needed for security-core nodes.
+
+**Articles touched**: `concepts/dummies-notes/orchestration-workflow.md`, `concepts/dummies-notes/illustration-engine.md`, `knowledge/index.md`, `CLAUDE.md`.
+
 ## [2026-06-10] feat | workflow: Assemble + ChainReview phases — the full pipeline (Phase 4 Task 5)
 
 - `.claude/workflows/dummies-notes.js`: added two new phases. `meta.phases` gains `{ title: 'Assemble', ... }` and `{ title: 'ChainReview', ... }` after Finalize; `meta.whenToUse` updated to drop "assembly is Phase 4" (now built), noting the run produces `output/<topic>/index.html` + `map.html`. Replaced the final `return` block with the full Assemble phase (compose-from-children agent for non-atomic roots + `scripts/assemble.py` runner) and ChainReview phase (fresh-eyes agent writes `output/<root>/chain-review.json`; gaps logged as a report, no auto-repair). Return object gains `index_html`, `map_html`, `chain_review_pass`, `chain_gaps`.

@@ -77,13 +77,25 @@ After implementing, ask: "does anything in `knowledge/` now contradict what I bu
 
 This is a git repo on `main`. The living-doc pre-commit hook and GitHub Action are installed and active.
 
-**Phase 1 shipped**: the `concept-illustrator` skill lives at `.claude/skills/concept-illustrator/`:
+**All four phases shipped — the dummies-notes system is complete.**
+
+**Phase 1**: the `concept-illustrator` skill lives at `.claude/skills/concept-illustrator/`:
 - `SKILL.md` — the skill contract
 - `assets/` — `template.svg`, `_style.css`, `slideshow.template.html`
 - `references/` — design-system, archetypes, visual-vocabulary, voice-and-metaphor, review-protocol, figure-json
 - `scripts/render.py` — SVG lint + figure-dir validation + slideshow viewer builder + optional PNG export
-- `examples/quicksort/` — the golden reference figure (4-frame slideshow)
+- `examples/quicksort/` — the golden reference figure (5-frame slideshow)
 - `scripts/tests/` — unit tests
+
+**Phase 2**: the `concept-decompose` skill (`.claude/skills/concept-decompose/` — single-level decomposition contract, `decomposition.json` schema + validator, golden rsa/modular-arithmetic examples) and the `concept-registry` (`scripts/concept_registry.py` + `scripts/concept-registry` CLI; entries under `registry/`, seeded with quicksort + modular-arithmetic + rsa-encryption + prime-numbers + asymmetric-cryptography).
+
+**Phase 3**: the `dummies-notes` Workflow at `.claude/workflows/dummies-notes.js` and `scripts/graph_check.py` (zero-dep; shape + cross-node cycle detection + registry coverage).
+
+**Phase 4**: `scripts/assemble.py` (deterministic deliverable builder), compose-from-children mode in the illustrator skill, and Assemble + ChainReview phases wired into the workflow. Deliverables: `output/modular-arithmetic/` and `output/rsa-encryption/` (the latter ships an honest failing `chain-review.json` — 4 documented graph-level gaps; the capstone check working as designed).
+
+**Running the full pipeline** — invoke via the Workflow tool with `{topic, definition?, maxDepth?, maxNodes?}`. The run produces `output/<topic>/index.html` (bottom-up explainer with inline slideshows) + `map.html` (concept map with thumbnails) + `chain-review.json`.
+
+Known open items (one line): figure invalidation/versioning is not yet implemented; composition figures map structure but don't teach a non-atomic target's own mechanism (chain review surfaces this).
 
 Real commands:
 
@@ -97,27 +109,21 @@ python3 .claude/skills/concept-illustrator/scripts/render.py <file.svg|figure-di
 # validate knowledge frontmatter / drift
 python3 scripts/validate-articles
 python3 scripts/drift-check --warn-only
-```
 
-**Phase 2 shipped**: the `concept-decompose` skill (`.claude/skills/concept-decompose/` — single-level decomposition contract, `decomposition.json` schema + validator, golden rsa/modular-arithmetic examples) and the `concept-registry` (`scripts/concept_registry.py` + `scripts/concept-registry` CLI; entries under `registry/`, seeded with quicksort illustrated + modular-arithmetic registered).
-
-```bash
 # decompose tooling
 python3 .claude/skills/concept-decompose/scripts/validate_decomposition.py <decomposition.json>
 python3 -m unittest discover -s .claude/skills/concept-decompose/scripts/tests -p 'test_*.py'
+
 # registry
 scripts/concept-registry register|lookup|attach-figure|index ...
 python3 -m unittest discover -s scripts/tests -p 'test_*.py'
-```
 
-**Phase 3 shipped**: the `dummies-notes` Workflow at `.claude/workflows/dummies-notes.js` (run via the Workflow tool with `{topic: "..."}`, scriptPath or name) and `scripts/graph_check.py` (zero-dep; shape + cross-node cycle detection + registry coverage). First run illustrated modular-arithmetic end-to-end (1 node, clock-face figure, review passed, graph_check clean).
-
-```bash
 # validate a concept graph (cycles + registry coverage)
 python3 scripts/graph_check.py output/<topic>/graph --require-illustrated
-```
 
-**Phase 4** (assembly + map viewer + chain review over `output/<topic>/`) is **not yet built**. See `docs/superpowers/specs/2026-06-09-dummies-notes-design.md` and `docs/superpowers/plans/`.
+# assemble a deliverable from an existing graph
+python3 scripts/assemble.py output/<topic>/graph --out output/<topic>
+```
 
 `example/` is the original design reference: `concept-illustrator-SKILL.md` plus a finished sample figure (`example-binary-search.svg` + light/dark PNGs). The shipped implementation supersedes it — treat `example/` as historical reference only.
 
