@@ -56,6 +56,10 @@ The generation workflow is **runbook-first** and applies to **every frame — in
 
 The `validate_figure(dir_path, style_path)` function in `render.py` enforces this contract — it checks required fields, resolves each frame file, runs `lint_svg` on each, reports an ERROR if `viewBox` values diverge across frames, and reports an ERROR for any frame where `runbook` or `commentary` is absent, blank/whitespace, or a non-string value (e.g. a number from malformed JSON). A bare-string frame entry (e.g. `"frame-01.svg"` instead of an object) is also an ERROR — every frame must be a `{ file, caption, runbook, commentary }` object. Both fields are **required** on every frame, including single-frame static figures. Reference: `.claude/skills/concept-illustrator/references/figure-json.md`.
 
+## Compose-from-children mode
+
+The skill now has a compose-from-children mode: a single-frame structural composition figure for a non-atomic parent built from its already-illustrated children; used by the assembly phase for the target.
+
 ## SVG linter (`render.py`)
 
 `lint_svg` / `lint_file` run a suite of checks: correct `viewBox` width (680), text-class presence, no inline `font-size`, no placeholder tokens, palette-only colors, no filters/emoji, sentence-case text, rect bounds, connector fill rules. All checks return `(level, message)` pairs so callers can filter by severity.

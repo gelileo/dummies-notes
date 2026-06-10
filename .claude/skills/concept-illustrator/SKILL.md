@@ -164,6 +164,25 @@ For a sequence, `playback` is `"slideshow"` and every frame shares the same `vie
 Machine-callable interface: input = concept slug + concept name + definition;
 output = a figure directory at the path of your choice.
 
+## Composition figures (compose-from-children)
+
+Used by the assembly phase for a NON-ATOMIC parent whose children are already
+illustrated. Input: the parent concept (slug, name, definition) and its children
+(slug, name, definition, why). Output: a normal figure directory — a single
+frame, `archetype: "structural"`, `playback: "static"` — showing how the
+children snap together into the parent:
+
+- One box per child (compose from `references/visual-vocabulary.md` primitives;
+  neutral category ramps — purple/blue/pink per `references/design-system.md`),
+  labelled with the child's name and a 2–6 word essence of its `why`.
+- The parent is the destination the children converge into (enclosing container
+  or convergence point); give it the visual emphasis.
+- Do NOT redraw the children's own figures — this is a map of how the parts
+  fit, not a re-teaching (reuse = referencing).
+- Same contract as every figure: runbook-first, caption + commentary, must
+  validate clean via `scripts/render.py`. Closure is inherent — the composition
+  IS the end-state picture.
+
 ## Core rules (the look)
 
 Full detail in `references/design-system.md`; this is the load-bearing subset.

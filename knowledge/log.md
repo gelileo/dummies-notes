@@ -2,6 +2,13 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat | illustrator: compose-from-children mode for composition figures (Phase 4 Task 4)
+
+- `.claude/skills/concept-illustrator/SKILL.md`: added `## Composition figures (compose-from-children)` section (after the output-contract section) — specifies the single-frame structural composition figure for a non-atomic parent whose children are already illustrated; used by the assembly phase to author the target's root figure.
+- `scripts/tests/test_render.py`: added `test_skill_md_documents_composition_mode` to `TestSkillRefs` — asserts both "Composition figures" and "compose-from-children" tokens are present in SKILL.md. Suite total: 58 tests, 1 skip.
+- `knowledge/concepts/dummies-notes/illustration-engine.md`: added compose-from-children mode section.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
 ## [2026-06-10] fix | assemble.py: empty-graph diagnostic + negative-path tests (review follow-ups)
 
 - `scripts/assemble.py load_full_graph`: after the `for fname` loop, if `nodes` and `issues` are both empty, appends `("ERROR", "no decomposition files found in <graph_dir>")`. This prevents a silent crash inside `find_root` when the graph directory exists but holds no `.json` files; `main` prints the ERROR and exits 1.

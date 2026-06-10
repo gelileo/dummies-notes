@@ -357,6 +357,13 @@ class TestSkillRefs(unittest.TestCase):
         import check_skill_refs
         self.assertEqual(check_skill_refs.missing_refs(), [])
 
+    def test_skill_md_documents_composition_mode(self):
+        with open(os.path.join(os.path.dirname(SCRIPTS_DIR), "SKILL.md"),
+                  encoding="utf-8") as fh:
+            text = fh.read()
+        for token in ("Composition figures", "compose-from-children"):
+            self.assertIn(token, text)
+
 
 class TestGoldenExample(unittest.TestCase):
     def test_quicksort_figure_is_valid(self):
