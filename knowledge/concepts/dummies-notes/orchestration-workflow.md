@@ -7,6 +7,7 @@ status: mature
 affects:
   - ".claude/workflows/**"
   - "scripts/graph_check.py"
+  - "scripts/assemble.py"
 references:
   - "concepts/dummies-notes/concept-decomposition.md"
   - "concepts/dummies-notes/illustration-engine.md"
@@ -73,3 +74,5 @@ Phase 4 scope (not yet built):
 - **Assembly**: render `output/<topic>/index.html` (bottom-up explainer) and `output/<topic>/map.html` (interactive concept map) from the graph + registry figures.
 - **End-to-end chain review**: a cross-node fresh-eyes pass over the full assembled output, not just per-figure review.
 - **Open question carried forward**: figure invalidation and versioning — when an illustrated concept's definition changes, how does the registry detect staleness and trigger a re-illustration?
+
+Assembly is deterministic: `scripts/assemble.py` renders index.html + map.html from the graph + registry — no agent writes HTML.

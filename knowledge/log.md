@@ -2,6 +2,14 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat | assemble.py core: graph loading, root detection, bottom-up topological order (Phase 4 Task 1)
+
+- Created `scripts/assemble.py`: deterministic assembler skeleton. Implements `load_full_graph` (reads `*.json` graph files from a directory into `{slug: {name, definition, atomic, prerequisites}}` nodes), `find_root` (the one node unreferenced by others), `topo_order` (Kahn's-style BFS with alphabetical tie-breaking — prerequisites before dependents, root last; raises on cycles). Module docstring and all Task 2–3 imports (`argparse`, `html`, `render`, `DEFAULT_ROOT`, `lookup`) present.
+- Created `scripts/tests/test_assemble.py`: 8 tests across `TestLoadFullGraph`, `TestFindRoot`, `TestTopoOrder` (TDD — written before module, confirmed `No module named 'assemble'` failure, then all 43 passed).
+- `knowledge/concepts/dummies-notes/orchestration-workflow.md`: added `scripts/assemble.py` to `affects:`; added body sentence: "Assembly is deterministic: `scripts/assemble.py` renders index.html + map.html from the graph + registry — no agent writes HTML."
+- `CLAUDE.md`: added row `scripts/assemble.py` → `orchestration-workflow.md` to the article mapping table.
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`, `CLAUDE.md`.
+
 ## [2026-06-10] compile | Phase 3 knowledge-base reconciliation (Task 5)
 
 Phase 3 shipped three production deliverables. This entry records what landed and the articles matured to reflect it.
