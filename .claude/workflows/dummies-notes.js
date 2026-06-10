@@ -1,12 +1,14 @@
 export const meta = {
   name: 'dummies-notes',
   description: 'Decompose a topic into a concept graph, illustrate atomic concepts, review with fresh eyes, and register figures',
-  whenToUse: 'args: {topic: string, definition?: string, maxDepth?: number, maxNodes?: number}. Phase 3 scope: graph + figures + registry; assembly is Phase 4.',
+  whenToUse: 'args: {topic: string, definition?: string, maxDepth?: number, maxNodes?: number}. Run produces output/<topic>/index.html (bottom-up explainer) + output/<topic>/map.html (concept map).',
   phases: [
     { title: 'Decompose', detail: 'registry-aware BFS, one skill call per node' },
     { title: 'Illustrate', detail: 'runbook-first figure per atomic concept' },
     { title: 'Review', detail: 'blind reader + fidelity critic, two repairs max' },
     { title: 'Finalize', detail: 'register, attach figures, graph check' },
+    { title: 'Assemble', detail: 'compose root figure if needed; render index.html + map.html' },
+    { title: 'ChainReview', detail: 'fresh-eyes pass over the assembled explainer' },
   ],
 }
 
@@ -244,6 +246,61 @@ log(`done: ${report && report.registered ? report.registered.length : 0} registe
   `${report && report.attached ? report.attached.length : 0} attached, ${flagged.length} flagged, ` +
   `graph check ${report && report.graph_check_clean ? 'clean' : 'FAILED'}`)
 
+// ---- Phase 5: assemble the deliverable ---------------------------------------
+phase('Assemble')
+
+const ASSEMBLE_SCHEMA = {
+  type: 'object',
+  properties: {
+    index_html: { type: 'string' },
+    map_html: { type: 'string' },
+    sections: { type: 'number' },
+    assemble_clean: { type: 'boolean' },
+  },
+  required: ['index_html', 'map_html', 'sections', 'assemble_clean'],
+}
+
+const rootNode = nodes[rootSlug]
+if (rootNode && rootNode.atomic === false) {
+  const kids = rootNode.prerequisites.map(s => ({
+    slug: s,
+    name: (nodes[s] && nodes[s].name) || s,
+    definition: (nodes[s] && nodes[s].definition) || '',
+  }))
+  await agent(
+    'Follow .claude/skills/concept-illustrator/SKILL.md — the "Composition figures (compose-from-children)" mode.\n' +
+    `Parent concept: ${rootSlug} (${rootNode.name}) — ${rootNode.definition}\n` +
+    `Children: ${JSON.stringify(kids)}\n` +
+    `Write a single-frame structural composition figure to registry/${rootSlug}/figure (runbook-first; caption + commentary required).\n` +
+    `It must validate clean: python3 .claude/skills/concept-illustrator/scripts/render.py registry/${rootSlug}/figure\n` +
+    `Then attach it: scripts/concept-registry attach-figure ${rootSlug} registry/${rootSlug}/figure\n` +
+    'Return figure_dir, lint_clean, frames.',
+    { label: `compose:${rootSlug}`, phase: 'Assemble', schema: FIGURE_SCHEMA })
+}
+
+const assembled = await agent(
+  `Run from the repo root: python3 scripts/assemble.py output/${rootSlug}/graph --out output/${rootSlug}\n` +
+  'It must exit 0 (prints "OK assembled N section(s) ..."). Return index_html and map_html as the generated file paths, ' +
+  'sections = N from the OK line, assemble_clean = (exit code was 0).',
+  { label: 'assemble', phase: 'Assemble', schema: ASSEMBLE_SCHEMA })
+if (!assembled || !assembled.assemble_clean) throw new Error('assembly failed')
+
+// ---- Phase 6: end-to-end chain review (fresh eyes over the whole artifact) ----
+phase('ChainReview')
+
+const chain = await agent(
+  `You are the chain reviewer for output/${rootSlug}/index.html. Read it top to bottom ` +
+  `as a learner would (it is ordered bottom-up: prerequisites first, the target last), ` +
+  `plus the graph files in output/${rootSlug}/graph/.\n` +
+  'Report graph-level gaps that per-figure reviews cannot see:\n' +
+  '1. Leaps: a section assumes an idea no earlier section taught or linked.\n' +
+  '2. Unmet prerequisites: a concept referenced but never illustrated, linked, or honestly stubbed.\n' +
+  '3. Broken arc: the chain never actually builds up to the target concept.\n' +
+  `Write your verdict to output/${rootSlug}/chain-review.json as {"pass": <bool>, "summary": "<str>", "gaps": ["..."]} and return the same verdict. ` +
+  'pass = a curious adult could read this start to finish and understand the target.',
+  { label: 'chain-review', phase: 'ChainReview', schema: VERDICT_SCHEMA })
+if (chain && !chain.pass) log(`chain review found ${chain.gaps.length} gap(s) — see output/${rootSlug}/chain-review.json`)
+
 return {
   root: rootSlug,
   graph_dir: `output/${rootSlug}/graph`,
@@ -253,4 +310,8 @@ return {
   frontier,
   collisions: (report && report.collisions) || [],
   graph_check_clean: !!(report && report.graph_check_clean),
+  index_html: assembled.index_html,
+  map_html: assembled.map_html,
+  chain_review_pass: !!(chain && chain.pass),
+  chain_gaps: (chain && chain.gaps) || [],
 }

@@ -21,7 +21,7 @@ recursive, stateful piece of the system. It wires the Phase 1–2 primitives int
 one run: take a topic, build its concept graph, illustrate the atomic nodes,
 review them with fresh eyes, and register everything.
 
-## Run shape (Phase 3)
+## Run shape
 
 1. **Snapshot** the registry index (one agent) — coverage decisions are made
    in-memory against it.
@@ -42,6 +42,22 @@ review them with fresh eyes, and register everything.
    slugs (the registry persists the graph edges — see
    [[atomic-illustration-catalog]]), attach figures, rebuild the index, and run
    `scripts/graph_check.py` (shape, cross-node cycle detection, coverage).
+6. **Assemble**: when the root is non-atomic, a compose-from-children agent
+   authors a single-frame structural composition figure for the root (showing
+   how the children snap together) and attaches it to the registry. Then
+   `scripts/assemble.py` renders `output/<root>/index.html` (bottom-up
+   explainer: prerequisites before dependents, target last; atomic nodes embed
+   inline slideshows; covered prerequisites are linked to their registry viewer;
+   intermediate nodes are caption-only; frontier prerequisites get a stub note)
+   and `output/<root>/map.html` (concept map: nodes layered by depth, first-frame
+   thumbnails for illustrated nodes, edges for each prerequisite link, click-through
+   to the explainer sections).
+7. **ChainReview**: a fresh agent reads the assembled explainer bottom-up (as a
+   learner would), plus the graph files, and writes
+   `output/<root>/chain-review.json` as `{"pass": bool, "summary": "...", "gaps":
+   [...]}`. It reports graph-level gaps (leaps, unmet prerequisites, broken arc)
+   that per-figure reviews cannot see. Gaps surface as a report; no auto-repair —
+   the intent is honest disclosure, not silent patching.
 
 The script accepts `args` either as an object or a JSON-encoded string (some
 callers stringify it); it parses and falls back gracefully.
@@ -67,14 +83,8 @@ The shipped workflow script parameters: `MAX_DEPTH=2`, `MAX_NODES=12`, `MAX_REPA
 
 The Finalize agent registers concepts by writing NODES to a temp JSON file and calling `concept_registry.reg.register` via a python3 heredoc, avoiding shell-quoting hazards that could corrupt definitions or prerequisite slugs containing spaces or special characters.
 
-## Phase 4 next
+## Open question
 
-Phase 4 scope (not yet built):
-
-- **Assembly**: render `output/<topic>/index.html` (bottom-up explainer) and `output/<topic>/map.html` (interactive concept map) from the graph + registry figures.
-- **End-to-end chain review**: a cross-node fresh-eyes pass over the full assembled output, not just per-figure review.
-- **Open question carried forward**: figure invalidation and versioning — when an illustrated concept's definition changes, how does the registry detect staleness and trigger a re-illustration?
-
-Assembly is deterministic: `scripts/assemble.py` renders index.html + map.html from the graph + registry — no agent writes HTML. The explainer (`index.html`) is built bottom-up (prerequisites before dependents, target last): atomic nodes embed their figure frames as inline slideshows; already-covered prerequisites (in the registry but not in this run's graph) are linked to their registry viewer, never re-inlined; intermediate nodes render caption-only with links to their children; frontier prerequisites (not in graph or registry) get an honest stub note. The concept map (`map.html`) places nodes in layers by depth from the root (root at top, leaves below), illustrated nodes carry first-frame thumbnails, and every node links through to the corresponding section in the explainer.
-
-`load_full_graph` emits a clean `ERROR: no decomposition files found in <dir>` when the graph directory exists but contains no `*.json` files (empty-graph diagnostic), so `main` prints the issue and exits 1 rather than crashing inside `find_root`.
+**Figure invalidation and versioning**: when an illustrated concept's definition
+changes, the registry does not yet detect staleness or trigger a re-illustration.
+This is the one deferred question from Phase 4.

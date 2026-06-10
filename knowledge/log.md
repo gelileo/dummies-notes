@@ -2,6 +2,12 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat | workflow: Assemble + ChainReview phases — the full pipeline (Phase 4 Task 5)
+
+- `.claude/workflows/dummies-notes.js`: added two new phases. `meta.phases` gains `{ title: 'Assemble', ... }` and `{ title: 'ChainReview', ... }` after Finalize; `meta.whenToUse` updated to drop "assembly is Phase 4" (now built), noting the run produces `output/<topic>/index.html` + `map.html`. Replaced the final `return` block with the full Assemble phase (compose-from-children agent for non-atomic roots + `scripts/assemble.py` runner) and ChainReview phase (fresh-eyes agent writes `output/<root>/chain-review.json`; gaps logged as a report, no auto-repair). Return object gains `index_html`, `map_html`, `chain_review_pass`, `chain_gaps`.
+- `knowledge/concepts/dummies-notes/orchestration-workflow.md`: "Run shape (Phase 3)" heading updated to "Run shape"; steps 6–7 added (Assemble and ChainReview); "Phase 4 next" section replaced with a lean "Open question" section (figure invalidation/versioning — the one remaining deferred item).
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`.
+
 ## [2026-06-10] feat | illustrator: compose-from-children mode for composition figures (Phase 4 Task 4)
 
 - `.claude/skills/concept-illustrator/SKILL.md`: added `## Composition figures (compose-from-children)` section (after the output-contract section) — specifies the single-frame structural composition figure for a non-atomic parent whose children are already illustrated; used by the assembly phase to author the target's root figure.
