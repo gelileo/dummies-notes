@@ -242,3 +242,122 @@ def stage_svg(slide, stage):
                      f'{_esc(slide["caption"])}</text>')
     parts.append("</svg>")
     return "\n".join(parts)
+
+
+def _png_for_slides(manifest, frames_dir, stage):
+    """Write a stage PNG per slide; return ordered list of png paths."""
+    os.makedirs(frames_dir, exist_ok=True)
+    pngs = []
+    for n, slide in enumerate(manifest["slides"]):
+        svg_path = os.path.join(frames_dir, f"slide-{n:03d}.svg")
+        with open(svg_path, "w", encoding="utf-8") as fh:
+            fh.write(stage_svg(slide, stage))
+        png_path = os.path.join(frames_dir, f"slide-{n:03d}.png")
+        render.export_png(svg_path, png_path, scale=1.0)
+        pngs.append(png_path)
+    return pngs
+
+
+def _probe_duration(path):
+    """Seconds for a media file via ffprobe, or None when unavailable."""
+    if not shutil.which("ffprobe"):
+        return None
+    try:
+        out = subprocess.run(
+            ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+             "-of", "default=noprint_wrappers=1:nokey=1", path],
+            capture_output=True, text=True, check=True).stdout.strip()
+        return float(out)
+    except (subprocess.CalledProcessError, ValueError):
+        return None
+
+
+def _say_segment(text, out_aiff):
+    """Speak text to an AIFF via macOS `say`; return path or None on failure."""
+    if not (text or "").strip():
+        return None
+    try:
+        subprocess.run(["say", "-o", out_aiff, text], check=True)
+        return out_aiff
+    except subprocess.CalledProcessError:
+        return None
+
+
+def _effective_durations(manifest, segments):
+    """Per-slide seconds: spoken-audio length when ffprobe is present, else computed duration_s."""
+    durs = []
+    for slide, seg in zip(manifest["slides"], segments):
+        probed = _probe_duration(seg) if seg else None
+        durs.append(max(MIN_TTS_DUR, probed) if probed else slide["duration_s"])
+    return durs
+
+
+def _build_silent_video(pngs, durations, out_path):
+    listfile = out_path + ".concat.txt"
+    lines = []
+    for png, dur in zip(pngs, durations):
+        lines.append(f"file '{png}'")
+        lines.append(f"duration {dur:.3f}")
+    lines.append(f"file '{pngs[-1]}'")  # concat demuxer needs the last frame repeated
+    with open(listfile, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines) + "\n")
+    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", listfile,
+                    "-vf", "fps=30,format=yuv420p", out_path], check=True)
+    return out_path
+
+
+def _build_audio_track(segments, durations, work_dir, out_path):
+    """One clip per slide sized to its duration: apad extends short speech, -t caps long (or silence)."""
+    clips = []
+    for n, (seg, dur) in enumerate(zip(segments, durations)):
+        clip = os.path.join(work_dir, f"aud-{n:03d}.wav")
+        if seg:
+            subprocess.run(["ffmpeg", "-y", "-i", seg, "-af", "apad",
+                            "-t", f"{dur:.3f}", "-ar", "44100", "-ac", "2", clip],
+                           check=True)
+        else:
+            subprocess.run(["ffmpeg", "-y", "-f", "lavfi", "-i",
+                            "anullsrc=r=44100:cl=stereo", "-t", f"{dur:.3f}",
+                            "-ar", "44100", "-ac", "2", clip], check=True)
+        clips.append(clip)
+    listfile = out_path + ".concat.txt"
+    with open(listfile, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(f"file '{c}'" for c in clips) + "\n")
+    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", listfile,
+                    "-c", "copy", out_path], check=True)
+    return out_path
+
+
+def render_mp4(manifest, out_dir, stage):
+    """Return (mp4_path|None, notes). Honest fallback when tools are missing."""
+    notes = []
+    if not manifest.get("slides"):
+        return None, ["empty manifest — no slides to render."]
+    if not shutil.which("ffmpeg"):
+        notes.append("ffmpeg not found — MP4 skipped (HTML player still produced).")
+        return None, notes
+    frames_dir = os.path.join(out_dir, "frames")
+    pngs = _png_for_slides(manifest, frames_dir, stage)
+    have_say = bool(shutil.which("say"))
+    if not have_say:
+        notes.append("`say` not found — rendering a silent MP4 with burned-in captions.")
+    segments = [
+        _say_segment(s["narration"], os.path.join(frames_dir, f"seg-{n:03d}.aiff"))
+        if have_say else None
+        for n, s in enumerate(manifest["slides"])]
+    if have_say and not any(segments):
+        notes.append("`say` was available but all speech segments failed — MP4 will be silent.")
+    durations = _effective_durations(manifest, segments)
+    silent = os.path.join(frames_dir, "silent.mp4")
+    _build_silent_video(pngs, durations, silent)
+    mp4_path = os.path.join(out_dir, "video.mp4")
+    if any(segments):
+        audio = _build_audio_track(segments, durations, frames_dir,
+                                   os.path.join(frames_dir, "audio.wav"))
+        subprocess.run(["ffmpeg", "-y", "-i", silent, "-i", audio,
+                        "-c:v", "copy", "-c:a", "aac", "-shortest", mp4_path],
+                       check=True)
+    else:
+        subprocess.run(["ffmpeg", "-y", "-i", silent, "-c", "copy", mp4_path],
+                       check=True)
+    return mp4_path, notes

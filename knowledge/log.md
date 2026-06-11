@@ -2,6 +2,15 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-11] fix(video): robustness + docstring fixes for render_mp4
+
+- Guard empty manifest: `render_mp4` returns `(None, ["empty manifest — no slides to render."])` when `manifest["slides"]` is absent/empty, preventing `IndexError` in `_build_silent_video` (`pngs[-1]`).
+- Diagnostic when all say segments fail: appends a note when `have_say` is True but no segment succeeded.
+- Docstrings clarified: `_effective_durations` and `_build_audio_track`.
+- Test file: `import shutil` and `from unittest import mock` moved to the top stdlib block (were mid-file).
+- 18 tests, 1 skip, all passing. `validate-articles` exit 0.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-11] fix(video): escape injected manifest JSON for inline <script> context
 
 - `build_player` in `scripts/build_video.py`: after `json.dumps(light)`, replace `<` → `<`, `>` → `>`, `&` → `&` to prevent narration/caption text containing `</script>` from breaking out of the inline script block (HTML injection vector).

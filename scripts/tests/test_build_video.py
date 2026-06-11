@@ -1,14 +1,24 @@
 import json
 import os
+import shutil
 import sys
 import tempfile
 import unittest
+from unittest import mock
 import xml.etree.ElementTree as ET
 
 SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, SCRIPTS_DIR)
 import build_video as bv  # noqa: E402
 import concept_registry as reg  # noqa: E402
+
+
+def _has_cairosvg():
+    try:
+        import cairosvg  # noqa: F401
+        return True
+    except ImportError:
+        return False
 
 
 def write_decomp(graph_dir, slug, atomic, prereqs=(), figurable=None):
@@ -222,6 +232,69 @@ class TestPlayer(unittest.TestCase):
             self.assertNotIn("</script><script>alert", text)
             # it appears in escaped form instead
             self.assertIn("\\u003c/script\\u003e", text)
+
+
+class TestMp4Fallback(unittest.TestCase):
+    def _manifest(self, base):
+        graph = os.path.join(base, "g")
+        registry = os.path.join(base, "r")
+        write_decomp(graph, "tcp", True)
+        make_figure(registry, "tcp", 2)
+        manifest, _ = bv.build_manifest(graph, registry)
+        return manifest
+
+    def test_missing_ffmpeg_skips_mp4(self):
+        with tempfile.TemporaryDirectory() as base:
+            manifest = self._manifest(base)
+            with mock.patch("build_video.shutil.which", return_value=None):
+                path, notes = bv.render_mp4(manifest, base, bv.STAGE)
+            self.assertIsNone(path)
+            self.assertTrue(any("ffmpeg" in n for n in notes))
+
+    def test_missing_say_renders_silent_with_note(self):
+        with tempfile.TemporaryDirectory() as base:
+            manifest = self._manifest(base)
+
+            def which(cmd):
+                return "/usr/bin/ffmpeg" if cmd == "ffmpeg" else None
+
+            with mock.patch("build_video.shutil.which", side_effect=which), \
+                 mock.patch("build_video.render.export_png",
+                            side_effect=lambda s, p, **k: open(p, "wb").close() or p), \
+                 mock.patch("build_video.subprocess.run",
+                            return_value=mock.Mock(returncode=0)) as run:
+                path, notes = bv.render_mp4(manifest, base, bv.STAGE)
+            self.assertEqual(path, os.path.join(base, "video.mp4"))
+            self.assertTrue(any("silent" in n.lower() for n in notes))
+            self.assertFalse(any(c.args and c.args[0] and c.args[0][0] == "say"
+                                 for c in run.call_args_list))
+
+    def test_say_present_drives_audio_mux(self):
+        with tempfile.TemporaryDirectory() as base:
+            manifest = self._manifest(base)
+
+            def which(cmd):
+                return f"/usr/bin/{cmd}" if cmd in ("ffmpeg", "say") else None
+
+            with mock.patch("build_video.shutil.which", side_effect=which), \
+                 mock.patch("build_video.render.export_png",
+                            side_effect=lambda s, p, **k: open(p, "wb").close() or p), \
+                 mock.patch("build_video.subprocess.run",
+                            return_value=mock.Mock(returncode=0)) as run:
+                path, notes = bv.render_mp4(manifest, base, bv.STAGE)
+            self.assertEqual(path, os.path.join(base, "video.mp4"))
+            self.assertTrue(any(c.args and c.args[0] and c.args[0][0] == "say"
+                                for c in run.call_args_list))
+
+    @unittest.skipUnless(shutil.which("ffmpeg") and
+                         (shutil.which("rsvg-convert") or _has_cairosvg()),
+                         "needs ffmpeg + an SVG rasterizer")
+    def test_real_mp4_smoke(self):
+        with tempfile.TemporaryDirectory() as base:
+            manifest = self._manifest(base)
+            path, _ = bv.render_mp4(manifest, base, bv.STAGE)
+            self.assertTrue(path and os.path.exists(path))
+            self.assertGreater(os.path.getsize(path), 0)
 
 
 if __name__ == "__main__":
