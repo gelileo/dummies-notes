@@ -51,3 +51,5 @@ all passing.
   render at the default (light) theme.
 
 Every run also writes `script.md` (human voiceover) and `captions.srt`.
+
+**Task 3 (writers) shipped.** `write_captions(manifest, out_path)` produces standard SRT with sequential 1-based indices, `HH:MM:SS,mmm` timestamps accumulated from each slide's `duration_s`, and the slide narration (falling back to caption) as subtitle text. `write_script(manifest, out_path)` produces a Markdown file with a top-level `#` title and one `##` heading per distinct concept/kind section in reading order, followed by each slide's narration paragraph. Both functions return `out_path`. Helper `_srt_timestamp(seconds)` converts a float to the SRT timestamp format. 3 new tests added (10 total in the suite, all passing).

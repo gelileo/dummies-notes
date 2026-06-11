@@ -122,5 +122,39 @@ class TestManifest(unittest.TestCase):
                     self.assertEqual(prev["concept_slug"], s["concept_slug"])
 
 
+class TestScriptAndCaptions(unittest.TestCase):
+    def _manifest(self, base):
+        graph = os.path.join(base, "g")
+        registry = os.path.join(base, "r")
+        write_decomp(graph, "tcp", True)
+        make_figure(registry, "tcp", 2)
+        manifest, _ = bv.build_manifest(graph, registry)
+        return manifest
+
+    def test_srt_timestamp_format(self):
+        self.assertEqual(bv._srt_timestamp(0), "00:00:00,000")
+        self.assertEqual(bv._srt_timestamp(3661.5), "01:01:01,500")
+
+    def test_captions_sequential_and_increasing(self):
+        with tempfile.TemporaryDirectory() as base:
+            manifest = self._manifest(base)
+            out = os.path.join(base, "captions.srt")
+            bv.write_captions(manifest, out)
+            text = open(out, encoding="utf-8").read()
+            blocks = text.strip().split("\n\n")
+            self.assertEqual(len(blocks), len(manifest["slides"]))
+            self.assertTrue(blocks[0].startswith("1\n"))
+            self.assertIn("-->", blocks[0])
+
+    def test_script_has_concept_headings(self):
+        with tempfile.TemporaryDirectory() as base:
+            manifest = self._manifest(base)
+            out = os.path.join(base, "script.md")
+            bv.write_script(manifest, out)
+            text = open(out, encoding="utf-8").read()
+            self.assertIn("## ", text)
+            self.assertIn("narration", text.lower())
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -106,3 +106,42 @@ def build_manifest(graph_dir, registry_root=DEFAULT_ROOT, wpm=DEFAULT_WPM, stage
                 "definition": title_node["definition"], "stage": dict(stage),
                 "reading_rate_wpm": wpm, "slides": slides}
     return manifest, issues
+
+
+def _srt_timestamp(seconds):
+    ms = int(round(seconds * 1000))
+    h, ms = divmod(ms, 3600_000)
+    m, ms = divmod(ms, 60_000)
+    s, ms = divmod(ms, 1000)
+    return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
+
+
+def write_captions(manifest, out_path):
+    lines, t = [], 0.0
+    for i, slide in enumerate(manifest["slides"], start=1):
+        start, end = t, t + slide["duration_s"]
+        t = end
+        lines.append(str(i))
+        lines.append(f"{_srt_timestamp(start)} --> {_srt_timestamp(end)}")
+        lines.append(slide["narration"].strip() or slide["caption"].strip())
+        lines.append("")
+    with open(out_path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines).rstrip() + "\n")
+    return out_path
+
+
+def write_script(manifest, out_path):
+    parts = [f"# {manifest['title']} — narration script", ""]
+    current = object()
+    for slide in manifest["slides"]:
+        key = slide["kind"] if slide["concept_slug"] is None else slide["concept_slug"]
+        if key != current:
+            current = key
+            heading = slide["caption"] or slide["kind"].title()
+            parts.append(f"## {heading}")
+            parts.append("")
+        parts.append(slide["narration"].strip())
+        parts.append("")
+    with open(out_path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(parts).rstrip() + "\n")
+    return out_path
