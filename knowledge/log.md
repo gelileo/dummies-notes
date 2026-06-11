@@ -2,6 +2,20 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] compile | Phase 5 shipped — self-sufficient figures, composition retired
+
+Phase 5 introduced the two-axis decomposition contract and retired the compose-from-children approach. This entry records what landed and the final state of the system.
+
+**Two-axis contract** — `decomposition.json` now carries `mechanism_figurable` (can this concept's mechanism be taught in one standalone figure?) separately from `atomic` (stop decomposing?). The two booleans are independent: a non-atomic concept with prerequisites can still be figurable and will get its own self-sufficient mechanism figure. Validator enforces `mechanism_figurable` as a required boolean. Golden examples (`rsa-encryption`, `modular-arithmetic`) updated.
+
+**Illustrator self-sufficiency rule** — every figure teaches its own concept standalone; a reader who has not seen prerequisite figures still grasps the mechanism. When prerequisites have their own figures, commentary adds short "go deeper" pointers (references, not re-teaching). Phase-4 compose-from-children mode **retired**: it mapped structural parts without teaching the target's own mechanism.
+
+**Workflow illustrates every figurable node** — the `toIllustrate` filter changed from `atomic === true` to `mechanism_figurable === true`. Non-atomic-but-figurable nodes receive their own mechanism figure in the Illustrate pass. No separate compose step. `graph_check --require-illustrated` and `assemble.py` "Figure pending" both key off `mechanism_figurable`.
+
+**TCP acceptance run** — tcp-connection-lifecycle re-run at `maxDepth: 2`; 5 nodes: root + unreliable-delivery + delivery-acknowledgement illustrated self-sufficiently (the last two are non-atomic-but-figurable); communication-protocol + data-packets reused from registry; computer-network logged as honest frontier. Chain review **passed** (`chain_review_pass: true`) — 4 blocking gaps collapsed to 1 minor frontier note. 60 tests green.
+
+**Articles touched**: `concepts/dummies-notes/concept-decomposition.md`, `concepts/dummies-notes/illustration-engine.md`, `concepts/dummies-notes/orchestration-workflow.md`, `knowledge/index.md`, `CLAUDE.md`.
+
 ## [2026-06-10] feat(assemble): pending notice keys off mechanism_figurable; graph_check docstring (Phase 5 Task 6)
 
 - `scripts/tests/test_assemble.py write_decomp`: updated helper signature to `write_decomp(graph_dir, slug, atomic, prereqs=(), figurable=None)` and added `"mechanism_figurable": atomic if figurable is None else figurable` to the data dict. Added `test_nonatomic_figurable_without_figure_shows_pending` to `TestDegradation` — a non-atomic + figurable=True node with no figure must show "Figure pending".

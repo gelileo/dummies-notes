@@ -77,7 +77,7 @@ After implementing, ask: "does anything in `knowledge/` now contradict what I bu
 
 This is a git repo on `main`. The living-doc pre-commit hook and GitHub Action are installed and active.
 
-**All four phases shipped — the dummies-notes system is complete.**
+**All five phases shipped — the dummies-notes system is complete.**
 
 **Phase 1**: the `concept-illustrator` skill lives at `.claude/skills/concept-illustrator/`:
 - `SKILL.md` — the skill contract
@@ -91,11 +91,13 @@ This is a git repo on `main`. The living-doc pre-commit hook and GitHub Action a
 
 **Phase 3**: the `dummies-notes` Workflow at `.claude/workflows/dummies-notes.js` and `scripts/graph_check.py` (zero-dep; shape + cross-node cycle detection + registry coverage).
 
-**Phase 4**: `scripts/assemble.py` (deterministic deliverable builder), compose-from-children mode in the illustrator skill, and Assemble + ChainReview phases wired into the workflow. Deliverables: `output/modular-arithmetic/` and `output/rsa-encryption/` (the latter ships an honest failing `chain-review.json` — 4 documented graph-level gaps; the capstone check working as designed).
+**Phase 4**: `scripts/assemble.py` (deterministic deliverable builder) and Assemble + ChainReview phases wired into the workflow. Deliverables: `output/modular-arithmetic/` and `output/rsa-encryption/` (the latter shipped an honest failing `chain-review.json` — 4 documented graph-level gaps; the capstone check working as designed). Note: the compose-from-children mode added in Phase 4 was retired in Phase 5.
+
+**Phase 5**: two-axis decomposition contract (`atomic` = stop decomposing; `mechanism_figurable` = draw it — independent judgments). Illustrator self-sufficiency rule: every figure teaches its own concept standalone; commentary adds "go deeper" pointers to prerequisite figures. Compose-from-children mode **retired**. Workflow illustrates every figurable node (atomic or non-atomic); no separate compose step. `graph_check` and `assemble.py` key off `mechanism_figurable`. Acceptance: TCP re-run — chain review **passed** (4 blocking gaps → 1 minor frontier note).
 
 **Running the full pipeline** — invoke via the Workflow tool with `{topic, definition?, maxDepth?, maxNodes?}`. The run produces `output/<topic>/index.html` (bottom-up explainer with inline slideshows) + `map.html` (concept map with thumbnails) + `chain-review.json`.
 
-Known open items (one line): figure invalidation/versioning is not yet implemented; composition figures map structure but don't teach a non-atomic target's own mechanism (chain review surfaces this).
+Known open item: figure invalidation/versioning is not yet implemented — re-running a topic to pick up new or changed figures requires a manual registry reset.
 
 Real commands:
 

@@ -85,10 +85,23 @@ edges persisted to the registry, deliverable assembled. 14 agents.
 4 gaps) — its job working as designed: the per-figure reviews were clean, but
 the chain reviewer caught graph-level pedagogy gaps, chiefly that a composition
 figure maps how the parts fit without teaching the target's own *mechanism*,
-and that the depth-capped run never illustrated factoring-hardness. Recorded
-finding for future work: a non-atomic target may need a mechanism figure of its
-own in addition to the composition map, and deeper runs surface the missing
-nodes. Gaps ship alongside the output as the spec prescribes.
+and that the depth-capped run never illustrated factoring-hardness. Finding
+recorded and resolved in Phase 5: the composition-figure approach is retired;
+every figurable node now gets a self-sufficient mechanism figure of its own.
+
+## Phase 5 acceptance run (TCP)
+
+"TCP connection lifecycle" re-run at `maxDepth: 2` (2026-06-10): 5 nodes —
+tcp-connection-lifecycle (root, figurable) illustrated with a self-sufficient
+5-frame lifecycle figure; unreliable-delivery + delivery-acknowledgement
+illustrated as non-atomic-but-figurable (the Phase 5 fix); communication-protocol
++ data-packets reused from registry; computer-network logged as honest frontier.
+16 agents.
+
+**Chain review passed** (`output/tcp-connection-lifecycle/chain-review.json`,
+`chain_review_pass: true`) — 4 blocking gaps collapsed to 1 minor frontier note.
+Self-sufficient mechanism figures work; composition retired. Graph check clean;
+60 tests green.
 
 ## graph_check
 
@@ -111,4 +124,6 @@ The Finalize agent registers concepts by writing NODES to a temp JSON file and c
 
 **Figure invalidation and versioning**: when an illustrated concept's definition
 changes, the registry does not yet detect staleness or trigger a re-illustration.
-This is the one deferred question from Phase 4.
+Re-running a topic that already has figures requires a manual registry reset to
+pick up new or changed figures (confirmed during Phase 5 TCP acceptance). This
+is the one remaining open item.
