@@ -1,13 +1,13 @@
 export const meta = {
   name: 'dummies-notes',
-  description: 'Decompose a topic into a concept graph, illustrate atomic concepts, review with fresh eyes, and register figures',
+  description: 'Decompose a topic into a concept graph, illustrate every figurable concept (self-sufficient figures), review with fresh eyes, and register figures',
   whenToUse: 'args: {topic: string, definition?: string, maxDepth?: number, maxNodes?: number}. Run produces output/<topic>/index.html (bottom-up explainer) + output/<topic>/map.html (concept map).',
   phases: [
     { title: 'Decompose', detail: 'registry-aware BFS, one skill call per node' },
-    { title: 'Illustrate', detail: 'runbook-first figure per atomic concept' },
+    { title: 'Illustrate', detail: 'self-sufficient runbook-first figure per figurable concept' },
     { title: 'Review', detail: 'blind reader + fidelity critic, two repairs max' },
     { title: 'Finalize', detail: 'register, attach figures, graph check' },
-    { title: 'Assemble', detail: 'compose root figure if needed; render index.html + map.html' },
+    { title: 'Assemble', detail: 'render index.html + map.html from the graph + figures' },
     { title: 'ChainReview', detail: 'fresh-eyes pass over the assembled explainer' },
   ],
 }
@@ -46,6 +46,7 @@ const DECOMP_SCHEMA = {
   properties: {
     concept: { type: 'object', properties: CONCEPT_PROPS, required: ['slug', 'name', 'definition'] },
     atomic: { type: 'boolean' },
+    mechanism_figurable: { type: 'boolean' },
     atomic_reason: { type: 'string' },
     prerequisites: {
       type: 'array',
@@ -58,7 +59,7 @@ const DECOMP_SCHEMA = {
     file: { type: 'string' },
     validator_clean: { type: 'boolean' },
   },
-  required: ['concept', 'atomic', 'atomic_reason', 'prerequisites', 'file', 'validator_clean'],
+  required: ['concept', 'atomic', 'mechanism_figurable', 'atomic_reason', 'prerequisites', 'file', 'validator_clean'],
 }
 const FIGURE_SCHEMA = {
   type: 'object',
@@ -151,9 +152,10 @@ while (queue.length) {
     name: d.concept.name,
     definition: d.concept.definition,
     atomic: d.atomic,
+    mechanism_figurable: d.mechanism_figurable,
     prerequisites: d.prerequisites.map(p => p.slug),
-    // full prerequisite objects (incl. why) — the compose-from-children
-    // contract labels each child with the essence of its why
+    // full prerequisite objects (incl. why) — used by the self-sufficiency
+    // prompt to list prerequisite names for figurable concepts
     prereqMeta: d.prerequisites.map(p => ({ slug: p.slug, name: p.name, definition: p.definition, why: p.why })),
     covered: false,
   }
@@ -167,15 +169,19 @@ log(`graph: ${Object.keys(nodes).length} node(s) under output/${rootSlug}/graph;
 phase('Illustrate')
 
 const toIllustrate = Object.entries(nodes)
-  .filter(([slug, n]) => !n.covered && n.atomic === true &&
+  .filter(([slug, n]) => !n.covered && n.mechanism_figurable === true &&
     !(covered[slug] && covered[slug].status === 'illustrated'))
-  .map(([slug, n]) => ({ slug, name: n.name, definition: n.definition }))
-log(`${toIllustrate.length} atomic concept(s) to illustrate`)
+  .map(([slug, n]) => ({ slug, name: n.name, definition: n.definition,
+    prereqs: (n.prereqMeta || []).map(p => p.name) }))
+log(`${toIllustrate.length} figurable concept(s) to illustrate`)
 
 function illustrate(c, critique) {
   return agent(
     'Follow the skill at .claude/skills/concept-illustrator/SKILL.md exactly — runbook-first; read its references (design-system, visual-vocabulary, voice-and-metaphor, figure-json).\n' +
     `Concept slug: ${c.slug}\nName: ${c.name}\nDefinition: ${c.definition}\n` +
+    (c.prereqs && c.prereqs.length
+      ? `This concept builds on: ${c.prereqs.join(', ')}. Make the figure SELF-SUFFICIENT — teach this concept's own mechanism so a reader who has not seen those prerequisites still understands it. In the commentary, add a short "go deeper" pointer to each prerequisite that has its own figure (reference, do not re-teach).\n`
+      : '') +
     `Write the figure directory to registry/${c.slug}/figure (create it; figure.json + frame-NN.svg).\n` +
     (critique ? 'A fresh-eyes review found gaps in the previous attempt. Revise the runbook FIRST, then redraw from it. The gaps:\n' + critique + '\n' : '') +
     `The figure must validate clean: python3 .claude/skills/concept-illustrator/scripts/render.py registry/${c.slug}/figure\n` +
@@ -261,25 +267,6 @@ const ASSEMBLE_SCHEMA = {
     assemble_clean: { type: 'boolean' },
   },
   required: ['index_html', 'map_html', 'sections', 'assemble_clean'],
-}
-
-const rootNode = nodes[rootSlug]
-if (rootNode && rootNode.atomic === false) {
-  const kids = (rootNode.prereqMeta || rootNode.prerequisites.map(s => ({ slug: s }))).map(k => ({
-    slug: k.slug,
-    name: k.name || (nodes[k.slug] && nodes[k.slug].name) || k.slug,
-    definition: k.definition || (nodes[k.slug] && nodes[k.slug].definition) || '',
-    why: k.why || '',
-  }))
-  await agent(
-    'Follow .claude/skills/concept-illustrator/SKILL.md — the "Composition figures (compose-from-children)" mode.\n' +
-    `Parent concept: ${rootSlug} (${rootNode.name}) — ${rootNode.definition}\n` +
-    `Children: ${JSON.stringify(kids)}\n` +
-    `Write a single-frame structural composition figure to registry/${rootSlug}/figure (runbook-first; caption + commentary required).\n` +
-    `It must validate clean: python3 .claude/skills/concept-illustrator/scripts/render.py registry/${rootSlug}/figure\n` +
-    `Then attach it: scripts/concept-registry attach-figure ${rootSlug} registry/${rootSlug}/figure\n` +
-    'Return figure_dir, lint_clean, frames.',
-    { label: `compose:${rootSlug}`, phase: 'Assemble', schema: FIGURE_SCHEMA })
 }
 
 const assembled = await agent(

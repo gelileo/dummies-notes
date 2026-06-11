@@ -31,8 +31,14 @@ review them with fresh eyes, and register everything.
    registry definition verbatim (identity). Caps: `maxDepth` (default 2),
    `maxNodes` (default 12); capped concepts become logged *frontier*, never
    silent truncation. Graph lands at `output/<root-slug>/graph/<slug>.json`.
-3. **Illustrate** atomic, not-yet-illustrated nodes via the
-   [[illustration-engine]] skill, runbook-first, into `registry/<slug>/figure/`.
+3. **Illustrate** every **figurable** (`mechanism_figurable: true`) not-yet-illustrated
+   node (atomic or non-atomic) via the [[illustration-engine]] skill, runbook-first,
+   into `registry/<slug>/figure/`. Each figure is **self-sufficient**: it teaches the
+   concept's own mechanism so a reader who has not seen the prerequisites still
+   understands it. When a concept has prerequisites, the commentary adds short "go
+   deeper" pointers to each prerequisite that has its own figure (reference, not
+   re-teach). A figurable root gets its own mechanism figure here — no separate
+   compose step is needed.
 4. **Review** per figure: a blind reader (sees ONLY the frame SVGs — never
    figure.json) reports what the pictures teach; a fidelity critic checks
    runbook↔SVG drift, compares the blind read against the commentary's intent,
@@ -42,10 +48,7 @@ review them with fresh eyes, and register everything.
    slugs (the registry persists the graph edges — see
    [[atomic-illustration-catalog]]), attach figures, rebuild the index, and run
    `scripts/graph_check.py` (shape, cross-node cycle detection, coverage).
-6. **Assemble**: when the root is non-atomic, a compose-from-children agent
-   authors a single-frame structural composition figure for the root (showing
-   how the children snap together) and attaches it to the registry. Then
-   `scripts/assemble.py` renders `output/<root>/index.html` (bottom-up
+6. **Assemble**: `scripts/assemble.py` renders `output/<root>/index.html` (bottom-up
    explainer: prerequisites before dependents, target last; atomic nodes embed
    inline slideshows; covered prerequisites are linked to their registry viewer;
    intermediate nodes are caption-only; frontier prerequisites get a stub note)
@@ -58,9 +61,6 @@ review them with fresh eyes, and register everything.
    [...]}`. It reports graph-level gaps (leaps, unmet prerequisites, broken arc)
    that per-figure reviews cannot see. Gaps surface as a report; no auto-repair —
    the intent is honest disclosure, not silent patching.
-
-The compose step passes each child's `why` through to the composition
-figure (labels carry the essence of why the parent needs that child).
 
 The script accepts `args` either as an object or a JSON-encoded string (some
 callers stringify it); it parses and falls back gracefully.

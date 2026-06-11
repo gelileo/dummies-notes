@@ -2,6 +2,13 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat(workflow): illustrate figurable nodes; self-sufficiency prompt; delete compose (Phase 5 Task 5)
+
+- `.claude/workflows/dummies-notes.js`: (1) `DECOMP_SCHEMA` gains `mechanism_figurable: { type: 'boolean' }` in properties and `'mechanism_figurable'` in required. (2) `nodes[slug]` object gains `mechanism_figurable: d.mechanism_figurable`. (3) `toIllustrate` filter flipped from `n.atomic === true` to `n.mechanism_figurable === true`; map gains `prereqs: (n.prereqMeta || []).map(p => p.name)`. Log line updated to "figurable concept(s)". (4) `illustrate()` prompt gains a self-sufficiency instruction when `c.prereqs.length > 0`: names the prerequisites, directs the agent to make the figure SELF-SUFFICIENT, and instructs "go deeper" commentary pointers. (5) Compose-from-children block deleted (~17 lines from `const rootNode = nodes[rootSlug]` through its closing `}`). (6) `meta.phases` Assemble detail updated; `meta.description` and Illustrate detail updated. Stale "compose-from-children" comment in the prereqMeta line updated.
+- `knowledge/concepts/dummies-notes/orchestration-workflow.md`: Run shape step 3 updated — Illustrate now covers every figurable node (atomic or non-atomic), describes self-sufficiency rule and "go deeper" commentary pattern, and notes a figurable root gets its mechanism figure in the Illustrate pass. Step 6 Assemble updated — compose-from-children agent removed (compose retired); `scripts/assemble.py` runs directly. Stale "compose step" paragraph removed.
+- `python3 scripts/validate-articles` passes.
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`.
+
 ## [2026-06-10] feat(graph_check): require figures for figurable nodes, not just atomic (Phase 5 Task 4)
 
 - `scripts/tests/test_graph_check.py write_decomp`: updated helper to include `mechanism_figurable` field (defaults to `atomic` unless `figurable=` kwarg overrides). Added `TestFigurableCoverage` class with 2 tests: `test_nonatomic_figurable_unillustrated_errors` (non-atomic + figurable=True without a figure → ERROR containing "not illustrated" for that slug) and `test_nonatomic_nonfigurable_is_exempt` (non-atomic + figurable=False → no error for that slug). Confirmed failure before graph_check.py changes.
