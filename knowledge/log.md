@@ -2,6 +2,16 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat(assemble): pending notice keys off mechanism_figurable; graph_check docstring (Phase 5 Task 6)
+
+- `scripts/tests/test_assemble.py write_decomp`: updated helper signature to `write_decomp(graph_dir, slug, atomic, prereqs=(), figurable=None)` and added `"mechanism_figurable": atomic if figurable is None else figurable` to the data dict. Added `test_nonatomic_figurable_without_figure_shows_pending` to `TestDegradation` — a non-atomic + figurable=True node with no figure must show "Figure pending".
+- `scripts/assemble.py load_full_graph`: added `"mechanism_figurable": bool(data.get("mechanism_figurable", data.get("atomic")))` to the node dict, mirroring the graph_check pattern. Pre-Phase-5 files without the field default to `atomic`.
+- `scripts/assemble.py build_explainer`: changed the "Figure pending" branch condition from `node["atomic"]` to `node["mechanism_figurable"]`, so figurable non-atomic nodes also show the notice when their figure is absent.
+- `scripts/graph_check.py` module docstring: updated "every atomic node has an attached figure" to "every figurable node has an attached figure" (one-phrase fix; no structural change).
+- `knowledge/concepts/dummies-notes/orchestration-workflow.md`: updated step 6 Assemble description — figure embedding is no longer atomic-only; "Figure pending" now keyed to `mechanism_figurable`; non-figurable nodes are caption-only.
+- Test suite: 60 tests, all passing.
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`.
+
 ## [2026-06-10] feat(workflow): illustrate figurable nodes; self-sufficiency prompt; delete compose (Phase 5 Task 5)
 
 - `.claude/workflows/dummies-notes.js`: (1) `DECOMP_SCHEMA` gains `mechanism_figurable: { type: 'boolean' }` in properties and `'mechanism_figurable'` in required. (2) `nodes[slug]` object gains `mechanism_figurable: d.mechanism_figurable`. (3) `toIllustrate` filter flipped from `n.atomic === true` to `n.mechanism_figurable === true`; map gains `prereqs: (n.prereqMeta || []).map(p => p.name)`. Log line updated to "figurable concept(s)". (4) `illustrate()` prompt gains a self-sufficiency instruction when `c.prereqs.length > 0`: names the prerequisites, directs the agent to make the figure SELF-SUFFICIENT, and instructs "go deeper" commentary pointers. (5) Compose-from-children block deleted (~17 lines from `const rootNode = nodes[rootSlug]` through its closing `}`). (6) `meta.phases` Assemble detail updated; `meta.description` and Illustrate detail updated. Stale "compose-from-children" comment in the prereqMeta line updated.

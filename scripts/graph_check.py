@@ -3,8 +3,8 @@
 
 Checks: every file parses with the required shape; the prerequisite graph is
 acyclic (the cross-node cycle check the per-file validator can't do); every
-graph node has a registry entry; and, with --require-illustrated, every atomic
-node has an attached figure. Prerequisites with no graph file and no registry
+graph node has a registry entry; and, with --require-illustrated, every
+figurable node has an attached figure. Prerequisites with no graph file and no registry
 entry are *frontier* WARNs — depth-capped runs leave them for a later pass.
 
 Importable (functions return (level, message) tuples, matching render.py and

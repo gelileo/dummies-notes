@@ -49,9 +49,11 @@ review them with fresh eyes, and register everything.
    [[atomic-illustration-catalog]]), attach figures, rebuild the index, and run
    `scripts/graph_check.py` (shape, cross-node cycle detection, coverage).
 6. **Assemble**: `scripts/assemble.py` renders `output/<root>/index.html` (bottom-up
-   explainer: prerequisites before dependents, target last; atomic nodes embed
-   inline slideshows; covered prerequisites are linked to their registry viewer;
-   intermediate nodes are caption-only; frontier prerequisites get a stub note)
+   explainer: prerequisites before dependents, target last; any node's figure is
+   embedded inline when present; a figurable node (`mechanism_figurable: true`)
+   still missing its figure shows "Figure pending"; non-figurable nodes are
+   caption-only; covered prerequisites are linked to their registry viewer;
+   frontier prerequisites get a stub note)
    and `output/<root>/map.html` (concept map: nodes layered by depth, first-frame
    thumbnails for illustrated nodes, edges for each prerequisite link, click-through
    to the explainer sections).

@@ -10,7 +10,7 @@ import assemble as asm  # noqa: E402
 import concept_registry as reg  # noqa: E402
 
 
-def write_decomp(graph_dir, slug, atomic, prereqs=()):
+def write_decomp(graph_dir, slug, atomic, prereqs=(), figurable=None):
     """prereqs: list of slugs; expands to full prerequisite objects."""
     os.makedirs(graph_dir, exist_ok=True)
     data = {
@@ -18,6 +18,7 @@ def write_decomp(graph_dir, slug, atomic, prereqs=()):
                     "definition": f"Plain definition of {slug}."},
         "audience": "a curious adult with no domain background",
         "atomic": atomic,
+        "mechanism_figurable": atomic if figurable is None else figurable,
         "atomic_reason": "fixture.",
         "prerequisites": [
             {"slug": p, "name": p.replace("-", " ").title(),
@@ -283,6 +284,21 @@ class TestDegradation(unittest.TestCase):
             os.makedirs(graph)
             rc = asm.main([graph, "--registry", base, "--out", os.path.join(base, "o")])
             self.assertEqual(rc, 1)
+
+    def test_nonatomic_figurable_without_figure_shows_pending(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "out", "graph")
+            registry = os.path.join(base, "registry")
+            write_decomp(graph, "lifecycle", False, ["packets"], figurable=True)
+            write_decomp(graph, "packets", True)
+            reg.register(registry, "lifecycle", "Lifecycle", "Plain definition of lifecycle.")
+            reg.register(registry, "packets", "Packets", "Plain definition of packets.")
+            reg.attach_figure(registry, "packets",
+                              make_figure(os.path.join(registry, "packets", "figure"), "packets"))
+            asm.assemble(graph, registry, os.path.join(base, "out"))
+            text = open(os.path.join(base, "out", "index.html"), encoding="utf-8").read()
+            lifecycle = text[text.index('<section id="lifecycle"'):]
+            self.assertIn("Figure pending", lifecycle)
 
 
 if __name__ == "__main__":

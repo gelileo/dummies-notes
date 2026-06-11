@@ -56,6 +56,7 @@ def load_full_graph(graph_dir):
             "name": concept.get("name", slug),
             "definition": concept.get("definition", ""),
             "atomic": bool(data.get("atomic")),
+            "mechanism_figurable": bool(data.get("mechanism_figurable", data.get("atomic"))),
             "prerequisites": [p for p in (data.get("prerequisites") or [])
                               if isinstance(p, dict) and p.get("slug")],
         }
@@ -220,7 +221,7 @@ def build_explainer(order, nodes, covered, frontier, registry_root, out_dir, roo
                      f'<p class="definition">{html.escape(node["definition"])}</p>')
         if frames:
             parts.append(figure_html(frames))
-        elif node["atomic"]:
+        elif node["mechanism_figurable"]:
             parts.append('<p class="meta">Figure pending for this concept.</p>')
         if node["prerequisites"]:
             parts.append("<p>Builds on:</p>" + _children_list(node, known_ids))
