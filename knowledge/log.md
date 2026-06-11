@@ -2,6 +2,14 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-11] feat(video): manifest builder — Task 2 of Video Engine
+
+- `scripts/build_video.py` created: `build_manifest`, `load_frames`, `_duration_for`, `_slide`. Shared constants `DEFAULT_WPM`, `MIN_DUR`, `MAX_DUR`, `MIN_TTS_DUR`, `STAGE` defined at module level for use by later tasks.
+- Reuses `asm.load_full_graph`, `asm.find_root`, `asm.topo_order`, `asm._figure_dir_for`, and `lookup` from the existing modules — no ordering logic reimplemented.
+- `scripts/tests/test_build_video.py` created: 7 tests covering duration clamping (min/max/exact), slide ordering (prereqs before root), slide kinds (title/section/frame/closing counts), frame-slide field shapes, figureless-node skipping, and crossfade-only-within-concept transition rule.
+- All 67 tests passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-10] compile | Phase 5 shipped — self-sufficient figures, composition retired
 
 Phase 5 introduced the two-axis decomposition contract and retired the compose-from-children approach. This entry records what landed and the final state of the system.

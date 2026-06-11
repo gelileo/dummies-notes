@@ -29,6 +29,14 @@ per-concept section card precedes each figure, and a closing card ends. Nodes
 without a loadable figure are skipped to keep the video visual. Slide duration
 is `words / (wpm/60)` clamped to [2.5s, 18s] (wpm default 150).
 
+**Task 2 (manifest builder) shipped.** `build_manifest(graph_dir, registry_root, wpm, stage)` is
+implemented and tested. Public constants: `DEFAULT_WPM=150`, `MIN_DUR=2.5`, `MAX_DUR=18.0`,
+`MIN_TTS_DUR=2.0`, `STAGE={"width":1280,"height":720}`. `load_frames` reads figure.json and
+returns absolute frame paths. Slide dicts carry `kind`, `concept_slug`, `image`, `caption`,
+`narration`, `duration_s`, `transition`. 7 tests covering duration clamping, ordering, frame
+fields, figureless-node skipping, and crossfade-only-within-concept. Test suite: 67 tests total,
+all passing.
+
 ## Two render targets, one manifest
 
 - **HTML player** (`video.html`, default, zero-dep): self-contained, inlines
