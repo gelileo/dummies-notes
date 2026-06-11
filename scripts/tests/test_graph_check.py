@@ -10,12 +10,13 @@ import concept_registry as reg  # noqa: E402
 import graph_check as gc  # noqa: E402
 
 
-def write_decomp(graph_dir, slug, atomic, prereqs=()):
+def write_decomp(graph_dir, slug, atomic, prereqs=(), figurable=None):
     os.makedirs(graph_dir, exist_ok=True)
     data = {
         "concept": {"slug": slug, "name": slug, "definition": f"{slug} def."},
         "audience": "a curious adult with no domain background",
         "atomic": atomic,
+        "mechanism_figurable": atomic if figurable is None else figurable,
         "atomic_reason": "test fixture.",
         "prerequisites": [
             {"slug": p, "name": p, "definition": f"{p} def.", "why": "needed."}
@@ -134,6 +135,40 @@ class TestCliExit(unittest.TestCase):
             reg.register(registry, "a", "A", "a def.")
             reg.register(registry, "b", "B", "b def.")
             self.assertEqual(gc.main([graph, "--registry", registry]), 1)
+
+
+class TestFigurableCoverage(unittest.TestCase):
+    def test_nonatomic_figurable_unillustrated_errors(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry = os.path.join(base, "g"), os.path.join(base, "r")
+            write_decomp(graph, "best-effort", False, ["packets"], figurable=True)
+            write_decomp(graph, "packets", True)
+            reg.register(registry, "best-effort", "B", "b def.")
+            reg.register(registry, "packets", "P", "p def.")
+            nodes, _ = gc.load_graph(graph)
+            issues = gc.check_coverage(nodes, registry, require_illustrated=True)
+            self.assertTrue(any("not illustrated" in m for m in errors(issues)
+                                if "best-effort" in m))
+
+    def test_nonatomic_nonfigurable_is_exempt(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry = os.path.join(base, "g"), os.path.join(base, "r")
+            write_decomp(graph, "umbrella", False, ["packets"], figurable=False)
+            write_decomp(graph, "packets", True)
+            reg.register(registry, "umbrella", "U", "u def.")
+            reg.register(registry, "packets", "P", "p def.")
+            reg.attach_figure(registry, "packets",
+                              _mk_fig(os.path.join(base, "fig")))
+            nodes, _ = gc.load_graph(graph)
+            issues = gc.check_coverage(nodes, registry, require_illustrated=True)
+            self.assertFalse(any("umbrella" in m for m in errors(issues)))
+
+
+def _mk_fig(d):
+    os.makedirs(d, exist_ok=True)
+    with open(os.path.join(d, "figure.json"), "w", encoding="utf-8") as fh:
+        json.dump({"concept_slug": "packets"}, fh)
+    return d
 
 
 if __name__ == "__main__":

@@ -41,7 +41,9 @@ def load_graph(graph_dir):
             continue
         prereqs = [p.get("slug") for p in (data.get("prerequisites") or [])
                    if isinstance(p, dict) and p.get("slug")]
-        nodes[slug] = {"atomic": data["atomic"], "prerequisites": prereqs}
+        nodes[slug] = {"atomic": data["atomic"],
+                       "mechanism_figurable": bool(data.get("mechanism_figurable", data["atomic"])),
+                       "prerequisites": prereqs}
     return nodes, issues
 
 
@@ -76,8 +78,8 @@ def check_coverage(nodes, registry_root, require_illustrated=False):
         if entry is None:
             issues.append(("ERROR", f"{slug}: in graph but not registered"))
             continue
-        if node["atomic"] and require_illustrated and entry["status"] != "illustrated":
-            issues.append(("ERROR", f"{slug}: atomic but not illustrated"))
+        if node["mechanism_figurable"] and require_illustrated and entry["status"] != "illustrated":
+            issues.append(("ERROR", f"{slug}: figurable but not illustrated"))
     seen_prereqs = {p for n in nodes.values() for p in n["prerequisites"]}
     for prereq in sorted(seen_prereqs - set(nodes)):
         if lookup(registry_root, prereq) is None:
@@ -94,7 +96,7 @@ def main(argv=None):
     parser.add_argument("--registry", default=DEFAULT_ROOT,
                         help=f"registry root (default: {DEFAULT_ROOT})")
     parser.add_argument("--require-illustrated", action="store_true",
-                        help="atomic nodes must have an attached figure")
+                        help="figurable nodes must have an attached figure")
     args = parser.parse_args(argv)
 
     nodes, issues = load_graph(args.graph_dir)

@@ -93,10 +93,13 @@ nodes. Gaps ship alongside the output as the spec prescribes.
 `scripts/graph_check.py` (zero-dep; imports `concept_registry.lookup`) is the
 deterministic gate: every graph file parses with slug+atomic, the prerequisite
 graph is acyclic, every graph node is registered, and (with
-`--require-illustrated`) every atomic node has a figure. Frontier prerequisites
+`--require-illustrated`) every **figurable** node (`mechanism_figurable: true`)
+has a figure. Non-figurable nodes are exempt from the illustration requirement.
+Graph files that predate Phase 5 and lack the `mechanism_figurable` field default
+it to the value of `atomic`. Frontier prerequisites
 (no graph file, not registered) are WARNs.
 
-`graph_check.py` ships with 12 unit tests (35 total across the suite). The `load_graph` / `find_cycles` / `check_coverage` API matches this description exactly.
+`graph_check.py` ships with 14 unit tests. The `load_graph` / `find_cycles` / `check_coverage` API matches this description exactly.
 
 The shipped workflow script parameters: `MAX_DEPTH=2`, `MAX_NODES=12`, `MAX_REPAIRS=2`, `registry-snapshot` agent, BFS loop with frontier logging, `pipeline()` for illustrate/review, and a Finalize agent that calls `--prereqs` on registration and `--require-illustrated` on graph_check.
 

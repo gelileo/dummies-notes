@@ -2,6 +2,16 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat(graph_check): require figures for figurable nodes, not just atomic (Phase 5 Task 4)
+
+- `scripts/tests/test_graph_check.py write_decomp`: updated helper to include `mechanism_figurable` field (defaults to `atomic` unless `figurable=` kwarg overrides). Added `TestFigurableCoverage` class with 2 tests: `test_nonatomic_figurable_unillustrated_errors` (non-atomic + figurable=True without a figure → ERROR containing "not illustrated" for that slug) and `test_nonatomic_nonfigurable_is_exempt` (non-atomic + figurable=False → no error for that slug). Confirmed failure before graph_check.py changes.
+- `scripts/graph_check.py load_graph`: added `mechanism_figurable` to the node dict — `bool(data.get("mechanism_figurable", data["atomic"]))` so pre-Phase-5 files without the field default to `atomic`.
+- `scripts/graph_check.py check_coverage`: changed illustration guard from `node["atomic"]` to `node["mechanism_figurable"]`; error message changed from "atomic but not illustrated" to "figurable but not illustrated" (still contains "not illustrated", so existing tests still pass).
+- `scripts/graph_check.py main`: updated `--require-illustrated` help text to "figurable nodes must have an attached figure".
+- `knowledge/concepts/dummies-notes/orchestration-workflow.md`: updated `## graph_check` section — `--require-illustrated` now requires a figure for every figurable (`mechanism_figurable: true`) node, not just atomic; non-figurable nodes are exempt; pre-Phase-5 files without the field default to `atomic`; unit test count updated to 14.
+- Test suite: 59 tests, all passing.
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`.
+
 ## [2026-06-10] feat(illustrator): self-sufficiency rule + commentary go-deeper refs; retire compose (Phase 5 Task 3)
 
 - `scripts/tests/test_render.py TestSkillRefs`: replaced `test_skill_md_documents_composition_mode` (checked "Composition figures"/"compose-from-children" tokens) with `test_skill_md_documents_self_sufficiency` (checks "Self-sufficient"/"go deeper" present, "compose-from-children" absent). Confirmed failure before SKILL.md edit.
