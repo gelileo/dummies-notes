@@ -164,24 +164,20 @@ For a sequence, `playback` is `"slideshow"` and every frame shares the same `vie
 Machine-callable interface: input = concept slug + concept name + definition;
 output = a figure directory at the path of your choice.
 
-## Composition figures (compose-from-children)
+## Self-sufficient figures
 
-Used by the assembly phase for a NON-ATOMIC parent whose children are already
-illustrated. Input: the parent concept (slug, name, definition) and its children
-(slug, name, definition, why). Output: a normal figure directory — a single
-frame, `archetype: "structural"`, `playback: "static"` — showing how the
-children snap together into the parent:
+Every figure must teach its own concept STANDALONE. A reader who lands on this
+figure cold — without having seen any prerequisite's figure — should still grasp
+the concept's mechanism. Illustrate THIS concept's own mechanism; you may name a
+prerequisite in passing, but never require the reader to have studied it.
 
-- One box per child (compose from `references/visual-vocabulary.md` primitives;
-  neutral category ramps — purple/blue/pink per `references/design-system.md`),
-  labelled with the child's name and a 2–6 word essence of its `why`.
-- The parent is the destination the children converge into (enclosing container
-  or convergence point); give it the visual emphasis.
-- Do NOT redraw the children's own figures — this is a map of how the parts
-  fit, not a re-teaching (reuse = referencing).
-- Same contract as every figure: runbook-first, caption + commentary, must
-  validate clean via `scripts/render.py`. Closure is inherent — the composition
-  IS the end-state picture.
+A concept with prerequisites is illustrated the same way as a leaf — the only
+difference is the **commentary**: when the concept builds on fundamentals that
+have their own figures, add a short "go deeper" pointer in the commentary, e.g.
+"for the clock-math underneath this, see the modular-arithmetic figure." It is a
+reference, not a dependency — the figure stands on its own; the pointer is for the
+curious. (Reader-facing prerequisite links live in the assembled explainer's
+"Builds on" list; these commentary pointers serve the narration/transcript.)
 
 ## Core rules (the look)
 

@@ -56,9 +56,11 @@ The generation workflow is **runbook-first** and applies to **every frame — in
 
 The `validate_figure(dir_path, style_path)` function in `render.py` enforces this contract — it checks required fields, resolves each frame file, runs `lint_svg` on each, reports an ERROR if `viewBox` values diverge across frames, and reports an ERROR for any frame where `runbook` or `commentary` is absent, blank/whitespace, or a non-string value (e.g. a number from malformed JSON). A bare-string frame entry (e.g. `"frame-01.svg"` instead of an object) is also an ERROR — every frame must be a `{ file, caption, runbook, commentary }` object. Both fields are **required** on every frame, including single-frame static figures. Reference: `.claude/skills/concept-illustrator/references/figure-json.md`.
 
-## Compose-from-children mode
+## Self-sufficient figures (Phase 5)
 
-The skill now has a compose-from-children mode: a single-frame structural composition figure for a non-atomic parent built from its already-illustrated children; used by the assembly phase for the target.
+Every figure teaches its own concept STANDALONE — a reader who lands on it cold should still grasp the mechanism without having seen any prerequisite's figure. A concept with prerequisites is illustrated the same way as a leaf; the only difference is the **commentary**: add a short "go deeper" pointer (e.g. "for the clock-math underneath this, see the modular-arithmetic figure") when the concept builds on fundamentals that have their own figures. The pointer is a reference, not a dependency.
+
+The Phase-4 compose-from-children mode is **retired** in Phase 5: the composition-figure approach mapped structural parts but did not teach the target's own mechanism. Every node — atomic or not, with prerequisites or without — now receives a mechanism figure of its own.
 
 ## SVG linter (`render.py`)
 
@@ -71,7 +73,7 @@ The `main()` CLI dispatch now validates path shape before calling backend functi
 - `--viewer` requires a directory; passing a file path prints `ERROR … --viewer needs a figure directory` and exits 1.
 - `--png` requires a single `.svg` file; passing a directory prints `ERROR … --png needs a single .svg file` and exits 1.
 
-Five `TestCli` tests cover these guards plus the happy-path lint and viewer cases. Suite total: 57 tests, 1 skip.
+Five `TestCli` tests cover these guards plus the happy-path lint and viewer cases. Suite total: 58 tests, 1 skip.
 
 ### PNG export and `--theme`
 

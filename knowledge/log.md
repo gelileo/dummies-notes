@@ -2,6 +2,14 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat(illustrator): self-sufficiency rule + commentary go-deeper refs; retire compose (Phase 5 Task 3)
+
+- `scripts/tests/test_render.py TestSkillRefs`: replaced `test_skill_md_documents_composition_mode` (checked "Composition figures"/"compose-from-children" tokens) with `test_skill_md_documents_self_sufficiency` (checks "Self-sufficient"/"go deeper" present, "compose-from-children" absent). Confirmed failure before SKILL.md edit.
+- `.claude/skills/concept-illustrator/SKILL.md`: deleted `## Composition figures (compose-from-children)` section (~14 lines); added `## Self-sufficient figures` section (after output-contract) describing the standalone-teaching rule and the "go deeper" commentary pointer pattern.
+- `knowledge/concepts/dummies-notes/illustration-engine.md`: replaced `## Compose-from-children mode` paragraph with `## Self-sufficient figures (Phase 5)` — figures are self-sufficient (teach standalone); commentary carries optional "go deeper" references; Phase-4 compose-from-children mode retired. Updated suite count to 58 tests, 1 skip.
+- Test suite: 58 tests, 1 skip; `check_skill_refs.py` exits 0; `python3 scripts/validate-articles` passes.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
 ## [2026-06-10] docs(decompose): SKILL.md two-axis guidance (stop vs draw) (Phase 5 Task 2)
 
 - `tests/test_validate_decomposition.py TestSkillContract.test_skill_md_covers_the_contract`: added `"mechanism_figurable"` to the contract-token list; confirmed failure before SKILL.md update.

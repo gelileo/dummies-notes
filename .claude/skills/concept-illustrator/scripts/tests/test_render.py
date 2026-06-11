@@ -357,12 +357,13 @@ class TestSkillRefs(unittest.TestCase):
         import check_skill_refs
         self.assertEqual(check_skill_refs.missing_refs(), [])
 
-    def test_skill_md_documents_composition_mode(self):
+    def test_skill_md_documents_self_sufficiency(self):
         with open(os.path.join(os.path.dirname(SCRIPTS_DIR), "SKILL.md"),
                   encoding="utf-8") as fh:
             text = fh.read()
-        for token in ("Composition figures", "compose-from-children"):
+        for token in ("Self-sufficient", "go deeper"):
             self.assertIn(token, text)
+        self.assertNotIn("compose-from-children", text)  # retired in Phase 5
 
 
 class TestGoldenExample(unittest.TestCase):
