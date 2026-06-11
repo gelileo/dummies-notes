@@ -108,10 +108,13 @@ The registry ships with two entries:
 
 The RSA run added three entries: **prime-numbers** and
 **asymmetric-cryptography** (both `illustrated`, review-passed figures) and
-**rsa-encryption** (`illustrated` with a compose-from-children composition
-figure) — the first entry carrying non-empty `prerequisites`
-(`modular-arithmetic`, `prime-numbers`, `asymmetric-cryptography`): the
-registry now persists real graph edges.
+**rsa-encryption** (`illustrated`) — the first entry carrying non-empty
+`prerequisites` (`modular-arithmetic`, `prime-numbers`,
+`asymmetric-cryptography`): the registry now persists real graph edges.
+(Historical note: RSA's figure is still the Phase-4 compose-from-children
+composition; composition was retired in Phase 5, but RSA has not yet been
+reset + re-run, so its figure remains a stale composition map — see the
+Phase 5 re-run section below for how the TCP topic was fixed the same way.)
 
 ## User-run entries
 
@@ -119,7 +122,8 @@ The first user-requested run ("TCP connection lifecycle", maxDepth 1) added
 **communication-protocol** and **data-packets** (illustrated, review-passed),
 **best-effort-delivery** (registered, non-atomic — its figure awaits a deeper
 run), and **tcp-connection-lifecycle** (illustrated, composition figure, edges
-to all three).
+to all three). (Both superseded by the Phase 5 re-run below, which replaced the
+TCP composition map with a self-sufficient lifecycle figure.)
 
 
 The deeper TCP run (maxDepth 2) registered **best-effort-delivery** with a `data-packets` edge but no figure: it is non-atomic yet its own mechanism is figure-sized — a node the current atomic-leaf-only illustration rule never draws. Logged as a Phase 5 finding.
