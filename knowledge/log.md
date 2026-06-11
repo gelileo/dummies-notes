@@ -2,6 +2,13 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-11] feat(video): stage_svg — Task 4 of Video Engine
+
+- `stage_svg(slide, stage)` added to `scripts/build_video.py`: composes one 16:9 SVG per slide by nesting the figure SVG (frame slides) or rendering a centered text card (title/section/closing).
+- `_read_inner_svg(path)` strips XML prolog before `<svg` tag; `_esc(text)` escapes all interpolated user text.
+- 2 new tests (`TestStageSvg`) added to `scripts/tests/test_build_video.py`: well-formed XML asserted via `ET.fromstring`, nested-SVG count verified, caption presence verified. 12 tests total, all passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-11] feat(video): manifest builder — Task 2 of Video Engine
 
 - `scripts/build_video.py` created: `build_manifest`, `load_frames`, `_duration_for`, `_slide`. Shared constants `DEFAULT_WPM`, `MIN_DUR`, `MAX_DUR`, `MIN_TTS_DUR`, `STAGE` defined at module level for use by later tasks.

@@ -12,6 +12,7 @@ import argparse
 import html
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -145,3 +146,61 @@ def write_script(manifest, out_path):
     with open(out_path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(parts).rstrip() + "\n")
     return out_path
+
+
+def _read_inner_svg(path):
+    """Return a frame SVG's markup with any <?xml ...?> / DOCTYPE prolog removed."""
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read()
+    idx = text.find("<svg")
+    return text[idx:] if idx >= 0 else text
+
+
+def _esc(text):
+    return html.escape(text or "", quote=True)
+
+
+_ROOT_DIM_RE = re.compile(r'\s(?:width|height)="[^"]*"')
+
+
+def _nest_figure(inner, x, y, width, height):
+    """Position a figure SVG inside the stage by injecting layout attributes on
+    its root <svg>. The figure's own width/height (real figures carry width="100%")
+    are stripped first, so the nested element has exactly one width/height — a
+    duplicate XML attribute is a fatal parse error. Its viewBox is kept so it
+    scales to fit the given box."""
+    end = inner.find(">")
+    if end < 0:
+        return inner
+    head, rest = inner[:end], inner[end:]
+    head = _ROOT_DIM_RE.sub("", head)
+    head = head.replace(
+        "<svg", f'<svg x="{x}" y="{y}" width="{width}" height="{height}" '
+                f'preserveAspectRatio="xMidYMid meet"', 1)
+    return head + rest
+
+
+def stage_svg(slide, stage):
+    w, h = stage["width"], stage["height"]
+    pad, cap_h, top_h = 40, 90, 70
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" '
+             f'width="{w}" height="{h}">',
+             f'<rect width="{w}" height="{h}" fill="#ffffff"/>']
+    label = slide["concept_slug"] or slide["kind"]
+    if slide["kind"] == "frame":
+        parts.append(f'<text x="{w/2:.0f}" y="44" text-anchor="middle" '
+                     f'font-family="sans-serif" font-size="22" fill="#444">'
+                     f'{_esc(label.replace("-", " "))}</text>')
+        inner_w, inner_h = w - 2 * pad, h - top_h - cap_h
+        parts.append(_nest_figure(_read_inner_svg(slide["image"]),
+                                  pad, top_h, inner_w, inner_h))
+        parts.append(f'<text x="{w/2:.0f}" y="{h-34}" text-anchor="middle" '
+                     f'font-family="sans-serif" font-size="24" fill="#222">'
+                     f'{_esc(slide["caption"])}</text>')
+    else:
+        # title / section / closing: centered card text
+        parts.append(f'<text x="{w/2:.0f}" y="{h/2-10:.0f}" text-anchor="middle" '
+                     f'font-family="sans-serif" font-size="48" fill="#111">'
+                     f'{_esc(slide["caption"])}</text>')
+    parts.append("</svg>")
+    return "\n".join(parts)

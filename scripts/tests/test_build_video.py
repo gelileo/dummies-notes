@@ -3,6 +3,7 @@ import os
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 
 SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, SCRIPTS_DIR)
@@ -39,7 +40,9 @@ def make_figure(registry_root, slug, n_frames=2):
     for i in range(1, n_frames + 1):
         fname = f"frame-{i:02d}.svg"
         with open(os.path.join(fig_dir, fname), "w", encoding="utf-8") as fh:
-            fh.write(f'<svg viewBox="0 0 680 220"><text>{slug} {i}</text></svg>')
+            fh.write('<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" '
+                     'width="100%" viewBox="0 0 680 220" role="img">'
+                     f'<text>{slug} {i}</text></svg>')
         frames.append({"file": fname, "caption": f"{slug} caption {i}",
                        "runbook": "rb", "commentary": f"This is narration for {slug} frame {i}."})
     with open(os.path.join(fig_dir, "figure.json"), "w", encoding="utf-8") as fh:
@@ -154,6 +157,33 @@ class TestScriptAndCaptions(unittest.TestCase):
             text = open(out, encoding="utf-8").read()
             self.assertIn("## ", text)
             self.assertIn("narration", text.lower())
+
+
+class TestStageSvg(unittest.TestCase):
+    def _frame_slide(self, base):
+        graph = os.path.join(base, "g")
+        registry = os.path.join(base, "r")
+        write_decomp(graph, "tcp", True)
+        make_figure(registry, "tcp", 1)
+        manifest, _ = bv.build_manifest(graph, registry)
+        return next(s for s in manifest["slides"] if s["kind"] == "frame")
+
+    def test_frame_stage_embeds_nested_svg_and_caption(self):
+        with tempfile.TemporaryDirectory() as base:
+            slide = self._frame_slide(base)
+            svg = bv.stage_svg(slide, bv.STAGE)
+            self.assertTrue(svg.lstrip().startswith("<svg"))
+            self.assertIn(f'viewBox="0 0 {bv.STAGE["width"]} {bv.STAGE["height"]}"', svg)
+            self.assertEqual(svg.count("<svg"), 2)  # stage + nested figure
+            self.assertIn(slide["caption"], svg)
+            ET.fromstring(svg)  # well-formed XML
+
+    def test_title_card_is_well_formed_text_only(self):
+        slide = bv._slide("title", None, None, "TCP", "Some narration here.", 150, "cut")
+        svg = bv.stage_svg(slide, bv.STAGE)
+        self.assertEqual(svg.count("<svg"), 1)
+        self.assertIn("TCP", svg)
+        ET.fromstring(svg)
 
 
 if __name__ == "__main__":
