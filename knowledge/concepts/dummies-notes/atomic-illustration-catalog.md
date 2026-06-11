@@ -123,6 +123,18 @@ to all three).
 
 
 The deeper TCP run (maxDepth 2) registered **best-effort-delivery** with a `data-packets` edge but no figure: it is non-atomic yet its own mechanism is figure-sized — a node the current atomic-leaf-only illustration rule never draws. Logged as a Phase 5 finding.
+## Phase 5 re-run (TCP, self-sufficient figures)
+
+After Phase 5, the TCP topic was reset and re-run (maxDepth 2). Now 5 nodes:
+**tcp-connection-lifecycle** illustrated with a *self-sufficient* 5-frame
+lifecycle figure (handshake -> data + acknowledgement -> goodbye) — NOT a
+composition map; **unreliable-delivery** and **delivery-acknowledgement**
+illustrated (the non-atomic-but-figurable concepts the old atomic-only rule
+never drew); **communication-protocol** and **data-packets** reused (linked,
+not redrawn); **computer-network** left as honest frontier. The chain review
+PASSED (down from 4 blocking gaps to 1 minor frontier note) — Phase 5 closed
+the RSA/TCP mechanism-figure gap.
+
 ## Open question (Phase 3+)
 
 **Versioning/invalidation**: when a concept's understanding changes, how is a cached

@@ -1,6 +1,6 @@
-<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 440" role="img" font-family="sans-serif">
-  <title>TCP connection lifecycle — the greeting</title>
-  <desc>Two computers exchange three opening messages to agree to start talking: syn, syn-ack, ack.</desc>
+<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 360" role="img" font-family="sans-serif">
+  <title>Unreliable delivery — what actually arrives</title>
+  <desc>The receiver gets message one intact, message four early, message three damaged, and message two never; the sender reports success.</desc>
   <defs>
     <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
 text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
@@ -57,46 +57,60 @@ rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
     </marker>
   </defs>
 
-  <!-- actor headers -->
-  <g class="box">
-    <rect x="90" y="30" width="120" height="44" rx="4" stroke-width="0.5"/>
-    <text x="150" y="48" class="th" text-anchor="middle" dominant-baseline="central">Computer one</text>
-    <text x="150" y="64" class="ts" text-anchor="middle" dominant-baseline="central">caller</text>
+  <!-- column labels -->
+  <text x="95" y="40" class="th" text-anchor="middle">sender</text>
+  <text x="580" y="40" class="th" text-anchor="middle">receiver</text>
+
+  <!-- network band, now empty -->
+  <g class="c-gray">
+    <rect x="200" y="62" width="280" height="232" rx="10" stroke-width="0.5"/>
+    <text x="214" y="80" class="ts">network</text>
+  </g>
+  <text x="340" y="190" class="ts" text-anchor="middle">delivery finished</text>
+
+  <!-- sender: still believes it succeeded -->
+  <g class="c-gray">
+    <rect x="40" y="90" width="110" height="40" rx="4" stroke-width="0.5"/>
+    <text x="95" y="110" class="th" text-anchor="middle" dominant-baseline="central">msg 1</text>
+  </g>
+  <g class="c-gray">
+    <rect x="40" y="145" width="110" height="40" rx="4" stroke-width="0.5"/>
+    <text x="95" y="165" class="th" text-anchor="middle" dominant-baseline="central">msg 2</text>
+  </g>
+  <g class="c-gray">
+    <rect x="40" y="200" width="110" height="40" rx="4" stroke-width="0.5"/>
+    <text x="95" y="220" class="th" text-anchor="middle" dominant-baseline="central">msg 3</text>
+  </g>
+  <g class="c-gray">
+    <rect x="40" y="255" width="110" height="40" rx="4" stroke-width="0.5"/>
+    <text x="95" y="275" class="th" text-anchor="middle" dominant-baseline="central">msg 4</text>
   </g>
   <g class="box">
-    <rect x="470" y="30" width="120" height="44" rx="4" stroke-width="0.5"/>
-    <text x="530" y="48" class="th" text-anchor="middle" dominant-baseline="central">Computer two</text>
-    <text x="530" y="64" class="ts" text-anchor="middle" dominant-baseline="central">answerer</text>
+    <rect x="20" y="305" width="150" height="42" rx="4" stroke-width="0.5"/>
+    <text x="95" y="320" class="th" text-anchor="middle" dominant-baseline="central">sender: all sent ok</text>
+    <text x="95" y="337" class="ts" text-anchor="middle" dominant-baseline="central">no error reported</text>
   </g>
 
-  <!-- timeline rails -->
-  <line class="leader" x1="150" y1="74" x2="150" y2="406"/>
-  <line class="leader" x1="530" y1="74" x2="530" y2="406"/>
-  <text x="340" y="92" class="ts" text-anchor="middle" dominant-baseline="central">time runs downward</text>
-
-  <!-- phase markers (left) -->
+  <!-- receiver: what actually arrived, in arrival order -->
   <g class="c-teal">
-    <rect x="16" y="100" width="58" height="168" rx="4" stroke-width="0.5"/>
-    <text x="45" y="118" class="ts" text-anchor="middle" dominant-baseline="central">greet</text>
+    <rect x="500" y="90" width="160" height="40" rx="4" stroke-width="0.5"/>
+    <text x="568" y="104" class="th" text-anchor="middle" dominant-baseline="central">msg 1</text>
+    <text x="568" y="119" class="ts" text-anchor="middle" dominant-baseline="central">intact</text>
   </g>
-  <g class="c-gray">
-    <rect x="16" y="278" width="58" height="60" rx="4" stroke-width="0.5"/>
-    <text x="45" y="296" class="ts" text-anchor="middle" dominant-baseline="central">talk</text>
+  <g class="c-teal">
+    <rect x="500" y="145" width="160" height="40" rx="4" stroke-width="0.5"/>
+    <text x="568" y="159" class="th" text-anchor="middle" dominant-baseline="central">msg 4</text>
+    <text x="568" y="174" class="ts" text-anchor="middle" dominant-baseline="central">arrived before msg 3</text>
   </g>
-  <g class="c-gray">
-    <rect x="16" y="348" width="58" height="50" rx="4" stroke-width="0.5"/>
-    <text x="45" y="366" class="ts" text-anchor="middle" dominant-baseline="central">goodbye</text>
+  <g class="c-amber">
+    <rect x="500" y="200" width="160" height="40" rx="4" stroke-width="0.5"/>
+    <text x="568" y="214" class="th" text-anchor="middle" dominant-baseline="central">m$%g 3</text>
+    <text x="568" y="229" class="ts" text-anchor="middle" dominant-baseline="central">corrupted</text>
   </g>
-
-  <!-- greet: three-way handshake -->
-  <path class="arr" d="M156,118 L524,142" marker-end="url(#arrow)"/>
-  <text x="340" y="122" class="t" text-anchor="middle" dominant-baseline="central">syn — can we talk?</text>
-
-  <path class="arr" d="M524,178 L156,202" marker-end="url(#arrow)"/>
-  <text x="340" y="182" class="t" text-anchor="middle" dominant-baseline="central">syn-ack — yes, i'm ready</text>
-
-  <path class="arr" d="M156,238 L524,262" marker-end="url(#arrow)"/>
-  <text x="340" y="242" class="t" text-anchor="middle" dominant-baseline="central">ack — great, starting</text>
-
-  <text x="340" y="420" class="ts" text-anchor="middle" dominant-baseline="central">three greetings agree to open the connection</text>
+  <g class="c-red">
+    <rect x="500" y="255" width="160" height="40" rx="4" stroke-width="0.5" stroke-dasharray="4 3"/>
+    <text x="568" y="269" class="th" text-anchor="middle" dominant-baseline="central">msg 2</text>
+    <text x="568" y="284" class="ts" text-anchor="middle" dominant-baseline="central">never arrived</text>
+  </g>
+  <text x="580" y="320" class="ts" text-anchor="middle">does not match what was sent</text>
 </svg>

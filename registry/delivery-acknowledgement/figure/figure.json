@@ -1,0 +1,38 @@
+{
+  "concept_slug": "delivery-acknowledgement",
+  "title": "Delivery acknowledgement: the receiver replies \"got it\"",
+  "archetype": "illustrative",
+  "playback": "slideshow",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "The sender sends a packet and keeps its own copy.",
+      "runbook": "Shared layout for all frames, viewBox 0 0 680 360. Two c-gray containers: sender (x=24,y=56,w=170,h=270, ts label 'sender' at 36,74) on the left, receiver (x=486,y=56,w=170,h=270, ts label 'receiver' at 498,74) on the right. Two horizontal dashed leader lanes span the gap x=194..486: the send lane at y=150 (ts label 'send lane' at 340,120) carries packets left-to-right; the reply lane at y=252 (ts label 'reply lane' at 340,282) carries acks right-to-left. One t annotation line centered at (340,346) per frame. Packet primitive: rect w=104 h=40 rx=2, ts sequence tag at center-top (y+12), th word at center-bottom (y+28). Frame 1 content: inside the sender a box-class record (x=44,y=100,w=130,h=40) reading ts 'my copy of #5' / th 'kept, just in case' — the retained copy. A c-teal packet (x=214,y=130) tagged #5 'data' sits at the mouth of the send lane with an arr arrow (M318,150 L380,150) pushing it right. Receiver and reply lane empty. Annotation: 'The sender sends packet #5 and keeps its own copy.'",
+      "commentary": "A computer sends a packet across the link. Call it packet five. But sending is not the same as arriving. The link can drop things. So the sender does something smart. It keeps its own copy of packet five. If anything goes wrong, it can send it again. For now, it waits to hear back. Go deeper: for what a numbered packet is and why it carries a number, see the data-packets figure."
+    },
+    {
+      "file": "frame-02.svg",
+      "caption": "The packet reaches the receiver — but the sender can't see that yet.",
+      "runbook": "Same scaffolding, lanes, and sender record (box-class 'my copy of #5') as frame 1. The c-teal packet has moved across the send lane and now sits inside the receiver as a c-teal box (x=506,y=130,w=104,h=40) tagged #5 'got it'; a short arr arrow (M300,150 L362,150) on the send lane shows it just landed. The reply lane is still empty. Annotation: 'Packet #5 reaches the receiver. The sender cannot see this yet.'",
+      "commentary": "The packet crosses the link and lands at the receiver. The receiver now has packet five. But here is the catch. The sender is far away. It has no window into the receiver. From where the sender sits, this moment looks exactly like a packet that got lost. It cannot tell the difference. It still does not know."
+    },
+    {
+      "file": "frame-03.svg",
+      "caption": "The receiver replies \"got #5\" — now the sender knows.",
+      "runbook": "Same scaffolding and lanes. The sender's record turns c-gray reading ts 'my copy of #5' / th 'safe to drop now'. The receiver's packet turns c-gray, tag #5 'stored'. The acknowledgement is the new element: a small c-green box (x=296,y=232,w=88,h=40) on the reply lane reading ts 'ack' / th 'got #5', with an arr arrow (M296,252 L214,252) carrying it back toward the sender. Annotation: 'The receiver replies \"got #5\". Now the sender knows it arrived.'",
+      "commentary": "So the receiver speaks up. It sends back a tiny reply. Just a few bytes that say: I got number five. This little reply is the acknowledgement. When it reaches the sender, the guessing ends. The sender now knows for certain the packet arrived. It can safely throw away its kept copy. The job is done."
+    },
+    {
+      "file": "frame-04.svg",
+      "caption": "If a packet is lost, no ack comes back — so the sender waits.",
+      "runbook": "Same scaffolding and lanes. Now a second exchange goes wrong. The sender record turns c-amber reading ts 'my copy of #6' / th 'no ack yet'. A c-red packet (x=280,y=130,w=104,h=40) tagged #6 'lost' sits stranded partway along the send lane. The receiver holds a c-gray box (x=506,y=130,w=104,h=40) th 'never arrived'. The reply lane is empty — no ack. Annotation: 'Packet #6 is lost. No ack comes back, so the sender keeps waiting.'",
+      "commentary": "Now watch what an acknowledgement protects against. The sender sends packet six. But this time the link drops it. It never reaches the receiver. And because the receiver never saw it, it sends back nothing. No ack arrives. The sender keeps waiting. The silence is the signal: something went wrong. Go deeper: for why links drop packets in the first place, see the unreliable-delivery figure."
+    },
+    {
+      "file": "frame-05.svg",
+      "caption": "The sender resends; this time the ack returns — delivery confirmed.",
+      "runbook": "Same scaffolding and lanes; closing frame, end state. The sender record turns c-coral reading ts 'my copy of #6' / th 'confirmed' — kept the copy, so resending was possible. The receiver now holds a c-gray box (x=506,y=130,w=104,h=40) ts '#6 (resent)' / th 'stored'. A c-green ack box (x=296,y=232,w=88,h=40) ts 'ack' / th 'got #6' rides the reply lane with an arr arrow (M296,252 L214,252) back to the sender. Annotation: 'The sender resends #6. This time the ack returns — delivery confirmed.'",
+      "commentary": "Because the sender kept its copy, it can simply send packet six again. This time it gets through. The receiver stores it and replies: got number six. The ack makes it back. Delivery is confirmed. That is the whole idea. A short reply turns a hopeful send into a sure one — no blind guessing, no needless resending."
+    }
+  ]
+}

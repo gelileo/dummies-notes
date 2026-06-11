@@ -1,7 +1,8 @@
-<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 440" role="img" font-family="sans-serif">
-  <title>TCP connection lifecycle — the greeting</title>
-  <desc>Two computers exchange three opening messages to agree to start talking: syn, syn-ack, ack.</desc>
+<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 360" role="img" font-family="sans-serif">
+  <title>Delivery acknowledgement — a lost packet, no ack returns</title>
+  <desc>Packet #6 is lost in the link; with no acknowledgement coming back, the sender keeps its copy and waits.</desc>
   <defs>
+    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
     <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
 text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
 text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
@@ -57,46 +58,42 @@ rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
     </marker>
   </defs>
 
-  <!-- actor headers -->
-  <g class="box">
-    <rect x="90" y="30" width="120" height="44" rx="4" stroke-width="0.5"/>
-    <text x="150" y="48" class="th" text-anchor="middle" dominant-baseline="central">Computer one</text>
-    <text x="150" y="64" class="ts" text-anchor="middle" dominant-baseline="central">caller</text>
-  </g>
-  <g class="box">
-    <rect x="470" y="30" width="120" height="44" rx="4" stroke-width="0.5"/>
-    <text x="530" y="48" class="th" text-anchor="middle" dominant-baseline="central">Computer two</text>
-    <text x="530" y="64" class="ts" text-anchor="middle" dominant-baseline="central">answerer</text>
-  </g>
-
-  <!-- timeline rails -->
-  <line class="leader" x1="150" y1="74" x2="150" y2="406"/>
-  <line class="leader" x1="530" y1="74" x2="530" y2="406"/>
-  <text x="340" y="92" class="ts" text-anchor="middle" dominant-baseline="central">time runs downward</text>
-
-  <!-- phase markers (left) -->
-  <g class="c-teal">
-    <rect x="16" y="100" width="58" height="168" rx="4" stroke-width="0.5"/>
-    <text x="45" y="118" class="ts" text-anchor="middle" dominant-baseline="central">greet</text>
+  <!-- shared scaffolding: sender / receiver -->
+  <g class="c-gray">
+    <rect x="24" y="56" width="170" height="270" rx="6" stroke-width="0.5"/>
+    <text x="36" y="74" class="ts" dominant-baseline="central">sender</text>
   </g>
   <g class="c-gray">
-    <rect x="16" y="278" width="58" height="60" rx="4" stroke-width="0.5"/>
-    <text x="45" y="296" class="ts" text-anchor="middle" dominant-baseline="central">talk</text>
+    <rect x="486" y="56" width="170" height="270" rx="6" stroke-width="0.5"/>
+    <text x="498" y="74" class="ts" dominant-baseline="central">receiver</text>
   </g>
+
+  <!-- shared lanes: forward (send) and return (ack) -->
+  <text x="340" y="120" class="ts" text-anchor="middle" dominant-baseline="central">send lane</text>
+  <path class="leader" d="M194,150 L486,150"/>
+  <text x="340" y="282" class="ts" text-anchor="middle" dominant-baseline="central">reply lane</text>
+  <path class="leader" d="M194,252 L486,252"/>
+
+  <!-- sender still holds its copy and is waiting for an ack -->
+  <g class="c-amber">
+    <rect x="44" y="100" width="130" height="40" rx="2" stroke-width="0.5"/>
+    <text x="109" y="112" class="ts" text-anchor="middle" dominant-baseline="central">my copy of #6</text>
+    <text x="109" y="128" class="th" text-anchor="middle" dominant-baseline="central">no ack yet</text>
+  </g>
+
+  <!-- the packet was lost partway across the send lane -->
+  <g class="c-red">
+    <rect x="280" y="130" width="104" height="40" rx="2" stroke-width="0.5"/>
+    <text x="332" y="142" class="ts" text-anchor="middle" dominant-baseline="central">#6</text>
+    <text x="332" y="158" class="th" text-anchor="middle" dominant-baseline="central">lost</text>
+  </g>
+
+  <!-- receiver never saw #6 -->
   <g class="c-gray">
-    <rect x="16" y="348" width="58" height="50" rx="4" stroke-width="0.5"/>
-    <text x="45" y="366" class="ts" text-anchor="middle" dominant-baseline="central">goodbye</text>
+    <rect x="506" y="130" width="104" height="40" rx="2" stroke-width="0.5"/>
+    <text x="558" y="150" class="th" text-anchor="middle" dominant-baseline="central">never arrived</text>
   </g>
 
-  <!-- greet: three-way handshake -->
-  <path class="arr" d="M156,118 L524,142" marker-end="url(#arrow)"/>
-  <text x="340" y="122" class="t" text-anchor="middle" dominant-baseline="central">syn — can we talk?</text>
-
-  <path class="arr" d="M524,178 L156,202" marker-end="url(#arrow)"/>
-  <text x="340" y="182" class="t" text-anchor="middle" dominant-baseline="central">syn-ack — yes, i'm ready</text>
-
-  <path class="arr" d="M156,238 L524,262" marker-end="url(#arrow)"/>
-  <text x="340" y="242" class="t" text-anchor="middle" dominant-baseline="central">ack — great, starting</text>
-
-  <text x="340" y="420" class="ts" text-anchor="middle" dominant-baseline="central">three greetings agree to open the connection</text>
+  <!-- annotation -->
+  <text x="340" y="346" class="t" text-anchor="middle" dominant-baseline="central">Packet #6 is lost. No ack comes back, so the sender keeps waiting.</text>
 </svg>

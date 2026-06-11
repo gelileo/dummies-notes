@@ -4,11 +4,6 @@
     "status": "illustrated",
     "definition": "A style of secret-keeping that uses two different keys instead of one shared password: one key locks a message and a separate, matching key unlocks it."
   },
-  "best-effort-delivery": {
-    "name": "Best-effort delivery",
-    "status": "registered",
-    "definition": "The way the internet moves packets with no promises: it tries to deliver each one, but packets can be lost, duplicated, delayed, or arrive out of order."
-  },
   "communication-protocol": {
     "name": "Communication protocol",
     "status": "illustrated",
@@ -18,6 +13,11 @@
     "name": "Data packets",
     "status": "illustrated",
     "definition": "Small labeled chunks that a message is chopped into before being sent across a network, each traveling on its own and carrying enough information to be put back in order."
+  },
+  "delivery-acknowledgement": {
+    "name": "Delivery acknowledgement",
+    "status": "illustrated",
+    "definition": "A short reply one computer sends back to confirm it received what the other sent, so the sender knows the message arrived and does not have to guess or resend it blindly."
   },
   "modular-arithmetic": {
     "name": "Modular arithmetic",
@@ -42,6 +42,11 @@
   "tcp-connection-lifecycle": {
     "name": "TCP connection lifecycle",
     "status": "illustrated",
-    "definition": "The fixed sequence of stages a TCP conversation between two computers passes through: an opening greeting where both sides agree to talk, a middle where data flows and arrivals are confirmed, and a closing goodbye so both sides know the conversation is over."
+    "definition": "The full set of steps two computers go through to talk reliably over a network: they first greet each other to agree to start, then send messages back and forth while confirming each one arrived, and finally say goodbye to close the conversation cleanly."
+  },
+  "unreliable-delivery": {
+    "name": "Unreliable delivery",
+    "status": "illustrated",
+    "definition": "The fact that a message sent across a network can quietly fail to arrive, arrive damaged, or arrive out of order, with no automatic warning to the sender."
   }
 }

@@ -1,0 +1,11 @@
+{
+  "slug": "delivery-acknowledgement",
+  "name": "Delivery acknowledgement",
+  "definition": "A short reply one computer sends back to confirm it received what the other sent, so the sender knows the message arrived and does not have to guess or resend it blindly.",
+  "status": "illustrated",
+  "prerequisites": [
+    "data-packets",
+    "unreliable-delivery"
+  ],
+  "figure": "delivery-acknowledgement/figure"
+}

@@ -1,0 +1,8 @@
+{
+  "pass": true,
+  "summary": "All five frames match their runbooks exactly: actor headers (Computer one/caller, Computer two/answerer), dashed rails at x=150/530, the phase rail (greet/talk/goodbye with the active band c-teal and the rest c-gray), every arrow's direction, coordinates, and label, the red half-length lost-packet arrow with its 'lost — never arrives' note, the recap leaders, the c-coral 'connection closed cleanly' badge, and all footers are faithful to figure.json. The blind-reader read (three-phase lifecycle: greet handshake, talk with per-packet ack, recovery-on-loss within talk, four-step goodbye, whole-arc recap) reproduces the commentary's intent precisely, including the plain-language glosses (syn = can we talk?, fin = i'm done). Commentary is simple, vivid, and faithful. Frame 5 is a clean end-state. No real gaps.",
+  "gaps": [
+    "Minor (not blocking): frame-03 uses a bare lowercase 'a' ('so a takes the hint') to refer to the left actor, which is labeled 'Computer one'/'caller' everywhere else; the actor is never introduced as 'a'. The blind reader still understood it, but 'so it takes the hint' or 'so computer one takes the hint' would be more consistent.",
+    "Minor (not blocking): the gray phase band does double duty as both 'finished' (frames 2-5) and 'not yet reached' (goodbye in frames 2-3, talk/goodbye in frame 1). The blind reader assumed gray means 'finished'; this never distorts the concept but the rail does not distinguish past from future phases."
+  ]
+}

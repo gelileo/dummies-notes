@@ -1,0 +1,32 @@
+{
+  "concept_slug": "unreliable-delivery",
+  "title": "Unreliable delivery: the network gives no guarantees",
+  "archetype": "illustrative",
+  "playback": "slideshow",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "A sender ships four numbered messages, in order, into the network.",
+      "runbook": "Illustrative sequence, shared viewBox 0 0 680 360 for all frames. Stable layout: left column = 'sender' label (th) at x~70, y~40; a sender stack of four message cards stacked vertically at x=40..160. Middle band y=70..300 is a soft gray 'network' container rect (c-gray, rx=10) spanning x=200..480 labelled 'network' (ts) top-left, representing many hops the sender does not control. Right column = 'receiver' label at x~610; a receiver inbox region x=520..640 with four numbered slots stacked vertically matching the sender's four row y-positions (rows at cy = 110, 165, 220, 275; each card ~ width 110, height 40, rx=4). Frame 1 state: all four sender cards present and intact, class c-teal (active/just-sent), labelled 'msg 1'..'msg 4' (th) with subtitle 'in order' is implied. Receiver slots all empty (class box, dashed-looking but use plain box) labelled with their slot number 1..4 (ts) only, nothing delivered yet. No packets in the network band yet. A single thin arr arrow from sender column into the network band shows direction of travel. No failure shown yet — this is the clean starting intent.",
+      "commentary": "Here is what the sender does. It hands four messages to the network, numbered one through four, in order. As far as the sender is concerned, the job is done. The messages are on their way. What the sender cannot see is the network in the middle: a long chain of cables and machines it does not control."
+    },
+    {
+      "file": "frame-02.svg",
+      "caption": "Inside the network the messages hit trouble the sender never sees.",
+      "runbook": "Same viewBox 0 0 680 360, same sender/network/receiver layout and row y-positions as frame 1. Sender cards on the left fade to c-gray (already sent, sender has moved on). Inside the network band (x=200..480) draw the four message cards mid-flight, each at a different x within the band, showing their fate beginning: msg 1 travelling cleanly (c-teal, intact, near right edge of band); msg 2 marked as lost — draw it faded c-gray with a small red 'x' cross over it (c-red stroke) and label 'dropped' (ts), positioned lower/stalled; msg 3 marked damaged — c-amber card with its label shown as garbled 'm$%g 3' and subtitle 'corrupted' (ts); msg 4 racing ahead of msg 3 (c-teal) nearer the exit than msg 3, to set up reordering. Keep the network band as the gray container. The point of the frame: the three failure modes arise here, invisibly. No arrow back to the sender — emphasise the sender gets no signal.",
+      "commentary": "Now follow the messages into the network. This is where things quietly go wrong. One message simply gets dropped and never comes out. Another gets a few bits flipped along the way, arriving damaged. A third overtakes the message ahead of it, so they fall out of order. None of this is announced. The wires do not call home."
+    },
+    {
+      "file": "frame-03.svg",
+      "caption": "What lands at the receiver: one lost, one damaged, two swapped in order.",
+      "runbook": "Same viewBox 0 0 680 360 and layout. Sender cards stay c-gray on the left (sent and forgotten). Network band now empty (delivery finished). Receiver inbox slots on the right fill with what actually arrived, in arrival order top to bottom: slot 1 = msg 1 delivered intact (c-teal, 'msg 1', subtitle 'intact'); slot 2 = msg 4 arrived (c-teal label 'msg 4', subtitle 'early') showing it came before msg 3 — out of order; slot 3 = msg 3 arrived damaged (c-amber, garbled 'm$%g 3', subtitle 'corrupted'); and a separate gap row for msg 2 shown as an empty dashed slot with a c-red label 'msg 2 — never arrived'. Add a small panel near the sender (bottom-left) reading 'sender: all sent OK' (th) with subtitle 'no error reported' (c-gray) to drive home the silence. The contrast is the lesson: the receiver's column does not match the sender's clean numbered stack.",
+      "commentary": "Here is what actually shows up at the other end. Message one arrives perfectly. Message four arrives next, before message three, so the order is scrambled. Message three arrives, but damaged. And message two? It never comes. Meanwhile the sender still believes everything went fine. It was never told otherwise."
+    },
+    {
+      "file": "frame-04.svg",
+      "caption": "Three failure modes, one common thread: the sender is never warned.",
+      "runbook": "Same viewBox 0 0 680 360 and layout, final summary frame. Keep the sender (c-gray, 'all sent OK / no error reported' panel) and the receiver inbox exactly as in frame 3 so the reader sees the mismatched result. Overlay three labelled callout tags pointing at the relevant receiver rows: a c-red tag 'lost' pointing at the empty msg-2 gap; a c-amber tag 'damaged' pointing at the corrupted msg-3 card; a c-teal/purple tag 'out of order' pointing at the msg-4-before-msg-3 pair (use c-purple to avoid implying a good/active state). Across the bottom, a single wide summary banner (plain box, full readable width) with text (th) 'the network never promises delivery' and subtitle (ts) 'no automatic warning reaches the sender'. This is the end-state frame that names the mechanism plainly.",
+      "commentary": "So this is unreliable delivery in one picture. A message can vanish. It can arrive corrupted. It can arrive out of order. And the thread tying all three together is silence: the network makes no promise, and sends no warning back. If you want reliability, you have to build it yourself, on top, by numbering messages, checking them, and asking for the missing ones again. For the wires-and-machines layer underneath this, see the computer-network figure; for what one of these numbered messages actually is, see the data-packets figure."
+    }
+  ]
+}

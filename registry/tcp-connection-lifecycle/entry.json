@@ -1,12 +1,12 @@
 {
   "slug": "tcp-connection-lifecycle",
   "name": "TCP connection lifecycle",
-  "definition": "The fixed sequence of stages a TCP conversation between two computers passes through: an opening greeting where both sides agree to talk, a middle where data flows and arrivals are confirmed, and a closing goodbye so both sides know the conversation is over.",
+  "definition": "The full set of steps two computers go through to talk reliably over a network: they first greet each other to agree to start, then send messages back and forth while confirming each one arrived, and finally say goodbye to close the conversation cleanly.",
   "status": "illustrated",
   "prerequisites": [
-    "communication-protocol",
     "data-packets",
-    "best-effort-delivery"
+    "communication-protocol",
+    "delivery-acknowledgement"
   ],
   "figure": "tcp-connection-lifecycle/figure"
 }

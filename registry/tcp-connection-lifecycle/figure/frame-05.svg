@@ -1,6 +1,6 @@
 <svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 440" role="img" font-family="sans-serif">
-  <title>TCP connection lifecycle — the greeting</title>
-  <desc>Two computers exchange three opening messages to agree to start talking: syn, syn-ack, ack.</desc>
+  <title>TCP connection lifecycle — the whole arc</title>
+  <desc>The three phases together: greet to open, talk to exchange confirmed data, goodbye to close cleanly.</desc>
   <defs>
     <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
 text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
@@ -74,8 +74,8 @@ rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
   <line class="leader" x1="530" y1="74" x2="530" y2="406"/>
   <text x="340" y="92" class="ts" text-anchor="middle" dominant-baseline="central">time runs downward</text>
 
-  <!-- phase markers (left) -->
-  <g class="c-teal">
+  <!-- phase markers (left), all done -->
+  <g class="c-gray">
     <rect x="16" y="100" width="58" height="168" rx="4" stroke-width="0.5"/>
     <text x="45" y="118" class="ts" text-anchor="middle" dominant-baseline="central">greet</text>
   </g>
@@ -88,15 +88,20 @@ rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
     <text x="45" y="366" class="ts" text-anchor="middle" dominant-baseline="central">goodbye</text>
   </g>
 
-  <!-- greet: three-way handshake -->
-  <path class="arr" d="M156,118 L524,142" marker-end="url(#arrow)"/>
-  <text x="340" y="122" class="t" text-anchor="middle" dominant-baseline="central">syn — can we talk?</text>
+  <!-- whole lifecycle recap -->
+  <path class="leader" d="M156,140 L524,164"/>
+  <text x="340" y="144" class="t" text-anchor="middle" dominant-baseline="central">greet — agree to start</text>
 
-  <path class="arr" d="M524,178 L156,202" marker-end="url(#arrow)"/>
-  <text x="340" y="182" class="t" text-anchor="middle" dominant-baseline="central">syn-ack — yes, i'm ready</text>
+  <path class="leader" d="M156,228 L524,252"/>
+  <text x="340" y="232" class="t" text-anchor="middle" dominant-baseline="central">talk — send and confirm each packet</text>
 
-  <path class="arr" d="M156,238 L524,262" marker-end="url(#arrow)"/>
-  <text x="340" y="242" class="t" text-anchor="middle" dominant-baseline="central">ack — great, starting</text>
+  <path class="leader" d="M156,316 L524,340"/>
+  <text x="340" y="320" class="t" text-anchor="middle" dominant-baseline="central">goodbye — close cleanly</text>
 
-  <text x="340" y="420" class="ts" text-anchor="middle" dominant-baseline="central">three greetings agree to open the connection</text>
+  <g class="c-coral">
+    <rect x="240" y="366" width="200" height="34" rx="4" stroke-width="0.5"/>
+    <text x="340" y="383" class="th" text-anchor="middle" dominant-baseline="central">connection closed cleanly</text>
+  </g>
+
+  <text x="340" y="420" class="ts" text-anchor="middle" dominant-baseline="central">open, talk reliably, close — the full lifecycle</text>
 </svg>

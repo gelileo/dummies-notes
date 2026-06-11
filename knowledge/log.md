@@ -385,3 +385,13 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
   leaf" — give a node its own mechanism figure whenever its mechanism is
   figure-sized, regardless of prerequisites. Same root cause as RSA's missing
   mechanism figure. Candidate Phase 5.
+
+## [2026-06-10] feat | Phase 5 acceptance — TCP re-run closes the chain-review gap
+
+- Reset tcp-connection-lifecycle + best-effort-delivery; re-ran TCP (maxDepth 2).
+- 5 nodes; root illustrated with a self-sufficient 5-frame lifecycle figure (not a
+  composition map); unreliable-delivery + delivery-acknowledgement illustrated
+  (non-atomic-but-figurable — the Phase 5 fix); communication-protocol + data-packets
+  reused; computer-network honest frontier. 16 agents.
+- chain_review_pass: TRUE (4 blocking gaps -> 1 minor frontier note). Self-sufficient
+  mechanism figures work; composition retired. graph check clean; 60 tests green.

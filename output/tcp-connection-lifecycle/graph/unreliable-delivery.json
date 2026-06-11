@@ -1,0 +1,25 @@
+{
+  "concept": {
+    "slug": "unreliable-delivery",
+    "name": "Unreliable delivery",
+    "definition": "The fact that a message sent across a network can quietly fail to arrive, arrive damaged, or arrive out of order, with no automatic warning to the sender."
+  },
+  "audience": "a curious adult with no domain background",
+  "atomic": false,
+  "mechanism_figurable": true,
+  "atomic_reason": "The idea that delivery can silently fail only makes sense once you picture what is actually traveling and where it travels: a message is chopped into separate chunks that each find their own way across a web of connected machines, which is precisely why pieces can get lost, corrupted, or reordered. Those two underlying pictures each deserve their own figure first, so this is not atomic. But its own point - a message going in and quietly not coming out right, with the sender none the wiser - is one clear figure.",
+  "prerequisites": [
+    {
+      "slug": "computer-network",
+      "name": "Computer network",
+      "definition": "A set of computers connected together by cables or radio so they can pass messages to one another, often through many in-between machines rather than a single direct wire.",
+      "why": "Unreliable delivery is about what happens to a message while it crosses the gap between two machines, so the reader first needs the picture of that connected, multi-hop space where things can go wrong along the way."
+    },
+    {
+      "slug": "data-packets",
+      "name": "Data packets",
+      "definition": "Small labeled chunks that a message is chopped into before being sent across a network, each traveling on its own and carrying enough information to be put back in order.",
+      "why": "Messages do not travel as one piece; they travel as many independent chunks, which is the direct reason a delivery can lose some pieces, damage one, or have them arrive out of order."
+    }
+  ]
+}

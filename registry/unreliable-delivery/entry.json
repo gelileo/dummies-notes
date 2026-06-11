@@ -1,0 +1,11 @@
+{
+  "slug": "unreliable-delivery",
+  "name": "Unreliable delivery",
+  "definition": "The fact that a message sent across a network can quietly fail to arrive, arrive damaged, or arrive out of order, with no automatic warning to the sender.",
+  "status": "illustrated",
+  "prerequisites": [
+    "computer-network",
+    "data-packets"
+  ],
+  "figure": "unreliable-delivery/figure"
+}

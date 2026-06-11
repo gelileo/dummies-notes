@@ -1,14 +1,38 @@
 {
   "concept_slug": "tcp-connection-lifecycle",
-  "title": "TCP connection lifecycle: three ideas snap together",
-  "archetype": "structural",
-  "playback": "static",
+  "title": "How two computers open, use, and close a reliable conversation",
+  "archetype": "illustrative",
+  "playback": "slideshow",
   "frames": [
     {
       "file": "frame-01.svg",
-      "caption": "A shared rule-set scripts the stages, packets carry every line of the script, and a promiseless network is why the ceremony exists.",
-      "runbook": "Single structural composition frame, viewBox 0 0 680 370. Title (th, centered at x=340, y=32): 'Three ideas snap together into the TCP connection lifecycle'. Left column: three prerequisite boxes, each w=250 h=64 rx=8 stroke-width 0.5 at x=40, stacked with 26px gaps — c-purple at y=56 with th 'Communication protocol' (y=84) and ts 'the script both sides follow' (y=104); c-blue at y=146 with th 'Data packets' (y=174) and ts 'each stage travels as packets' (y=194); c-pink at y=236 with th 'Best-effort delivery' (y=264) and ts 'the network promises nothing' (y=284). All child text centered at x=165. Ramps are neutral category colors (purple/blue/pink), one per child, no state meaning. Right side: the parent gets the emphasis — a single larger c-coral box at x=425 y=98 w=220 h=160 rx=10 with th 'TCP connection lifecycle' (y=150), ts 'handshake opens' (y=174), ts 'data flows, confirmed' (y=192), ts 'goodbye closes' (y=210), all centered at x=535. Three arrows (class arr, marker-end, fill none) converge from each child's right edge into the parent's left edge: M294,88 L419,150; M294,178 L419,178; M294,268 L419,206 — top and bottom arrows angle inward so the three visibly meet at one destination. Bottom note (ts, centered x=340, y=330): 'The rules script the stages, packets carry them, and the unreliable net makes each necessary'. This is a map of how the parts fit, not a re-teaching: each child box carries only its name plus a 2-6 word essence of its role in the lifecycle.",
-      "commentary": "The TCP connection lifecycle is not one new idea — it is three familiar ones snapped together. A communication protocol supplies the script: both computers follow the same agreed rules, so the opening greeting, the middle conversation, and the closing goodbye happen in a fixed, expected order. Data packets supply the medium: every line of that script, from the first hello to the last farewell, is just a small labeled chunk sent across the network. And best-effort delivery supplies the reason: the network may lose, duplicate, or reorder any of those chunks, so the handshake, the receipt confirmations, and the careful two-way goodbye are not ceremony — they are how two machines stay certain despite a network that promises nothing. Follow the three arrows and they all land in the same coral box. That convergence is the lifecycle: a scripted conversation, carried by packets, made careful by an unreliable road."
+      "caption": "First they greet: a three-message handshake agrees to start.",
+      "runbook": "Shared layout for all frames, viewBox 0 0 680 440. Two actor header boxes (class box, rx4, w120 h44): 'Computer one' centered x=150 at y=30 with ts subtitle 'caller'; 'Computer two' centered x=530 at y=30 with ts subtitle 'answerer'. Two dashed leader rails run vertically at x=150 and x=530 from y=74 to y=406. A ts label 'time runs downward' sits centered at (340,92). On the far left, three phase bands (rx4, w58, x=16): greet (y=100 h168), talk (y=278 h60), goodbye (y=348 h50); the ACTIVE phase band is c-teal and the rest are c-gray. A ts footer annotation sits centered at (340,420). Messages are arr arrows crossing between the rails, angled 24px downward to show transit time, with a t label centered at x=340 just above each arrow. Frame 1 — greet active (greet=c-teal, talk/goodbye=c-gray): three handshake arrows. A->B at y118->142 'syn — can we talk?'; B->A at y178->202 'syn-ack — yes, i'm ready'; A->B at y238->262 'ack — great, starting'. Footer: 'three greetings agree to open the connection'.",
+      "commentary": "Two computers want to talk. Before sending anything important, they greet each other. Computer one calls out: can we talk? Computer two answers: yes, I'm ready. Computer one confirms: great, starting. That back-and-forth-and-back is the handshake. Now both sides know the other is listening."
+    },
+    {
+      "file": "frame-02.svg",
+      "caption": "Then they talk: every packet is answered with an acknowledgement.",
+      "runbook": "Same shared scaffold and coordinates as frame 1. Phase bands: greet=c-gray (done), talk=c-teal (active), goodbye=c-gray. The greet handshake is recapped as a single faded dashed leader A->B at y118->142 with ts label 'connection already open' at y122. Talk-phase arr arrows: A->B at y178->202 'data — packet #1'; B->A at y238->262 'ack #1 — got it'; A->B at y298->322 'data — packet #2'; B->A at y358->382 'ack #2 — got it'. Footer: 'every packet is answered with an acknowledgement'.",
+      "commentary": "The connection is open, so now the real talking begins. Computer one sends a packet of data. Computer two sends back a short note: got it. Then the next packet, and another got it. Each piece is confirmed before it counts as delivered. That is how both sides stay sure nothing slipped through."
+    },
+    {
+      "file": "frame-03.svg",
+      "caption": "If a packet vanishes, the missing acknowledgement triggers a resend.",
+      "runbook": "Same shared scaffold and coordinates. Phase bands: greet=c-gray, talk=c-teal (active), goodbye=c-gray. Greet recap leader at y118->142 'connection already open'. Talk phase shows a failure then recovery: a short c-red arr arrow A->B that stops partway at y178->191 (ends near x=360), with ts label 'data #3' above at (245,170) and a c-red ts 'lost — never arrives' at (392,194); a two-line ts note on the A rail at (150,232)/(150,248) 'no ack comes back' / 'so a takes the hint'; then a full arr A->B at y298->322 'data #3 again — resend' and B->A at y358->382 'ack #3 — got it this time'. Footer: 'a missing ack means resend — nothing is lost'.",
+      "commentary": "Networks lose things. Here packet three sets off and simply vanishes. Computer two never saw it, so it sends no confirmation. Computer one waits, hears nothing, and takes the hint. It sends packet three again. This time the confirmation comes back. A missing got-it always means try again, so nothing is ever quietly dropped."
+    },
+    {
+      "file": "frame-04.svg",
+      "caption": "Finally they say goodbye: fin and ack on both sides close it cleanly.",
+      "runbook": "Same shared scaffold and coordinates. Phase bands: greet=c-gray, talk=c-gray, goodbye=c-teal (active). Two faded recap leaders: A->B at y118->142 'connection already open' and A->B at y200->224 'data exchanged and confirmed'. Goodbye phase, four arr arrows: A->B y260->278 'fin — i'm done'; B->A y300->316 'ack — heard you'; B->A y338->354 'fin — i'm done too'; A->B y376->392 'ack — goodbye'. Footer: 'both sides say goodbye, so neither hangs up early'.",
+      "commentary": "The talking is finished, so the two computers wind down politely. Computer one says: I'm done. Computer two answers: heard you. Then Computer two says: I'm done too. And Computer one replies: goodbye. Each side announces it is finished and waits for the other to agree. Nobody hangs up mid-sentence."
+    },
+    {
+      "file": "frame-05.svg",
+      "caption": "The whole arc: open, talk reliably, close.",
+      "runbook": "Same shared scaffold and coordinates; all three phase bands are c-gray (every phase complete). The body collapses the lifecycle into three faded leader recaps, each with a t label centered at x=340: greet at y140->164 'greet — agree to start'; talk at y228->252 'talk — send and confirm each packet'; goodbye at y316->340 'goodbye — close cleanly'. A c-coral badge (rect x=240 y=366 w200 h34 rx4) holds th 'connection closed cleanly'. Footer ts: 'open, talk reliably, close — the full lifecycle'. This is the end-state frame.",
+      "commentary": "Step back and the whole shape is simple. First they greet, to agree to start. Then they talk, sending data and confirming each piece arrived. Then they say goodbye, closing the line cleanly on both ends. Greet, talk, goodbye — that is the life of a reliable connection from hello to hang-up. To go deeper: the data sent in the talk phase travels as numbered packets — see the data-packets figure. The greeting rules both sides follow are a shared agreement — see the communication-protocol figure. And the got-it confirmations are covered by the delivery-acknowledgement figure."
     }
   ]
 }

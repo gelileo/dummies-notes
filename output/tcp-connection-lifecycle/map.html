@@ -16,18 +16,20 @@ body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;p
 h1{text-align:center}
 </style></head><body>
 <h1>TCP connection lifecycle — concept map</h1>
-<div class="canvas" style="width:500px;height:760px">
-<svg class="edges" viewBox="0 0 500 760" width="500" height="760">
-<line x1="135" y1="410" x2="250" y2="500"/>
-<line x1="250" y1="170" x2="365" y2="260"/>
-<line x1="250" y1="170" x2="250" y2="500"/>
+<div class="canvas" style="width:500px;height:1000px">
+<svg class="edges" viewBox="0 0 500 1000" width="500" height="1000">
+<line x1="365" y1="410" x2="365" y2="740"/>
+<line x1="365" y1="410" x2="250" y2="500"/>
+<line x1="250" y1="170" x2="365" y2="740"/>
 <line x1="250" y1="170" x2="135" y2="260"/>
+<line x1="250" y1="170" x2="365" y2="260"/>
+<line x1="250" y1="650" x2="135" y2="740"/>
+<line x1="250" y1="650" x2="365" y2="740"/>
 </svg>
-<div class="node" data-node="tcp-connection-lifecycle" style="left:150px;top:20px"><a href="index.html#tcp-connection-lifecycle"><strong>TCP connection lifecycle</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 370" role="img" font-family="sans-serif">
-  <title>TCP connection lifecycle: three ideas snap together</title>
-  <desc>Three prerequisite concepts — communication protocol, data packets, and best-effort delivery — converge by arrows into one emphasized box labeled TCP connection lifecycle.</desc>
+<div class="node" data-node="tcp-connection-lifecycle" style="left:150px;top:20px"><a href="index.html#tcp-connection-lifecycle"><strong>TCP connection lifecycle</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 440" role="img" font-family="sans-serif">
+  <title>TCP connection lifecycle — the greeting</title>
+  <desc>Two computers exchange three opening messages to agree to start talking: syn, syn-ack, ack.</desc>
   <defs>
-    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
     <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
 text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
 text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
@@ -83,138 +85,52 @@ rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
     </marker>
   </defs>
 
-  <text class="th" x="340" y="32" text-anchor="middle">Three ideas snap together into the TCP connection lifecycle</text>
-
-  <!-- prerequisite: communication protocol -->
-  <g class="c-purple">
-    <rect x="40" y="56" width="250" height="64" rx="8" stroke-width="0.5"/>
-    <text class="th" x="165" y="84" text-anchor="middle">Communication protocol</text>
-    <text class="ts" x="165" y="104" text-anchor="middle">the script both sides follow</text>
+  <!-- actor headers -->
+  <g class="box">
+    <rect x="90" y="30" width="120" height="44" rx="4" stroke-width="0.5"/>
+    <text x="150" y="48" class="th" text-anchor="middle" dominant-baseline="central">Computer one</text>
+    <text x="150" y="64" class="ts" text-anchor="middle" dominant-baseline="central">caller</text>
+  </g>
+  <g class="box">
+    <rect x="470" y="30" width="120" height="44" rx="4" stroke-width="0.5"/>
+    <text x="530" y="48" class="th" text-anchor="middle" dominant-baseline="central">Computer two</text>
+    <text x="530" y="64" class="ts" text-anchor="middle" dominant-baseline="central">answerer</text>
   </g>
 
-  <!-- prerequisite: data packets -->
-  <g class="c-blue">
-    <rect x="40" y="146" width="250" height="64" rx="8" stroke-width="0.5"/>
-    <text class="th" x="165" y="174" text-anchor="middle">Data packets</text>
-    <text class="ts" x="165" y="194" text-anchor="middle">each stage travels as packets</text>
+  <!-- timeline rails -->
+  <line class="leader" x1="150" y1="74" x2="150" y2="406"/>
+  <line class="leader" x1="530" y1="74" x2="530" y2="406"/>
+  <text x="340" y="92" class="ts" text-anchor="middle" dominant-baseline="central">time runs downward</text>
+
+  <!-- phase markers (left) -->
+  <g class="c-teal">
+    <rect x="16" y="100" width="58" height="168" rx="4" stroke-width="0.5"/>
+    <text x="45" y="118" class="ts" text-anchor="middle" dominant-baseline="central">greet</text>
+  </g>
+  <g class="c-gray">
+    <rect x="16" y="278" width="58" height="60" rx="4" stroke-width="0.5"/>
+    <text x="45" y="296" class="ts" text-anchor="middle" dominant-baseline="central">talk</text>
+  </g>
+  <g class="c-gray">
+    <rect x="16" y="348" width="58" height="50" rx="4" stroke-width="0.5"/>
+    <text x="45" y="366" class="ts" text-anchor="middle" dominant-baseline="central">goodbye</text>
   </g>
 
-  <!-- prerequisite: best-effort delivery -->
-  <g class="c-pink">
-    <rect x="40" y="236" width="250" height="64" rx="8" stroke-width="0.5"/>
-    <text class="th" x="165" y="264" text-anchor="middle">Best-effort delivery</text>
-    <text class="ts" x="165" y="284" text-anchor="middle">the network promises nothing</text>
-  </g>
+  <!-- greet: three-way handshake -->
+  <path class="arr" d="M156,118 L524,142" marker-end="url(#arrow)"/>
+  <text x="340" y="122" class="t" text-anchor="middle" dominant-baseline="central">syn — can we talk?</text>
 
-  <!-- converging arrows -->
-  <path class="arr" marker-end="url(#arrow)" d="M294,88 L419,150" fill="none"/>
-  <path class="arr" marker-end="url(#arrow)" d="M294,178 L419,178" fill="none"/>
-  <path class="arr" marker-end="url(#arrow)" d="M294,268 L419,206" fill="none"/>
+  <path class="arr" d="M524,178 L156,202" marker-end="url(#arrow)"/>
+  <text x="340" y="182" class="t" text-anchor="middle" dominant-baseline="central">syn-ack — yes, i'm ready</text>
 
-  <!-- parent: TCP connection lifecycle (emphasized destination) -->
-  <g class="c-coral">
-    <rect x="425" y="98" width="220" height="160" rx="10" stroke-width="0.5"/>
-    <text class="th" x="535" y="150" text-anchor="middle">TCP connection lifecycle</text>
-    <text class="ts" x="535" y="174" text-anchor="middle">handshake opens</text>
-    <text class="ts" x="535" y="192" text-anchor="middle">data flows, confirmed</text>
-    <text class="ts" x="535" y="210" text-anchor="middle">goodbye closes</text>
-  </g>
+  <path class="arr" d="M156,238 L524,262" marker-end="url(#arrow)"/>
+  <text x="340" y="242" class="t" text-anchor="middle" dominant-baseline="central">ack — great, starting</text>
 
-  <text class="ts" x="340" y="330" text-anchor="middle">The rules script the stages, packets carry them, and the unreliable net makes each necessary</text>
+  <text x="340" y="420" class="ts" text-anchor="middle" dominant-baseline="central">three greetings agree to open the connection</text>
 </svg>
 </div><span class="badge">composite</span></div>
-<div class="node" data-node="best-effort-delivery" style="left:35px;top:260px"><a href="index.html#best-effort-delivery"><strong>Best-effort delivery</strong></a><span class="badge">composite</span></div>
-<div class="node" data-node="communication-protocol" style="left:265px;top:260px"><a href="index.html#communication-protocol"><strong>Communication protocol</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 426" role="img" font-family="sans-serif">
-  <title>Communication protocol — the shared rulebook</title>
-  <desc>Two computers face each other with a shared rulebook between them listing the four agreed steps of their conversation. No messages have been sent yet.</desc>
-  <defs>
-    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
-    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
-text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
-text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
-text.th{font-size:14px;font-weight:500;fill:#111110;}
-rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
-.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
-.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
-.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
-.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
-.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
-.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
-.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
-.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
-.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
-.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
-.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
-.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
-.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
-.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
-.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
-.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
-.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
-.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
-.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
-.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
-@media (prefers-color-scheme:dark){
-text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
-rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
-.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
-.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
-.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
-.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
-.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
-.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
-.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
-.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
-.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
-.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
-.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
-.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
-.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
-.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
-.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
-.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
-.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
-.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
-.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
-}
-.arrow-head{fill:#6b6a64;}
-@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
-    </marker>
-  </defs>
-
-  <!-- computer A -->
-  <g class="box">
-    <rect x="40" y="44" width="130" height="44" rx="6" stroke-width="0.5"/>
-    <text x="105" y="66" class="th" text-anchor="middle" dominant-baseline="central">computer A</text>
-  </g>
-
-  <!-- computer B -->
-  <g class="box">
-    <rect x="510" y="44" width="130" height="44" rx="6" stroke-width="0.5"/>
-    <text x="575" y="66" class="th" text-anchor="middle" dominant-baseline="central">computer B</text>
-  </g>
-
-  <!-- shared rulebook -->
-  <g class="box">
-    <rect x="250" y="30" width="180" height="130" rx="6" stroke-width="0.5"/>
-    <text x="340" y="48" class="ts" text-anchor="middle" dominant-baseline="central">the agreed rules</text>
-  </g>
-  <text x="266" y="74" class="ts" dominant-baseline="central">1. say hello first</text>
-  <text x="266" y="96" class="ts" dominant-baseline="central">2. answer the hello</text>
-  <text x="266" y="118" class="ts" dominant-baseline="central">3. send the data</text>
-  <text x="266" y="140" class="ts" dominant-baseline="central">4. confirm it arrived</text>
-
-  <!-- lifelines -->
-  <path class="leader" d="M105,88 L105,340"/>
-  <path class="leader" d="M575,88 L575,340"/>
-
-  <!-- annotation -->
-  <text x="340" y="205" class="ts" text-anchor="middle" dominant-baseline="central">no messages yet — just a shared agreement</text>
-</svg>
-</div><span class="badge">atomic</span></div>
-<div class="node" data-node="data-packets" style="left:150px;top:500px"><a href="index.html#data-packets"><strong>Data packets</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 340" role="img" font-family="sans-serif">
+<div class="node frontier" data-node="computer-network" style="left:35px;top:740px"><a href="index.html#computer-network"><strong>computer-network</strong></a><span class="badge">frontier — not yet covered</span></div>
+<div class="node covered" data-node="data-packets" style="left:265px;top:740px"><a href="index.html#data-packets"><strong>Data packets</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 340" role="img" font-family="sans-serif">
   <title>Data packets — the message is chopped into numbered packets</title>
   <desc>A message inside the sender is split into three small packets, each stamped with a sequence number, before entering the network.</desc>
   <defs>
@@ -320,5 +236,302 @@ rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
   <!-- annotation -->
   <text x="340" y="320" class="ts" text-anchor="middle" dominant-baseline="central">Each piece gets a number — its place in line</text>
 </svg>
-</div><span class="badge">atomic</span></div>
+</div><span class="badge">already covered</span></div>
+<div class="node covered" data-node="communication-protocol" style="left:35px;top:260px"><a href="index.html#communication-protocol"><strong>Communication protocol</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 426" role="img" font-family="sans-serif">
+  <title>Communication protocol — the shared rulebook</title>
+  <desc>Two computers face each other with a shared rulebook between them listing the four agreed steps of their conversation. No messages have been sent yet.</desc>
+  <defs>
+    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- computer A -->
+  <g class="box">
+    <rect x="40" y="44" width="130" height="44" rx="6" stroke-width="0.5"/>
+    <text x="105" y="66" class="th" text-anchor="middle" dominant-baseline="central">computer A</text>
+  </g>
+
+  <!-- computer B -->
+  <g class="box">
+    <rect x="510" y="44" width="130" height="44" rx="6" stroke-width="0.5"/>
+    <text x="575" y="66" class="th" text-anchor="middle" dominant-baseline="central">computer B</text>
+  </g>
+
+  <!-- shared rulebook -->
+  <g class="box">
+    <rect x="250" y="30" width="180" height="130" rx="6" stroke-width="0.5"/>
+    <text x="340" y="48" class="ts" text-anchor="middle" dominant-baseline="central">the agreed rules</text>
+  </g>
+  <text x="266" y="74" class="ts" dominant-baseline="central">1. say hello first</text>
+  <text x="266" y="96" class="ts" dominant-baseline="central">2. answer the hello</text>
+  <text x="266" y="118" class="ts" dominant-baseline="central">3. send the data</text>
+  <text x="266" y="140" class="ts" dominant-baseline="central">4. confirm it arrived</text>
+
+  <!-- lifelines -->
+  <path class="leader" d="M105,88 L105,340"/>
+  <path class="leader" d="M575,88 L575,340"/>
+
+  <!-- annotation -->
+  <text x="340" y="205" class="ts" text-anchor="middle" dominant-baseline="central">no messages yet — just a shared agreement</text>
+</svg>
+</div><span class="badge">already covered</span></div>
+<div class="node" data-node="delivery-acknowledgement" style="left:265px;top:260px"><a href="index.html#delivery-acknowledgement"><strong>Delivery acknowledgement</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 360" role="img" font-family="sans-serif">
+  <title>Delivery acknowledgement — the sender sends a packet</title>
+  <desc>The sender pushes a numbered packet onto the forward lane toward the receiver; the return lane is empty.</desc>
+  <defs>
+    <!-- This <style> block is the inlined copy of assets/_style.css. It is intentionally duplicated so each figure renders standalone (self-contained, light/dark). Keep the two in sync; _style.css is the source of truth. -->
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- shared scaffolding: sender / receiver -->
+  <g class="c-gray">
+    <rect x="24" y="56" width="170" height="270" rx="6" stroke-width="0.5"/>
+    <text x="36" y="74" class="ts" dominant-baseline="central">sender</text>
+  </g>
+  <g class="c-gray">
+    <rect x="486" y="56" width="170" height="270" rx="6" stroke-width="0.5"/>
+    <text x="498" y="74" class="ts" dominant-baseline="central">receiver</text>
+  </g>
+
+  <!-- shared lanes: forward (send) and return (ack) -->
+  <text x="340" y="120" class="ts" text-anchor="middle" dominant-baseline="central">send lane</text>
+  <path class="leader" d="M194,150 L486,150"/>
+  <text x="340" y="282" class="ts" text-anchor="middle" dominant-baseline="central">reply lane</text>
+  <path class="leader" d="M194,252 L486,252"/>
+
+  <!-- sender's record of the packet it sent (kept until confirmed) -->
+  <g class="box">
+    <rect x="44" y="100" width="130" height="40" rx="2" stroke-width="0.5"/>
+    <text x="109" y="112" class="ts" text-anchor="middle" dominant-baseline="central">my copy of #5</text>
+    <text x="109" y="128" class="th" text-anchor="middle" dominant-baseline="central">kept, just in case</text>
+  </g>
+
+  <!-- packet leaving the sender onto the send lane -->
+  <g class="c-teal">
+    <rect x="214" y="130" width="104" height="40" rx="2" stroke-width="0.5"/>
+    <text x="266" y="142" class="ts" text-anchor="middle" dominant-baseline="central">#5</text>
+    <text x="266" y="158" class="th" text-anchor="middle" dominant-baseline="central">data</text>
+  </g>
+  <path class="arr" d="M318,150 L380,150" marker-end="url(#arrow)"/>
+
+  <!-- annotation -->
+  <text x="340" y="346" class="t" text-anchor="middle" dominant-baseline="central">The sender sends packet #5 and keeps its own copy.</text>
+</svg>
+</div><span class="badge">composite</span></div>
+<div class="node" data-node="unreliable-delivery" style="left:150px;top:500px"><a href="index.html#unreliable-delivery"><strong>Unreliable delivery</strong></a><div class="thumb"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 360" role="img" font-family="sans-serif">
+  <title>Unreliable delivery — sender ships four messages in order</title>
+  <desc>A sender hands four numbered messages, in order, into a network it does not control; the receiver inbox is still empty.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- column labels -->
+  <text x="95" y="40" class="th" text-anchor="middle">sender</text>
+  <text x="580" y="40" class="th" text-anchor="middle">receiver</text>
+
+  <!-- network band (the part the sender does not control) -->
+  <g class="c-gray">
+    <rect x="200" y="62" width="280" height="232" rx="10" stroke-width="0.5"/>
+    <text x="214" y="80" class="ts">network</text>
+  </g>
+  <text x="340" y="318" class="ts" text-anchor="middle">many hops the sender does not control</text>
+
+  <!-- sender: four intact messages, in order -->
+  <g class="c-teal">
+    <rect x="40" y="90" width="110" height="40" rx="4" stroke-width="0.5"/>
+    <text x="95" y="110" class="th" text-anchor="middle" dominant-baseline="central">msg 1</text>
+  </g>
+  <g class="c-teal">
+    <rect x="40" y="145" width="110" height="40" rx="4" stroke-width="0.5"/>
+    <text x="95" y="165" class="th" text-anchor="middle" dominant-baseline="central">msg 2</text>
+  </g>
+  <g class="c-teal">
+    <rect x="40" y="200" width="110" height="40" rx="4" stroke-width="0.5"/>
+    <text x="95" y="220" class="th" text-anchor="middle" dominant-baseline="central">msg 3</text>
+  </g>
+  <g class="c-teal">
+    <rect x="40" y="255" width="110" height="40" rx="4" stroke-width="0.5"/>
+    <text x="95" y="275" class="th" text-anchor="middle" dominant-baseline="central">msg 4</text>
+  </g>
+  <text x="95" y="312" class="ts" text-anchor="middle">sent in order</text>
+
+  <!-- direction of travel into the network -->
+  <path class="arr" d="M158,180 L198,180" marker-end="url(#arrow)"/>
+
+  <!-- receiver: empty inbox slots -->
+  <g class="box">
+    <rect x="520" y="90" width="120" height="40" rx="4" stroke-width="0.5"/>
+    <text x="580" y="110" class="ts" text-anchor="middle" dominant-baseline="central">slot 1 — empty</text>
+  </g>
+  <g class="box">
+    <rect x="520" y="145" width="120" height="40" rx="4" stroke-width="0.5"/>
+    <text x="580" y="165" class="ts" text-anchor="middle" dominant-baseline="central">slot 2 — empty</text>
+  </g>
+  <g class="box">
+    <rect x="520" y="200" width="120" height="40" rx="4" stroke-width="0.5"/>
+    <text x="580" y="220" class="ts" text-anchor="middle" dominant-baseline="central">slot 3 — empty</text>
+  </g>
+  <g class="box">
+    <rect x="520" y="255" width="120" height="40" rx="4" stroke-width="0.5"/>
+    <text x="580" y="275" class="ts" text-anchor="middle" dominant-baseline="central">slot 4 — empty</text>
+  </g>
+  <text x="580" y="312" class="ts" text-anchor="middle">nothing arrived yet</text>
+</svg>
+</div><span class="badge">composite</span></div>
 </div></body></html>

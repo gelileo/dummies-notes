@@ -1,0 +1,5 @@
+{
+  "pass": true,
+  "summary": "All five frames match their runbooks exactly — cell positions, colour roles (teal=in flight, green=ack, red=lost, amber=waiting, coral=confirmed, gray=stored/dropped), arrow paths, and what-changed transitions all align. The blind reader's read (send + keep a copy, wait for ack, drop the copy on ack, resend if no ack; happy path frames 1-3, loss/recovery frames 4-5) matches the commentary's intent with no divergence. Commentary uses simple sentences, is faithful to the frames, and carries a vivid metaphor ('The silence is the signal'; 'turns a hopeful send into a sure one'). Frame 5 closes on the end state with delivery confirmed.",
+  "gaps": []
+}

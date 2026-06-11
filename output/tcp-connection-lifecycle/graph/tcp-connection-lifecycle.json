@@ -2,29 +2,30 @@
   "concept": {
     "slug": "tcp-connection-lifecycle",
     "name": "TCP connection lifecycle",
-    "definition": "The fixed sequence of stages a TCP conversation between two computers passes through: an opening greeting where both sides agree to talk, a middle where data flows and arrivals are confirmed, and a closing goodbye so both sides know the conversation is over."
+    "definition": "The full set of steps two computers go through to talk reliably over a network: they first greet each other to agree to start, then send messages back and forth while confirming each one arrived, and finally say goodbye to close the conversation cleanly."
   },
   "audience": "a curious adult with no domain background",
   "atomic": false,
-  "atomic_reason": "The lifecycle only makes sense once you know that internet messages travel as small independent chunks, that the network may lose or jumble those chunks, and that TCP is one agreed rule-set for coping with that. Each of those ideas needs its own picture before the handshake, the data exchange, and the goodbye can click in one short figure.",
+  "mechanism_figurable": true,
+  "atomic_reason": "The lifecycle's own mechanism is one clear picture: a greeting handshake, confirmed message passing, and a goodbye. But it leans on ideas a newcomer would not already know, like the chopped-up chunks a message travels as and the agreed rules two machines follow, so each of those deserves its own picture first.",
   "prerequisites": [
-    {
-      "slug": "communication-protocol",
-      "name": "Communication protocol",
-      "definition": "An agreed set of rules two computers follow when talking, so each one knows what kind of message to expect next and what every message means.",
-      "why": "TCP is one such rule-set, and its connection lifecycle is exactly the scripted order of messages that rule-set demands, so without the idea of computers following shared rules the stages look arbitrary."
-    },
     {
       "slug": "data-packets",
       "name": "Data packets",
       "definition": "Small labeled chunks that a message is chopped into before being sent across a network, each traveling on its own and carrying enough information to be put back in order.",
-      "why": "Every stage of a TCP connection, including the opening greeting and the closing goodbye, is carried out by sending individual packets, so the reader must first picture data moving as separate chunks."
+      "why": "A TCP conversation does not send a message in one piece; it ships many small chunks and confirms each one arrived, so the reader must first picture what those chunks are before the greet-confirm-goodbye steps make sense."
     },
     {
-      "slug": "best-effort-delivery",
-      "name": "Best-effort delivery",
-      "definition": "The way the internet moves packets with no promises: it tries to deliver each one, but packets can be lost, duplicated, delayed, or arrive out of order.",
-      "why": "The handshake, the receipt confirmations, and the careful two-way goodbye exist only because the network itself guarantees nothing, so without this idea the whole lifecycle seems like pointless ceremony."
+      "slug": "communication-protocol",
+      "name": "Communication protocol",
+      "definition": "An agreed set of rules two computers follow when talking, so each one knows what kind of message to expect next and what every message means.",
+      "why": "The whole lifecycle is one particular set of agreed rules, so the reader needs the general idea that machines follow a shared rulebook before seeing the specific greet-confirm-goodbye rules TCP uses."
+    },
+    {
+      "slug": "delivery-acknowledgement",
+      "name": "Delivery acknowledgement",
+      "definition": "A short reply one computer sends back to confirm it received what the other sent, so the sender knows the message arrived and does not have to guess or resend it blindly.",
+      "why": "TCP is called reliable precisely because every chunk is answered with a confirmation, and if no confirmation comes the chunk is sent again, so the reader cannot understand why the lifecycle is trustworthy without this back-and-forth confirming idea."
     }
   ]
 }

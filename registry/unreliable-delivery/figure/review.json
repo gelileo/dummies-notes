@@ -1,0 +1,9 @@
+{
+  "pass": true,
+  "summary": "All four frames render the runbook faithfully and the blind-reader's reading matches the commentary's intent exactly: clean in-order send -> silent in-transit failures (reorder, corruption, loss) -> mismatched arrival against a falsely successful sender -> named failure modes plus the 'no warning' thesis. Color grammar (teal=intact, amber=corrupted, red=lost, gray=already-sent, dashed=absent) is consistent across frames and reinforces meaning. Commentary uses simple, vivid sentences and is faithful to the visuals. Frame 4 supplies clean closure with the preserved mismatch, three callout tags, and a summary banner. Only nitpicks, no real gaps.",
+  "gaps": [
+    "Minor runbook drift (runbook is the stale side, not the SVG): frame-02 runbook specifies msg 2 as 'faded c-gray with a small red x cross', but the SVG draws msg 2 as a c-red card with an X. The SVG choice is actually superior because it keeps the lost=red grammar consistent with frames 3 and 4; recommend updating the frame-02 runbook to match the SVG rather than changing the image.",
+    "Cosmetic wording drift between frames (not a comprehension issue): the msg-4 receiver subtitle shifts 'arrived before msg 3' (frame 3) -> 'arrived early' (frame 4), and the msg-2 subtitle shifts 'never arrived' (frame 3) -> 'missing' (frame 4). Harmless but could be unified.",
+    "Frame-04 commentary cross-references a 'computer-network' figure that does not exist in the registry (only 'data-packets' is present). The reference lives in prose context, not in the image, so it does not affect comprehension, but the link should be added or removed."
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "concept": {
+    "slug": "delivery-acknowledgement",
+    "name": "Delivery acknowledgement",
+    "definition": "A short reply one computer sends back to confirm it received what the other sent, so the sender knows the message arrived and does not have to guess or resend it blindly."
+  },
+  "audience": "a curious adult with no domain background",
+  "atomic": false,
+  "mechanism_figurable": true,
+  "atomic_reason": "The back-and-forth itself is one clean figure: one computer sends a message, the other sends back a tiny 'got it' reply. But it only makes sense once the reader already knows that a message is sent as a small chunk across a network and that such a chunk can quietly fail to arrive, which is exactly the problem the reply solves. Those two ideas each deserve their own picture, so this is not atomic.",
+  "prerequisites": [
+    {
+      "slug": "data-packets",
+      "name": "Data packets",
+      "definition": "Small labeled chunks that a message is chopped into before being sent across a network, each traveling on its own and carrying enough information to be put back in order.",
+      "why": "A delivery acknowledgement confirms that a specific sent chunk arrived, so the reader first needs to picture a message as discrete chunks that travel separately before a per-chunk 'got it' reply means anything."
+    },
+    {
+      "slug": "unreliable-delivery",
+      "name": "Unreliable delivery",
+      "definition": "The fact that a message sent across a network can quietly fail to arrive, arrive damaged, or arrive out of order, with no automatic warning to the sender.",
+      "why": "An acknowledgement exists only to solve this problem; if delivery were always guaranteed the reply would be pointless, so the reader must first understand that sent messages can silently go missing."
+    }
+  ]
+}
