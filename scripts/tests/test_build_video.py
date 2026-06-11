@@ -259,6 +259,7 @@ class TestMp4Fallback(unittest.TestCase):
                 return "/usr/bin/ffmpeg" if cmd == "ffmpeg" else None
 
             with mock.patch("build_video.shutil.which", side_effect=which), \
+                 mock.patch("build_video._have_rasterizer", return_value=True), \
                  mock.patch("build_video.render.export_png",
                             side_effect=lambda s, p, **k: open(p, "wb").close() or p), \
                  mock.patch("build_video.subprocess.run",
@@ -277,6 +278,7 @@ class TestMp4Fallback(unittest.TestCase):
                 return f"/usr/bin/{cmd}" if cmd in ("ffmpeg", "say") else None
 
             with mock.patch("build_video.shutil.which", side_effect=which), \
+                 mock.patch("build_video._have_rasterizer", return_value=True), \
                  mock.patch("build_video.render.export_png",
                             side_effect=lambda s, p, **k: open(p, "wb").close() or p), \
                  mock.patch("build_video.subprocess.run",
@@ -285,6 +287,16 @@ class TestMp4Fallback(unittest.TestCase):
             self.assertEqual(path, os.path.join(base, "video.mp4"))
             self.assertTrue(any(c.args and c.args[0] and c.args[0][0] == "say"
                                 for c in run.call_args_list))
+
+    def test_missing_rasterizer_skips_mp4(self):
+        with tempfile.TemporaryDirectory() as base:
+            manifest = self._manifest(base)
+            with mock.patch("build_video.shutil.which",
+                            side_effect=lambda c: "/usr/bin/ffmpeg" if c == "ffmpeg" else None), \
+                 mock.patch("build_video._have_rasterizer", return_value=False):
+                path, notes = bv.render_mp4(manifest, base, bv.STAGE)
+            self.assertIsNone(path)
+            self.assertTrue(any("rasterizer" in n.lower() for n in notes))
 
     @unittest.skipUnless(shutil.which("ffmpeg") and
                          (shutil.which("rsvg-convert") or _has_cairosvg()),

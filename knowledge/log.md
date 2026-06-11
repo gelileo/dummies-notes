@@ -2,6 +2,13 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-11] fix(video): skip MP4 gracefully when no SVG rasterizer; correct xfade doc
+
+- `scripts/build_video.py`: added `_have_rasterizer()` helper (checks `shutil.which("rsvg-convert")` then tries `import cairosvg`). Added guard in `render_mp4` immediately after the ffmpeg check: returns `(None, notes)` with a "no SVG rasterizer" note when neither rasterizer is available. Previously `render.export_png` raised `SystemExit` (not `ValueError`) in this case, crashing `main` uncaught.
+- `scripts/tests/test_build_video.py`: added `test_missing_rasterizer_skips_mp4` (new regression test); patched `_have_rasterizer=True` in `test_missing_say_renders_silent_with_note` and `test_say_present_drives_audio_mux` so those tests are not falsely broken by the new guard. 23 tests, 1 skip, all passing.
+- `knowledge/concepts/dummies-notes/video-engine.md`: corrected MP4 bullet — removed "xfade-crossfades with ffmpeg" claim; now says "holds each frame for its duration (hard cuts)". Added rasterizer to the list of runtime-detected tools. Xfade is deferred (already stated in the lower paragraph). Appended robustness-fix paragraph.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-10] compile | Phase 5 shipped — self-sufficient figures, composition retired
 
 Phase 5 introduced the two-axis decomposition contract and retired the compose-from-children approach. This entry records what landed and the final state of the system.

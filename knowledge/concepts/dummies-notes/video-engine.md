@@ -43,12 +43,13 @@ all passing.
   every SVG, auto-advances on duration, crossfades within a concept's frames,
   optional Web Speech narration.
 - **MP4** (`--format mp4|both`, opt-in): rasterizes a 16:9 **stage SVG** per
-  slide via `render.export_png`, holds + `xfade`-crossfades with ffmpeg, and
-  speaks narration via macOS `say`. When TTS is present the slide duration
-  follows the spoken-audio length. ffmpeg/`say` are runtime-detected; missing
-  ffmpeg skips the MP4, missing `say` yields a silent MP4 with burned-in
-  captions. Static rasterizers ignore the dark-mode media query, so MP4 frames
-  render at the default (light) theme.
+  slide via `render.export_png`, holds each frame for its duration (hard cuts),
+  and speaks narration via macOS `say`. When TTS is present the slide duration
+  follows the spoken-audio length. ffmpeg/`say`/an SVG rasterizer are
+  runtime-detected; missing ffmpeg or no rasterizer (rsvg-convert or cairosvg)
+  skips the MP4, missing `say` yields a silent MP4 with burned-in captions.
+  Static rasterizers ignore the dark-mode media query, so MP4 frames render at
+  the default (light) theme.
 
 v1 MP4: per-slide stage PNG held for its duration, `say` narration muxed in (slide
 duration follows the spoken-audio length), silent-with-captions fallback when `say`
@@ -72,3 +73,5 @@ Every run also writes `script.md` (human voiceover) and `captions.srt`.
 **Task 7 (build orchestrator + CLI) shipped.** `build(graph_dir, registry_root, out_dir, fmt, wpm, stage)` writes `output/<topic>/video/{manifest.json,script.md,captions.srt,video.html}` (and `video.mp4` when `fmt` is `mp4` or `both`). Returns `(result_dict, issues)` where `result_dict` carries `video_dir`, `slides` count, and `notes`; returns `(None, issues)` on ERROR. `main(argv)` is the CLI entry point: `--format html|mp4|both`, `--wpm`, `--out`, `--registry`; exits 0 on success, 1 on error. File ends with exactly one `if __name__ == "__main__": sys.exit(main())` block. 3 new tests added (21 total, 1 skip, all passing). Smoke test on `tcp-connection-lifecycle`: 19 slides, `video.html` 109 KB with `window.__MANIFEST__` and 14 inline SVGs.
 
 **Portability fix + CLI output improvement.** `manifest.json` on disk now stores repo-relative `image` paths (via `os.path.relpath(path, _REPO)`) so the committed artifact does not leak local absolute paths and is machine-portable. The in-memory manifest retains absolute paths so `build_player` / `render_mp4` read frame SVGs without change. Module-level `_REPO = os.path.dirname(_HERE)` added. `result["video_html"]` added to the build result dict; CLI `OK` line now points at `video.html` (or `video_dir` when no HTML was requested). Regression test `test_manifest_image_paths_not_absolute` added. 22 tests total, 1 skip, all passing.
+
+**Rasterizer guard.** `render_mp4` previously only checked for `ffmpeg`/`say`, but `render.export_png` raises `SystemExit` when neither `rsvg-convert` nor `cairosvg` is available — crashing `main` because only `ValueError` was caught. Fix: `_have_rasterizer()` helper detects availability of either rasterizer up front; `render_mp4` now exits early with a `NOTE` when neither is present. The doc bullet above was corrected to say "hard cuts" (xfade is deferred to the HTML player). 1 regression test added (`test_missing_rasterizer_skips_mp4`); 2 existing tests patched to mock `_have_rasterizer=True`. 23 tests, 1 skip, all passing.

@@ -330,6 +330,17 @@ def _build_audio_track(segments, durations, work_dir, out_path):
     return out_path
 
 
+def _have_rasterizer():
+    """True if an SVG rasterizer (rsvg-convert or cairosvg) is available for export_png."""
+    if shutil.which("rsvg-convert"):
+        return True
+    try:
+        import cairosvg  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
 def render_mp4(manifest, out_dir, stage):
     """Return (mp4_path|None, notes). Honest fallback when tools are missing."""
     notes = []
@@ -337,6 +348,10 @@ def render_mp4(manifest, out_dir, stage):
         return None, ["empty manifest — no slides to render."]
     if not shutil.which("ffmpeg"):
         notes.append("ffmpeg not found — MP4 skipped (HTML player still produced).")
+        return None, notes
+    if not _have_rasterizer():
+        notes.append("no SVG rasterizer (rsvg-convert or cairosvg) — MP4 skipped "
+                     "(HTML player still produced).")
         return None, notes
     frames_dir = os.path.join(out_dir, "frames")
     pngs = _png_for_slides(manifest, frames_dir, stage)
