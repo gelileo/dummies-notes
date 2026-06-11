@@ -121,6 +121,8 @@ The first user-requested run ("TCP connection lifecycle", maxDepth 1) added
 run), and **tcp-connection-lifecycle** (illustrated, composition figure, edges
 to all three).
 
+
+The deeper TCP run (maxDepth 2) registered **best-effort-delivery** with a `data-packets` edge but no figure: it is non-atomic yet its own mechanism is figure-sized — a node the current atomic-leaf-only illustration rule never draws. Logged as a Phase 5 finding.
 ## Open question (Phase 3+)
 
 **Versioning/invalidation**: when a concept's understanding changes, how is a cached

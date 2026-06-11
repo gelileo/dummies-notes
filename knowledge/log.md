@@ -320,3 +320,17 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
   RSA pattern: the composition figure doesn't teach the target's own mechanism,
   and a non-atomic mid-graph node (best-effort-delivery) renders without a figure
   or stub. Two-topic confirmation of the documented future-work items.
+
+## [2026-06-10] finding | deeper TCP run exposes the atomic↔illustrate coupling
+
+- Re-ran TCP at maxDepth 2. best-effort-delivery decomposed NON-atomic with a
+  single prereq (data-packets, already illustrated), so the run added no new
+  figure (illustrated:[], 7 agents) and the chain gaps persisted.
+- Root cause (sharper than the RSA composition gap): the system illustrates only
+  atomic leaves + the root composition. A node is "non-atomic" if it has ANY
+  prerequisite — but best-effort-delivery's OWN mechanism is figure-sized (its
+  decomposition literally says so). "Has a prerequisite" != "not worth drawing".
+- Fix is a design change, not a deeper run: decouple "illustrate" from "atomic
+  leaf" — give a node its own mechanism figure whenever its mechanism is
+  figure-sized, regardless of prerequisites. Same root cause as RSA's missing
+  mechanism figure. Candidate Phase 5.

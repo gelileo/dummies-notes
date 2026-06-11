@@ -6,7 +6,7 @@
   },
   "audience": "a curious adult with no domain background",
   "atomic": false,
-  "atomic_reason": "The mechanism itself fits in one short figure, like mail sent with no tracking where some letters vanish, arrive twice, or show up late and shuffled. But the whole idea is about what happens to packets, and a curious adult with no background does not yet know that data travels as small labeled chunks, so that idea needs its own picture first.",
+  "atomic_reason": "The mechanism itself fits in one short figure, like mail sent with no tracking where some letters vanish, arrive twice, or show up late and out of order. But the whole idea is about what happens to packets, and a curious adult with no background does not yet know that data travels as small labeled chunks, so that idea needs its own picture first.",
   "prerequisites": [
     {
       "slug": "data-packets",
