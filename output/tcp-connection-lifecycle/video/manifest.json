@@ -1,0 +1,183 @@
+{
+  "topic": "tcp-connection-lifecycle",
+  "title": "TCP connection lifecycle",
+  "definition": "The full set of steps two computers go through to talk reliably over a network: they first greet each other to agree to start, then send messages back and forth while confirming each one arrived, and finally say goodbye to close the conversation cleanly.",
+  "stage": {
+    "width": 1280,
+    "height": 720
+  },
+  "reading_rate_wpm": 150,
+  "slides": [
+    {
+      "kind": "title",
+      "concept_slug": null,
+      "image": null,
+      "caption": "TCP connection lifecycle",
+      "narration": "This is tcp connection lifecycle. The full set of steps two computers go through to talk reliably over a network: they first greet each other to agree to start, then send messages back and forth while confirming each one arrived, and finally say goodbye to close the conversation cleanly.",
+      "duration_s": 18.0,
+      "transition": "cut"
+    },
+    {
+      "kind": "section",
+      "concept_slug": "unreliable-delivery",
+      "image": null,
+      "caption": "Unreliable delivery",
+      "narration": "Next: unreliable delivery. The fact that a message sent across a network can quietly fail to arrive, arrive damaged, or arrive out of order, with no automatic warning to the sender.",
+      "duration_s": 12.4,
+      "transition": "cut"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "unreliable-delivery",
+      "image": "registry/unreliable-delivery/figure/frame-01.svg",
+      "caption": "A sender ships four numbered messages, in order, into the network.",
+      "narration": "Here is what the sender does. It hands four messages to the network, numbered one through four, in order. As far as the sender is concerned, the job is done. The messages are on their way. What the sender cannot see is the network in the middle: a long chain of cables and machines it does not control.",
+      "duration_s": 18.0,
+      "transition": "cut"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "unreliable-delivery",
+      "image": "registry/unreliable-delivery/figure/frame-02.svg",
+      "caption": "Inside the network the messages hit trouble the sender never sees.",
+      "narration": "Now follow the messages into the network. This is where things quietly go wrong. One message simply gets dropped and never comes out. Another gets a few bits flipped along the way, arriving damaged. A third overtakes the message ahead of it, so they fall out of order. None of this is announced. The wires do not call home.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "unreliable-delivery",
+      "image": "registry/unreliable-delivery/figure/frame-03.svg",
+      "caption": "What lands at the receiver: one lost, one damaged, two swapped in order.",
+      "narration": "Here is what actually shows up at the other end. Message one arrives perfectly. Message four arrives next, before message three, so the order is scrambled. Message three arrives, but damaged. And message two? It never comes. Meanwhile the sender still believes everything went fine. It was never told otherwise.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "unreliable-delivery",
+      "image": "registry/unreliable-delivery/figure/frame-04.svg",
+      "caption": "Three failure modes, one common thread: the sender is never warned.",
+      "narration": "So this is unreliable delivery in one picture. A message can vanish. It can arrive corrupted. It can arrive out of order. And the thread tying all three together is silence: the network makes no promise, and sends no warning back. If you want reliability, you have to build it yourself, on top, by numbering messages, checking them, and asking for the missing ones again. For the wires-and-machines layer underneath this, see the computer-network figure; for what one of these numbered messages actually is, see the data-packets figure.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "section",
+      "concept_slug": "delivery-acknowledgement",
+      "image": null,
+      "caption": "Delivery acknowledgement",
+      "narration": "Next: delivery acknowledgement. A short reply one computer sends back to confirm it received what the other sent, so the sender knows the message arrived and does not have to guess or resend it blindly.",
+      "duration_s": 14.0,
+      "transition": "cut"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "delivery-acknowledgement",
+      "image": "registry/delivery-acknowledgement/figure/frame-01.svg",
+      "caption": "The sender sends a packet and keeps its own copy.",
+      "narration": "A computer sends a packet across the link. Call it packet five. But sending is not the same as arriving. The link can drop things. So the sender does something smart. It keeps its own copy of packet five. If anything goes wrong, it can send it again. For now, it waits to hear back. Go deeper: for what a numbered packet is and why it carries a number, see the data-packets figure.",
+      "duration_s": 18.0,
+      "transition": "cut"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "delivery-acknowledgement",
+      "image": "registry/delivery-acknowledgement/figure/frame-02.svg",
+      "caption": "The packet reaches the receiver \u2014 but the sender can't see that yet.",
+      "narration": "The packet crosses the link and lands at the receiver. The receiver now has packet five. But here is the catch. The sender is far away. It has no window into the receiver. From where the sender sits, this moment looks exactly like a packet that got lost. It cannot tell the difference. It still does not know.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "delivery-acknowledgement",
+      "image": "registry/delivery-acknowledgement/figure/frame-03.svg",
+      "caption": "The receiver replies \"got #5\" \u2014 now the sender knows.",
+      "narration": "So the receiver speaks up. It sends back a tiny reply. Just a few bytes that say: I got number five. This little reply is the acknowledgement. When it reaches the sender, the guessing ends. The sender now knows for certain the packet arrived. It can safely throw away its kept copy. The job is done.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "delivery-acknowledgement",
+      "image": "registry/delivery-acknowledgement/figure/frame-04.svg",
+      "caption": "If a packet is lost, no ack comes back \u2014 so the sender waits.",
+      "narration": "Now watch what an acknowledgement protects against. The sender sends packet six. But this time the link drops it. It never reaches the receiver. And because the receiver never saw it, it sends back nothing. No ack arrives. The sender keeps waiting. The silence is the signal: something went wrong. Go deeper: for why links drop packets in the first place, see the unreliable-delivery figure.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "delivery-acknowledgement",
+      "image": "registry/delivery-acknowledgement/figure/frame-05.svg",
+      "caption": "The sender resends; this time the ack returns \u2014 delivery confirmed.",
+      "narration": "Because the sender kept its copy, it can simply send packet six again. This time it gets through. The receiver stores it and replies: got number six. The ack makes it back. Delivery is confirmed. That is the whole idea. A short reply turns a hopeful send into a sure one \u2014 no blind guessing, no needless resending.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "section",
+      "concept_slug": "tcp-connection-lifecycle",
+      "image": null,
+      "caption": "TCP connection lifecycle",
+      "narration": "Next: tcp connection lifecycle. The full set of steps two computers go through to talk reliably over a network: they first greet each other to agree to start, then send messages back and forth while confirming each one arrived, and finally say goodbye to close the conversation cleanly.",
+      "duration_s": 18.0,
+      "transition": "cut"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "tcp-connection-lifecycle",
+      "image": "registry/tcp-connection-lifecycle/figure/frame-01.svg",
+      "caption": "First they greet: a three-message handshake agrees to start.",
+      "narration": "Two computers want to talk. Before sending anything important, they greet each other. Computer one calls out: can we talk? Computer two answers: yes, I'm ready. Computer one confirms: great, starting. That back-and-forth-and-back is the handshake. Now both sides know the other is listening.",
+      "duration_s": 17.6,
+      "transition": "cut"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "tcp-connection-lifecycle",
+      "image": "registry/tcp-connection-lifecycle/figure/frame-02.svg",
+      "caption": "Then they talk: every packet is answered with an acknowledgement.",
+      "narration": "The connection is open, so now the real talking begins. Computer one sends a packet of data. Computer two sends back a short note: got it. Then the next packet, and another got it. Each piece is confirmed before it counts as delivered. That is how both sides stay sure nothing slipped through.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "tcp-connection-lifecycle",
+      "image": "registry/tcp-connection-lifecycle/figure/frame-03.svg",
+      "caption": "If a packet vanishes, the missing acknowledgement triggers a resend.",
+      "narration": "Networks lose things. Here packet three sets off and simply vanishes. Computer two never saw it, so it sends no confirmation. Computer one waits, hears nothing, and takes the hint. It sends packet three again. This time the confirmation comes back. A missing got-it always means try again, so nothing is ever quietly dropped.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "tcp-connection-lifecycle",
+      "image": "registry/tcp-connection-lifecycle/figure/frame-04.svg",
+      "caption": "Finally they say goodbye: fin and ack on both sides close it cleanly.",
+      "narration": "The talking is finished, so the two computers wind down politely. Computer one says: I'm done. Computer two answers: heard you. Then Computer two says: I'm done too. And Computer one replies: goodbye. Each side announces it is finished and waits for the other to agree. Nobody hangs up mid-sentence.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "tcp-connection-lifecycle",
+      "image": "registry/tcp-connection-lifecycle/figure/frame-05.svg",
+      "caption": "The whole arc: open, talk reliably, close.",
+      "narration": "Step back and the whole shape is simple. First they greet, to agree to start. Then they talk, sending data and confirming each piece arrived. Then they say goodbye, closing the line cleanly on both ends. Greet, talk, goodbye \u2014 that is the life of a reliable connection from hello to hang-up. To go deeper: the data sent in the talk phase travels as numbered packets \u2014 see the data-packets figure. The greeting rules both sides follow are a shared agreement \u2014 see the communication-protocol figure. And the got-it confirmations are covered by the delivery-acknowledgement figure.",
+      "duration_s": 18.0,
+      "transition": "crossfade"
+    },
+    {
+      "kind": "closing",
+      "concept_slug": null,
+      "image": null,
+      "caption": "Recap",
+      "narration": "That is tcp connection lifecycle, built up one idea at a time.",
+      "duration_s": 4.8,
+      "transition": "cut"
+    }
+  ]
+}

@@ -2,6 +2,14 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-11] feat(video): build() orchestrator + CLI — Task 7 of Video Engine
+
+- `build(graph_dir, registry_root, out_dir, fmt, wpm, stage)` added to `scripts/build_video.py`: orchestrates `build_manifest` → write files → `build_player` / `render_mp4` based on `fmt`. Returns `(result_dict, issues)` or `(None, issues)` on ERROR.
+- `main(argv)` CLI added: `--format html|mp4|both`, `--wpm`, `--out`, `--registry`; exits 0 on success, 1 on error. Single `if __name__ == "__main__": sys.exit(main())` block at end of file.
+- 3 new tests (`TestBuildAndCli`): 21 tests total, 1 skip, all passing.
+- Smoke test: `tcp-connection-lifecycle` — 19 slides, `video.html` 109 KB with `window.__MANIFEST__` and 14 inline SVGs.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-11] fix(video): robustness + docstring fixes for render_mp4
 
 - Guard empty manifest: `render_mp4` returns `(None, ["empty manifest — no slides to render."])` when `manifest["slides"]` is absent/empty, preventing `IndexError` in `_build_silent_video` (`pngs[-1]`).
@@ -449,3 +457,10 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
   mechanism figures work; composition retired. graph check clean; 60 tests green.
 
 - 2026-06-11 — Phase 6 (video engine): began `scripts/build_video.py` + new article `video-engine.md`. Manifest-first; HTML player + opt-in MP4; reuses assemble ordering + render.export_png.
+
+## [2026-06-11] fix(video): portable manifest.json + video_html in result + CLI output improvement
+
+- `scripts/build_video.py`: added `_REPO = os.path.dirname(_HERE)`. `build()` now writes repo-relative `image` paths in the on-disk `manifest.json` (via portable dict); in-memory manifest keeps absolute paths for renderers. `result` dict gains `video_html` key. CLI `OK` line points at `video.html` when produced.
+- `scripts/tests/test_build_video.py`: added `test_manifest_image_paths_not_absolute` to `TestBuildAndCli`. 22 tests, 1 skip, all passing.
+- `output/tcp-connection-lifecycle/video/manifest.json` regenerated with relative paths (`grep -c "/Users/" → 0`).
+- Articles touched: `concepts/dummies-notes/video-engine.md`.

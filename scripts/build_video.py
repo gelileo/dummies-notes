@@ -31,6 +31,8 @@ PLAYER_TEMPLATE = os.path.join(os.path.dirname(_HERE), ".claude", "skills",
                                "concept-illustrator", "assets",
                                "video.template.html")
 
+_REPO = os.path.dirname(_HERE)  # repo root (parent of scripts/)
+
 DEFAULT_WPM = 150
 MIN_DUR, MAX_DUR = 2.5, 18.0
 MIN_TTS_DUR = 2.0
@@ -361,3 +363,62 @@ def render_mp4(manifest, out_dir, stage):
         subprocess.run(["ffmpeg", "-y", "-i", silent, "-c", "copy", mp4_path],
                        check=True)
     return mp4_path, notes
+
+
+def build(graph_dir, registry_root, out_dir, fmt="html", wpm=DEFAULT_WPM, stage=STAGE):
+    manifest, issues = build_manifest(graph_dir, registry_root, wpm, stage)
+    if manifest is None:
+        return None, issues
+    video_dir = os.path.join(out_dir, "video")
+    os.makedirs(video_dir, exist_ok=True)
+    # On disk, store repo-relative image paths so the committed manifest is portable;
+    # the in-memory manifest keeps absolute paths for the renderers below.
+    portable = dict(manifest)
+    portable["slides"] = [
+        dict(s, image=os.path.relpath(s["image"], _REPO)) if s.get("image") else s
+        for s in manifest["slides"]
+    ]
+    with open(os.path.join(video_dir, "manifest.json"), "w", encoding="utf-8") as fh:
+        json.dump(portable, fh, indent=2)
+    write_script(manifest, os.path.join(video_dir, "script.md"))
+    write_captions(manifest, os.path.join(video_dir, "captions.srt"))
+    notes = []
+    if fmt in ("html", "both"):
+        build_player(manifest, PLAYER_TEMPLATE, os.path.join(video_dir, "video.html"))
+    if fmt in ("mp4", "both"):
+        _, mp4_notes = render_mp4(manifest, video_dir, stage)
+        notes.extend(mp4_notes)
+    result = {"video_dir": video_dir, "slides": len(manifest["slides"]), "notes": notes,
+              "video_html": os.path.join(video_dir, "video.html") if fmt in ("html", "both") else None}
+    return result, issues
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        prog="build_video",
+        description="build output/<topic>/video/ from a concept graph")
+    parser.add_argument("graph_dir")
+    parser.add_argument("--registry", default=DEFAULT_ROOT)
+    parser.add_argument("--out", required=True)
+    parser.add_argument("--format", choices=("html", "mp4", "both"), default="html")
+    parser.add_argument("--wpm", type=int, default=DEFAULT_WPM)
+    args = parser.parse_args(argv)
+    try:
+        result, issues = build(args.graph_dir, args.registry, args.out,
+                               fmt=args.format, wpm=args.wpm)
+    except ValueError as exc:
+        print(f"ERROR  {exc}")
+        return 1
+    for level, message in issues:
+        print(f"{level:<6} {message}")
+    if result is None:
+        return 1
+    for note in result["notes"]:
+        print(f"NOTE   {note}")
+    target = result["video_html"] or result["video_dir"]
+    print(f"OK     built {result['slides']} slide(s) -> {target}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -297,5 +297,51 @@ class TestMp4Fallback(unittest.TestCase):
             self.assertGreater(os.path.getsize(path), 0)
 
 
+class TestBuildAndCli(unittest.TestCase):
+    def _topic(self, base):
+        graph = os.path.join(base, "g")
+        registry = os.path.join(base, "r")
+        write_decomp(graph, "tcp", False, ["packets"])
+        write_decomp(graph, "packets", True)
+        make_figure(registry, "tcp", 2)
+        make_figure(registry, "packets", 2)
+        return graph, registry
+
+    def test_build_html_writes_expected_files(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry = self._topic(base)
+            out = os.path.join(base, "out")
+            result, issues = bv.build(graph, registry, out, fmt="html", wpm=150)
+            self.assertEqual([m for lvl, m in issues if lvl == "ERROR"], [])
+            vdir = os.path.join(out, "video")
+            for name in ("manifest.json", "script.md", "captions.srt", "video.html"):
+                self.assertTrue(os.path.exists(os.path.join(vdir, name)), name)
+            self.assertFalse(os.path.exists(os.path.join(vdir, "video.mp4")))
+
+    def test_cli_exit_zero(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry = self._topic(base)
+            out = os.path.join(base, "out")
+            rc = bv.main([graph, "--registry", registry, "--out", out, "--format", "html"])
+            self.assertEqual(rc, 0)
+
+    def test_cli_bad_graph_exit_one(self):
+        with tempfile.TemporaryDirectory() as base:
+            rc = bv.main([os.path.join(base, "nope"), "--out", os.path.join(base, "o")])
+            self.assertEqual(rc, 1)
+
+    def test_manifest_image_paths_not_absolute(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry = self._topic(base)
+            out = os.path.join(base, "out")
+            bv.build(graph, registry, out, fmt="html")
+            data = json.load(open(os.path.join(out, "video", "manifest.json"),
+                                  encoding="utf-8"))
+            imgs = [s["image"] for s in data["slides"] if s["image"]]
+            self.assertTrue(imgs)  # there are frame slides
+            self.assertFalse(any(os.path.isabs(p) for p in imgs),
+                             "on-disk manifest image paths must be repo-relative, not absolute")
+
+
 if __name__ == "__main__":
     unittest.main()
