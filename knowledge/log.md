@@ -2,6 +2,14 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] feat | decompose: add mechanism_figurable axis to the contract (Phase 5 Task 1)
+
+- `validate_decomposition.py`: added check — `mechanism_figurable` must be a JSON bool (ERROR if missing or wrong type).
+- `tests/test_validate_decomposition.py`: added `mechanism_figurable: True` to `good()` helper; added 4 new tests (missing field, wrong type, non-atomic+figurable clean, non-atomic+non-figurable clean). Suite: 18 tests, all passing.
+- `references/decomposition-json.md`: added `mechanism_figurable` row to top-level fields table; added "Two axes: atomic vs mechanism_figurable" section explaining the independence of the two booleans.
+- `examples/modular-arithmetic/decomposition.json`, `examples/rsa-encryption/decomposition.json`: added `"mechanism_figurable": true` to both golden examples.
+- `knowledge/concepts/dummies-notes/concept-decomposition.md`: updated schema table and added explanatory sentence on the two-axis contract.
+
 ## [2026-06-10] compile | Phase 4 shipped — the dummies-notes system is complete
 
 All four phases of the original spec are now built. This entry records what landed across Phase 4 and the final state of the system.

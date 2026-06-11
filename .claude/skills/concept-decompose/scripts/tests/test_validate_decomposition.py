@@ -13,6 +13,7 @@ def good():
                     "definition": "Two-key secret messaging."},
         "audience": "a curious adult with no domain background",
         "atomic": False,
+        "mechanism_figurable": True,
         "atomic_reason": "Needs clock arithmetic and the two-key idea first.",
         "prerequisites": [
             {"slug": "modular-arithmetic", "name": "Modular arithmetic",
@@ -71,6 +72,25 @@ class TestValidate(unittest.TestCase):
         d = good()
         d["prerequisites"][0]["slug"] = "rsa-encryption"
         self.assertTrue(any("own prerequisite" in m for m in errors(d)))
+
+    def test_missing_mechanism_figurable_errors(self):
+        d = good()
+        del d["mechanism_figurable"]
+        self.assertTrue(any("mechanism_figurable" in m for m in errors(d)))
+
+    def test_mechanism_figurable_must_be_bool(self):
+        d = good()
+        d["mechanism_figurable"] = "yes"
+        self.assertTrue(any("mechanism_figurable" in m for m in errors(d)))
+
+    def test_non_atomic_figurable_is_clean(self):
+        d = good()  # atomic False, mechanism_figurable True, one prereq
+        self.assertEqual(errors(d), [])
+
+    def test_non_atomic_non_figurable_is_clean(self):
+        d = good()
+        d["mechanism_figurable"] = False  # a genuine umbrella concept
+        self.assertEqual(errors(d), [])
 
 
 class TestSkillContract(unittest.TestCase):

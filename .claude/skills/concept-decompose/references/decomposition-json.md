@@ -9,6 +9,7 @@ The machine-readable output of one `concept-decompose` run: ONE concept, one lev
 | `concept` | object | yes | the concept being decomposed (see Concept object) |
 | `audience` | string | yes | who this is for; default: "a curious adult with no domain background" |
 | `atomic` | bool | yes | the atomicity verdict (see Atomicity) |
+| `mechanism_figurable` | bool | yes | can THIS concept's own mechanism be taught self-sufficiently in one figure, regardless of prerequisites? Independent of `atomic`. |
 | `atomic_reason` | string | yes | one or two plain sentences justifying the verdict |
 | `prerequisites` | array | yes | direct prerequisites, one level only; `[]` when atomic |
 
@@ -24,6 +25,16 @@ The machine-readable output of one `concept-decompose` run: ONE concept, one lev
 ## Atomicity
 
 A concept is **atomic** when (a) one figure of ≤ ~6 frames explains its mechanism without needing a sub-figure, and (b) its remaining prerequisites are common knowledge for the audience. Non-atomic ⇒ at least one prerequisite. **Jargon is a decomposition signal:** a term the audience wouldn't know must become a prerequisite, never an aside.
+
+## Two axes: atomic vs mechanism_figurable
+
+`atomic` and `mechanism_figurable` are independent. `atomic` answers "should we
+stop decomposing?" (are the remaining prerequisites common knowledge).
+`mechanism_figurable` answers "is this concept's own mechanism one self-sufficient
+figure?" — judged *assuming* the prerequisites are understood elsewhere. A concept
+can be non-atomic (it has prerequisites worth their own figures) yet figurable (its
+own mechanism is one figure) — e.g. a network protocol's connection lifecycle. Such
+a concept gets its own self-sufficient figure AND its prerequisites get theirs.
 
 ## Slug rules
 

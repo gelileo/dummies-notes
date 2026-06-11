@@ -50,8 +50,11 @@ Defined in `references/decomposition-json.md`; enforced by
 | `concept` | object — `slug`, `name`, `definition` |
 | `audience` | who this is for (default: "a curious adult with no domain background") |
 | `atomic` | boolean verdict |
+| `mechanism_figurable` | boolean — can this concept's own mechanism be taught self-sufficiently in one figure, regardless of prerequisites? Independent of `atomic`. |
 | `atomic_reason` | one or two plain sentences justifying the verdict |
 | `prerequisites` | array of concept objects with an extra `why` field; `[]` when atomic |
+
+The contract now carries `mechanism_figurable` (drawable standalone) separately from `atomic` (stop decomposing); a non-atomic concept can still be figurable — it gets its own self-sufficient figure and its prerequisites get theirs.
 
 ### Atomicity rule
 

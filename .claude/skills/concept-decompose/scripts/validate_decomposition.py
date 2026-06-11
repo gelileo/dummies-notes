@@ -43,6 +43,8 @@ def validate(data):
         issues.append(("ERROR", "missing 'audience'"))
     if not isinstance(data.get("atomic"), bool):
         issues.append(("ERROR", "'atomic' must be true or false (a JSON bool)"))
+    if not isinstance(data.get("mechanism_figurable"), bool):
+        issues.append(("ERROR", "'mechanism_figurable' must be true or false (a JSON bool)"))
     reason = data.get("atomic_reason")
     if not isinstance(reason, str) or not reason.strip():
         issues.append(("ERROR", "missing 'atomic_reason'"))

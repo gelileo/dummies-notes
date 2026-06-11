@@ -6,6 +6,7 @@
   },
   "audience": "a curious adult with no domain background",
   "atomic": false,
+  "mechanism_figurable": true,
   "atomic_reason": "RSA leans on several ideas that each need their own picture first: arithmetic that wraps around like a clock, the special role of numbers that can't be split into smaller whole-number pieces, and the trick of using two different keys instead of one shared secret. No single short figure can carry all of that, so it must be broken down.",
   "prerequisites": [
     {
