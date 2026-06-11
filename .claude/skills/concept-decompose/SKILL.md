@@ -49,6 +49,24 @@ atomic, and which prerequisites are genuinely load-bearing.
    sentences). Atomic ⇒ `prerequisites: []`. Not atomic ⇒ at least one
    prerequisite.
 
+## Two axes: stop vs draw
+
+`atomic` and `mechanism_figurable` are SEPARATE judgments — set both.
+
+- **`atomic`** — stop decomposing? True when the remaining prerequisites are
+  common knowledge for the audience.
+- **`mechanism_figurable`** — could ONE self-sufficient figure teach this
+  concept's own mechanism, *assuming* its prerequisites are understood elsewhere?
+
+These do not move together. A connection lifecycle or a public-key scheme is
+**not atomic** (it rests on packets, on primes) yet **is figurable** (its own
+mechanism — the handshake, the two keys — is one clear figure). Mark such a
+concept `atomic: false, mechanism_figurable: true`: the workflow will give it its
+own self-sufficient figure AND keep decomposing its prerequisites. Reserve
+`mechanism_figurable: false` for a genuine umbrella with no single mechanism of
+its own (a broad field). When in doubt, prefer figurable — a self-sufficient
+figure is the whole point.
+
 3. **List the direct prerequisites** (only when not atomic — typically 2–4). Each
    is a concept object: `slug` + `name` + plain `definition` + a `why` stating
    what the parent cannot be understood without it.

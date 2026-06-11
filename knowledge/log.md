@@ -2,6 +2,14 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-10] docs(decompose): SKILL.md two-axis guidance (stop vs draw) (Phase 5 Task 2)
+
+- `tests/test_validate_decomposition.py TestSkillContract.test_skill_md_covers_the_contract`: added `"mechanism_figurable"` to the contract-token list; confirmed failure before SKILL.md update.
+- `.claude/skills/concept-decompose/SKILL.md`: added `## Two axes: stop vs draw` section after the atomicity test step — explains `atomic` (stop decomposing) and `mechanism_figurable` (draw it) as independent judgments; gives the non-atomic+figurable pattern (`atomic: false, mechanism_figurable: true`); advises preferring figurable when uncertain.
+- `knowledge/concepts/dummies-notes/concept-decomposition.md`: added `### Two-axis rule: stop vs draw` subsection under the schema section, describing the independence of both axes, when each is true, and the guidance to prefer figurable when uncertain.
+- Test suite: 18 tests, all passing; `check_skill_refs.py` exits 0.
+- Articles touched: `concepts/dummies-notes/concept-decomposition.md`.
+
 ## [2026-06-10] feat | decompose: add mechanism_figurable axis to the contract (Phase 5 Task 1)
 
 - `validate_decomposition.py`: added check — `mechanism_figurable` must be a JSON bool (ERROR if missing or wrong type).

@@ -104,7 +104,7 @@ class TestSkillContract(unittest.TestCase):
         with open(os.path.join(self.SKILL_DIR, "SKILL.md"), encoding="utf-8") as fh:
             text = fh.read()
         for token in ("decomposition.json", "atomic", "jargon",
-                      "one level", "kebab"):
+                      "one level", "kebab", "mechanism_figurable"):
             self.assertIn(token, text, f"SKILL.md missing '{token}'")
 
 

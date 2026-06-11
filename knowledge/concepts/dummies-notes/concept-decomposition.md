@@ -56,6 +56,15 @@ Defined in `references/decomposition-json.md`; enforced by
 
 The contract now carries `mechanism_figurable` (drawable standalone) separately from `atomic` (stop decomposing); a non-atomic concept can still be figurable — it gets its own self-sufficient figure and its prerequisites get theirs.
 
+### Two-axis rule: stop vs draw
+
+`atomic` and `mechanism_figurable` are **independent judgments** — the skill sets both separately.
+
+- **`atomic` = stop decomposing.** True when the remaining prerequisites are common knowledge for the audience. Governs whether the workflow recurses into prerequisites.
+- **`mechanism_figurable` = draw it.** True when ONE self-sufficient figure could teach this concept's own mechanism, *assuming* its prerequisites are understood elsewhere. Governs whether the concept gets its own figure.
+
+These axes do not move together. A concept can be non-atomic (it depends on prerequisites that need their own figures) yet still figurable (its own mechanism — the handshake, the two keys — fits one clear figure). Mark such a concept `atomic: false, mechanism_figurable: true`: the workflow gives it its own self-sufficient figure **and** keeps decomposing its prerequisites. Reserve `mechanism_figurable: false` for a genuine umbrella concept with no single mechanism of its own (a broad field). When in doubt, prefer figurable — a self-sufficient figure is the whole point.
+
 ### Atomicity rule
 
 A concept is **atomic** when BOTH hold:
