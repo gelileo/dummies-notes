@@ -1,13 +1,14 @@
 export const meta = {
   name: 'dummies-notes',
   description: 'Decompose a topic into a concept graph, illustrate every figurable concept (self-sufficient figures), review with fresh eyes, and register figures',
-  whenToUse: 'args: {topic: string, definition?: string, maxDepth?: number, maxNodes?: number}. Run produces output/<topic>/index.html (bottom-up explainer) + output/<topic>/map.html (concept map).',
+  whenToUse: 'args: {topic: string, definition?: string, maxDepth?: number, maxNodes?: number, makeVideo?: boolean, videoFormat?: "html"|"mp4"|"both"}. Run produces output/<topic>/index.html + map.html; with makeVideo it also builds output/<topic>/video/.',
   phases: [
     { title: 'Decompose', detail: 'registry-aware BFS, one skill call per node' },
     { title: 'Illustrate', detail: 'self-sufficient runbook-first figure per figurable concept' },
     { title: 'Review', detail: 'blind reader + fidelity critic, two repairs max' },
     { title: 'Finalize', detail: 'register, attach figures, graph check' },
     { title: 'Assemble', detail: 'render index.html + map.html from the graph + figures' },
+    { title: 'Video', detail: 'optional: build the narrated animated slideshow (flag-gated)' },
     { title: 'ChainReview', detail: 'fresh-eyes pass over the assembled explainer' },
   ],
 }
@@ -19,6 +20,8 @@ const topic = A && A.topic
 if (!topic) throw new Error('args.topic is required (e.g. {topic: "modular arithmetic"})')
 const MAX_DEPTH = (A && A.maxDepth) || 2
 const MAX_NODES = (A && A.maxNodes) || 12
+const MAKE_VIDEO = !!(A && A.makeVideo)
+const VIDEO_FORMAT = (A && A.videoFormat) || 'html'
 const MAX_REPAIRS = 2
 const AUDIENCE = 'a curious adult with no domain background'
 
@@ -276,6 +279,33 @@ const assembled = await agent(
   { label: 'assemble', phase: 'Assemble', schema: ASSEMBLE_SCHEMA })
 if (!assembled || !assembled.assemble_clean) throw new Error('assembly failed')
 
+// ---- Phase: optional narrated video (flag-gated) ----------------------------
+let videoResult = null
+if (MAKE_VIDEO) {
+  phase('Video')
+  const VIDEO_SCHEMA = {
+    type: 'object',
+    properties: {
+      video_dir: { type: 'string' },
+      video_clean: { type: 'boolean' },
+      notes: { type: 'string' },
+    },
+    required: ['video_dir', 'video_clean'],
+  }
+  videoResult = await agent(
+    `Run from the repo root: python3 scripts/build_video.py output/${rootSlug}/graph ` +
+    `--out output/${rootSlug} --format ${VIDEO_FORMAT}\n` +
+    'It must exit 0 (prints "OK built N slide(s) ..."). Return video_dir = ' +
+    `output/${rootSlug}/video, video_clean = (exit code was 0), and notes = any NOTE ` +
+    'lines (e.g. ffmpeg/say missing fallbacks), joined with "; ".',
+    { label: 'build-video', phase: 'Video', schema: VIDEO_SCHEMA })
+  if (videoResult && !videoResult.video_clean) {
+    log(`video build reported issues — see output/${rootSlug}/video`)
+  } else if (videoResult && videoResult.notes) {
+    log(`video built with notes: ${videoResult.notes}`)
+  }
+}
+
 // ---- Phase 6: end-to-end chain review (fresh eyes over the whole artifact) ----
 phase('ChainReview')
 
@@ -305,4 +335,5 @@ return {
   map_html: assembled.map_html,
   chain_review_pass: !!(chain && chain.pass),
   chain_gaps: (chain && chain.gaps) || [],
+  video_dir: videoResult ? videoResult.video_dir : null,
 }

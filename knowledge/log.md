@@ -464,3 +464,5 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - `scripts/tests/test_build_video.py`: added `test_manifest_image_paths_not_absolute` to `TestBuildAndCli`. 22 tests, 1 skip, all passing.
 - `output/tcp-connection-lifecycle/video/manifest.json` regenerated with relative paths (`grep -c "/Users/" → 0`).
 - Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+- 2026-06-11 — Phase 6: wired opt-in `Video` phase into dummies-notes.js (makeVideo/videoFormat); runs build_video.py after Assemble. Default runs unchanged.
