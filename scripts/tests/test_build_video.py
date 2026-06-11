@@ -186,5 +186,43 @@ class TestStageSvg(unittest.TestCase):
         ET.fromstring(svg)
 
 
+class TestPlayer(unittest.TestCase):
+    def test_player_contains_manifest_and_controls(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "g")
+            registry = os.path.join(base, "r")
+            write_decomp(graph, "tcp", True)
+            make_figure(registry, "tcp", 2)
+            manifest, _ = bv.build_manifest(graph, registry)
+            out = os.path.join(base, "video.html")
+            bv.build_player(manifest, bv.PLAYER_TEMPLATE, out)
+            text = open(out, encoding="utf-8").read()
+            self.assertIn("window.__MANIFEST__", text)
+            self.assertIn('id="play"', text)
+            self.assertIn('class="slide', text)
+            self.assertNotIn("{{MANIFEST_JSON}}", text)
+            self.assertNotIn("{{SLIDES_HTML}}", text)
+            # one .slide div per manifest slide
+            self.assertEqual(text.count('class="slide'), len(manifest["slides"]))
+            # frame SVGs are inlined
+            self.assertIn("<svg", text)
+
+    def test_player_escapes_script_breakout_in_narration(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "g")
+            registry = os.path.join(base, "r")
+            write_decomp(graph, "tcp", True)
+            make_figure(registry, "tcp", 1)
+            manifest, _ = bv.build_manifest(graph, registry)
+            manifest["slides"][0]["narration"] = "Danger </script><script>alert(1)</script> end."
+            out = os.path.join(base, "video.html")
+            bv.build_player(manifest, bv.PLAYER_TEMPLATE, out)
+            text = open(out, encoding="utf-8").read()
+            # the injected narration must NOT introduce a raw script breakout
+            self.assertNotIn("</script><script>alert", text)
+            # it appears in escaped form instead
+            self.assertIn("\\u003c/script\\u003e", text)
+
+
 if __name__ == "__main__":
     unittest.main()

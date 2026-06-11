@@ -163,6 +163,44 @@ def _esc(text):
 _ROOT_DIM_RE = re.compile(r'\s(?:width|height)="[^"]*"')
 
 
+def _slide_html(slide):
+    # NOTE: figures share id="arrow" on their <marker>; when several frame SVGs are
+    # inlined into one player document, url(#arrow) resolves to the first in document
+    # order. Safe only because the design system uses one marker geometry across figures.
+    if slide["kind"] == "frame":
+        inner = _read_inner_svg(slide["image"])
+        body = inner + f'<p class="cap">{_esc(slide["caption"])}</p>'
+    else:
+        body = f'<div class="card">{_esc(slide["caption"])}</div>'
+    cls = "slide" + ("" if slide["transition"] == "crossfade" else " cut")
+    return f'<div class="{cls}">{body}</div>'
+
+
+def build_player(manifest, template_path, out_path):
+    """Render the self-contained HTML player from a manifest + template; returns out_path."""
+    with open(template_path, encoding="utf-8") as fh:
+        template = fh.read()
+    slides_html = "\n".join(_slide_html(s) for s in manifest["slides"])
+    # store only lightweight fields in the injected manifest (no SVG text)
+    light = dict(manifest)
+    light["slides"] = [{k: s[k] for k in ("kind", "concept_slug", "caption",
+                                          "narration", "duration_s", "transition")}
+                       for s in manifest["slides"]]
+    # json.dumps does not escape <,>,& — escape them for safe embedding inside an
+    # inline <script> (prevents a narration containing "</script>" from breaking out).
+    # \uXXXX escapes are valid JSON and JSON.parse / the var assignment decode them back.
+    manifest_json = (json.dumps(light)
+                     .replace("<", "\\u003c")
+                     .replace(">", "\\u003e")
+                     .replace("&", "\\u0026"))
+    html_out = (template
+                .replace("{{SLIDES_HTML}}", slides_html)
+                .replace("{{MANIFEST_JSON}}", manifest_json))
+    with open(out_path, "w", encoding="utf-8") as fh:
+        fh.write(html_out)
+    return out_path
+
+
 def _nest_figure(inner, x, y, width, height):
     """Position a figure SVG inside the stage by injecting layout attributes on
     its root <svg>. The figure's own width/height (real figures carry width="100%")

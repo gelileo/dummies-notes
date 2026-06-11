@@ -2,6 +2,20 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-11] fix(video): escape injected manifest JSON for inline <script> context
+
+- `build_player` in `scripts/build_video.py`: after `json.dumps(light)`, replace `<` → `<`, `>` → `>`, `&` → `&` to prevent narration/caption text containing `</script>` from breaking out of the inline script block (HTML injection vector).
+- Docstring added to `build_player`; shared-marker-id assumption comment added to `_slide_html`.
+- Regression test `TestPlayer.test_player_escapes_script_breakout_in_narration` added. 74 tests total, all passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] feat(video): HTML player — Task 5 of Video Engine
+
+- `.claude/skills/concept-illustrator/assets/video.template.html` created: self-contained player with `{{SLIDES_HTML}}` and `{{MANIFEST_JSON}}` substitution points, crossfade/cut transitions, play/pause + prev/next + progress bar, optional Web Speech TTS narration toggle.
+- `_slide_html(slide)` and `build_player(manifest, template_path, out_path)` added to `scripts/build_video.py`. Frame slides inline raw figure SVG via `_read_inner_svg`; card slides render caption as a styled div. Injected manifest is lightweight (no SVG text — only `kind`, `concept_slug`, `caption`, `narration`, `duration_s`, `transition` per slide).
+- 1 new test (`TestPlayer`) added: 13 tests total, all passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-11] feat(video): stage_svg — Task 4 of Video Engine
 
 - `stage_svg(slide, stage)` added to `scripts/build_video.py`: composes one 16:9 SVG per slide by nesting the figure SVG (frame slides) or rendering a centered text card (title/section/closing).
