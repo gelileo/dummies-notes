@@ -409,3 +409,5 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
   reused; computer-network honest frontier. 16 agents.
 - chain_review_pass: TRUE (4 blocking gaps -> 1 minor frontier note). Self-sufficient
   mechanism figures work; composition retired. graph check clean; 60 tests green.
+
+- 2026-06-11 — Phase 6 (video engine): began `scripts/build_video.py` + new article `video-engine.md`. Manifest-first; HTML player + opt-in MP4; reuses assemble ordering + render.export_png.

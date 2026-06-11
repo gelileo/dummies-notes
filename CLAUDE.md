@@ -64,6 +64,8 @@ Each article's `affects:` globs drive `drift-check`; keep this table in sync.
 | `.claude/workflows/**` | `concepts/dummies-notes/orchestration-workflow.md` |
 | `scripts/graph_check.py` | `concepts/dummies-notes/orchestration-workflow.md` |
 | `scripts/assemble.py` | `concepts/dummies-notes/orchestration-workflow.md` |
+| `scripts/build_video.py` | `concepts/dummies-notes/video-engine.md` |
+| `.claude/skills/concept-illustrator/assets/video.template.html` | `concepts/dummies-notes/video-engine.md` |
 
 ### When code has no matching article
 
