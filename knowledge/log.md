@@ -2,52 +2,6 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
-## [2026-06-11] feat(video): build() orchestrator + CLI — Task 7 of Video Engine
-
-- `build(graph_dir, registry_root, out_dir, fmt, wpm, stage)` added to `scripts/build_video.py`: orchestrates `build_manifest` → write files → `build_player` / `render_mp4` based on `fmt`. Returns `(result_dict, issues)` or `(None, issues)` on ERROR.
-- `main(argv)` CLI added: `--format html|mp4|both`, `--wpm`, `--out`, `--registry`; exits 0 on success, 1 on error. Single `if __name__ == "__main__": sys.exit(main())` block at end of file.
-- 3 new tests (`TestBuildAndCli`): 21 tests total, 1 skip, all passing.
-- Smoke test: `tcp-connection-lifecycle` — 19 slides, `video.html` 109 KB with `window.__MANIFEST__` and 14 inline SVGs.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] fix(video): robustness + docstring fixes for render_mp4
-
-- Guard empty manifest: `render_mp4` returns `(None, ["empty manifest — no slides to render."])` when `manifest["slides"]` is absent/empty, preventing `IndexError` in `_build_silent_video` (`pngs[-1]`).
-- Diagnostic when all say segments fail: appends a note when `have_say` is True but no segment succeeded.
-- Docstrings clarified: `_effective_durations` and `_build_audio_track`.
-- Test file: `import shutil` and `from unittest import mock` moved to the top stdlib block (were mid-file).
-- 18 tests, 1 skip, all passing. `validate-articles` exit 0.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] fix(video): escape injected manifest JSON for inline <script> context
-
-- `build_player` in `scripts/build_video.py`: after `json.dumps(light)`, replace `<` → `<`, `>` → `>`, `&` → `&` to prevent narration/caption text containing `</script>` from breaking out of the inline script block (HTML injection vector).
-- Docstring added to `build_player`; shared-marker-id assumption comment added to `_slide_html`.
-- Regression test `TestPlayer.test_player_escapes_script_breakout_in_narration` added. 74 tests total, all passing.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] feat(video): HTML player — Task 5 of Video Engine
-
-- `.claude/skills/concept-illustrator/assets/video.template.html` created: self-contained player with `{{SLIDES_HTML}}` and `{{MANIFEST_JSON}}` substitution points, crossfade/cut transitions, play/pause + prev/next + progress bar, optional Web Speech TTS narration toggle.
-- `_slide_html(slide)` and `build_player(manifest, template_path, out_path)` added to `scripts/build_video.py`. Frame slides inline raw figure SVG via `_read_inner_svg`; card slides render caption as a styled div. Injected manifest is lightweight (no SVG text — only `kind`, `concept_slug`, `caption`, `narration`, `duration_s`, `transition` per slide).
-- 1 new test (`TestPlayer`) added: 13 tests total, all passing.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] feat(video): stage_svg — Task 4 of Video Engine
-
-- `stage_svg(slide, stage)` added to `scripts/build_video.py`: composes one 16:9 SVG per slide by nesting the figure SVG (frame slides) or rendering a centered text card (title/section/closing).
-- `_read_inner_svg(path)` strips XML prolog before `<svg` tag; `_esc(text)` escapes all interpolated user text.
-- 2 new tests (`TestStageSvg`) added to `scripts/tests/test_build_video.py`: well-formed XML asserted via `ET.fromstring`, nested-SVG count verified, caption presence verified. 12 tests total, all passing.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] feat(video): manifest builder — Task 2 of Video Engine
-
-- `scripts/build_video.py` created: `build_manifest`, `load_frames`, `_duration_for`, `_slide`. Shared constants `DEFAULT_WPM`, `MIN_DUR`, `MAX_DUR`, `MIN_TTS_DUR`, `STAGE` defined at module level for use by later tasks.
-- Reuses `asm.load_full_graph`, `asm.find_root`, `asm.topo_order`, `asm._figure_dir_for`, and `lookup` from the existing modules — no ordering logic reimplemented.
-- `scripts/tests/test_build_video.py` created: 7 tests covering duration clamping (min/max/exact), slide ordering (prereqs before root), slide kinds (title/section/frame/closing counts), frame-slide field shapes, figureless-node skipping, and crossfade-only-within-concept transition rule.
-- All 67 tests passing.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
 ## [2026-06-10] compile | Phase 5 shipped — self-sufficient figures, composition retired
 
 Phase 5 introduced the two-axis decomposition contract and retired the compose-from-children approach. This entry records what landed and the final state of the system.
@@ -458,6 +412,52 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 
 - 2026-06-11 — Phase 6 (video engine): began `scripts/build_video.py` + new article `video-engine.md`. Manifest-first; HTML player + opt-in MP4; reuses assemble ordering + render.export_png.
 
+## [2026-06-11] feat(video): manifest builder — Task 2 of Video Engine
+
+- `scripts/build_video.py` created: `build_manifest`, `load_frames`, `_duration_for`, `_slide`. Shared constants `DEFAULT_WPM`, `MIN_DUR`, `MAX_DUR`, `MIN_TTS_DUR`, `STAGE` defined at module level for use by later tasks.
+- Reuses `asm.load_full_graph`, `asm.find_root`, `asm.topo_order`, `asm._figure_dir_for`, and `lookup` from the existing modules — no ordering logic reimplemented.
+- `scripts/tests/test_build_video.py` created: 7 tests covering duration clamping (min/max/exact), slide ordering (prereqs before root), slide kinds (title/section/frame/closing counts), frame-slide field shapes, figureless-node skipping, and crossfade-only-within-concept transition rule.
+- All 67 tests passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] feat(video): stage_svg — Task 4 of Video Engine
+
+- `stage_svg(slide, stage)` added to `scripts/build_video.py`: composes one 16:9 SVG per slide by nesting the figure SVG (frame slides) or rendering a centered text card (title/section/closing).
+- `_read_inner_svg(path)` strips XML prolog before `<svg` tag; `_esc(text)` escapes all interpolated user text.
+- 2 new tests (`TestStageSvg`) added to `scripts/tests/test_build_video.py`: well-formed XML asserted via `ET.fromstring`, nested-SVG count verified, caption presence verified. 12 tests total, all passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] feat(video): HTML player — Task 5 of Video Engine
+
+- `.claude/skills/concept-illustrator/assets/video.template.html` created: self-contained player with `{{SLIDES_HTML}}` and `{{MANIFEST_JSON}}` substitution points, crossfade/cut transitions, play/pause + prev/next + progress bar, optional Web Speech TTS narration toggle.
+- `_slide_html(slide)` and `build_player(manifest, template_path, out_path)` added to `scripts/build_video.py`. Frame slides inline raw figure SVG via `_read_inner_svg`; card slides render caption as a styled div. Injected manifest is lightweight (no SVG text — only `kind`, `concept_slug`, `caption`, `narration`, `duration_s`, `transition` per slide).
+- 1 new test (`TestPlayer`) added: 13 tests total, all passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] fix(video): escape injected manifest JSON for inline <script> context
+
+- `build_player` in `scripts/build_video.py`: after `json.dumps(light)`, replace `<` → `<`, `>` → `>`, `&` → `&` to prevent narration/caption text containing `</script>` from breaking out of the inline script block (HTML injection vector).
+- Docstring added to `build_player`; shared-marker-id assumption comment added to `_slide_html`.
+- Regression test `TestPlayer.test_player_escapes_script_breakout_in_narration` added. 74 tests total, all passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] fix(video): robustness + docstring fixes for render_mp4
+
+- Guard empty manifest: `render_mp4` returns `(None, ["empty manifest — no slides to render."])` when `manifest["slides"]` is absent/empty, preventing `IndexError` in `_build_silent_video` (`pngs[-1]`).
+- Diagnostic when all say segments fail: appends a note when `have_say` is True but no segment succeeded.
+- Docstrings clarified: `_effective_durations` and `_build_audio_track`.
+- Test file: `import shutil` and `from unittest import mock` moved to the top stdlib block (were mid-file).
+- 18 tests, 1 skip, all passing. `validate-articles` exit 0.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] feat(video): build() orchestrator + CLI — Task 7 of Video Engine
+
+- `build(graph_dir, registry_root, out_dir, fmt, wpm, stage)` added to `scripts/build_video.py`: orchestrates `build_manifest` → write files → `build_player` / `render_mp4` based on `fmt`. Returns `(result_dict, issues)` or `(None, issues)` on ERROR.
+- `main(argv)` CLI added: `--format html|mp4|both`, `--wpm`, `--out`, `--registry`; exits 0 on success, 1 on error. Single `if __name__ == "__main__": sys.exit(main())` block at end of file.
+- 3 new tests (`TestBuildAndCli`): 21 tests total, 1 skip, all passing.
+- Smoke test: `tcp-connection-lifecycle` — 19 slides, `video.html` 109 KB with `window.__MANIFEST__` and 14 inline SVGs.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-11] fix(video): portable manifest.json + video_html in result + CLI output improvement
 
 - `scripts/build_video.py`: added `_REPO = os.path.dirname(_HERE)`. `build()` now writes repo-relative `image` paths in the on-disk `manifest.json` (via portable dict); in-memory manifest keeps absolute paths for renderers. `result` dict gains `video_html` key. CLI `OK` line points at `video.html` when produced.
@@ -466,3 +466,4 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - Articles touched: `concepts/dummies-notes/video-engine.md`.
 
 - 2026-06-11 — Phase 6: wired opt-in `Video` phase into dummies-notes.js (makeVideo/videoFormat); runs build_video.py after Assemble. Default runs unchanged.
+- 2026-06-11 — Phase 6 COMPLETE (video engine shipped): scripts/build_video.py (manifest → script.md/captions.srt + self-contained HTML player; opt-in MP4 via ffmpeg+say with silent fallback), video.template.html, opt-in workflow Video phase. 158 tests green (1 ffmpeg-dependent MP4 smoke skipped). MP4 not yet validated end-to-end (no ffmpeg+rasterizer on the dev machine).
