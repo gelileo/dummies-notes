@@ -22,6 +22,13 @@ HEX6 = re.compile(r"#[0-9a-f]{6}")
 EMOJI = re.compile("[\U0001f000-\U0001faff\U00002600-\U000027bf]")
 DTD_PATTERN = re.compile(r"<!(DOCTYPE|ENTITY)", re.IGNORECASE)
 
+# Common technical acronyms allowed in ALL-CAPS (they are not "shouting").
+CAPS_ACRONYMS = {
+    "SYN", "ACK", "FIN", "RST", "TCP", "UDP", "IP", "HTTP", "HTTPS", "DNS",
+    "TLS", "SSL", "RSA", "AES", "API", "URL", "URI", "HTML", "CSS", "JSON",
+    "XML", "SQL", "CPU", "GPU", "RAM", "ID", "OK", "IO", "OS",
+}
+
 _HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_STYLE = os.path.join(_HERE, "..", "assets", "_style.css")
 DEFAULT_TEMPLATE = os.path.join(_HERE, "..", "assets", "slideshow.template.html")
@@ -146,7 +153,12 @@ def check_caps(root):
         letters = [c for c in s if c.isalpha()]
         words = [w for w in s.split() if any(c.isalpha() for c in w)]
         if len(letters) >= 2 and not any(c.islower() for c in s):
-            issues.append(("ERROR", f"ALL CAPS text '{s[:20]}'; use sentence case"))
+            # Split into purely-alphabetic tokens; only consider those with
+            # length >= 2 (single letters are labels/variables, not shouting).
+            caps_tokens = [t for t in re.split(r"[^a-zA-Z]+", s)
+                           if len(t) >= 2 and t.isalpha() and t.isupper()]
+            if caps_tokens and any(t not in CAPS_ACRONYMS for t in caps_tokens):
+                issues.append(("ERROR", f"ALL CAPS text '{s[:20]}'; use sentence case"))
         elif len(words) >= 2 and all(w.lstrip()[0].isupper() for w in words):
             issues.append(("WARN", f"possible Title Case '{s[:20]}'; prefer sentence case"))
     return issues

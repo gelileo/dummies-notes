@@ -109,6 +109,51 @@ class TestCaps(unittest.TestCase):
         self.assertTrue(any(lvl == "WARN" for lvl, _ in out))
 
 
+class TestCapsAcronymAllowlist(unittest.TestCase):
+    """Acronyms in CAPS_ACRONYMS must pass; genuine shouting must still fail."""
+
+    def test_syn_arrow_passes(self):
+        # "SYN →" — token SYN is in the allowlist, arrow is non-alpha
+        out = render.check_caps(svg('<text class="ts">SYN →</text>'))
+        self.assertFalse(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_syn_ack_passes(self):
+        # "SYN-ACK" — tokens SYN and ACK both in the allowlist
+        out = render.check_caps(svg('<text class="ts">SYN-ACK</text>'))
+        self.assertFalse(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_left_arrow_syn_ack_passes(self):
+        out = render.check_caps(svg('<text class="ts">← SYN-ACK</text>'))
+        self.assertFalse(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_ack_arrow_passes(self):
+        out = render.check_caps(svg('<text class="ts">ACK →</text>'))
+        self.assertFalse(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_single_acronym_passes(self):
+        out = render.check_caps(svg('<text class="t">TCP</text>'))
+        self.assertFalse(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_unknown_caps_word_still_errors(self):
+        # "BADLY" is not in the allowlist — must still flag
+        out = render.check_caps(svg('<text class="t">BADLY</text>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_hello_world_still_errors(self):
+        out = render.check_caps(svg('<text class="t">HELLO WORLD</text>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_bad_in_dirty_fixture_still_errors(self):
+        # "BAD" (length 3, not in allowlist) must remain flagged — dirty.svg guard
+        out = render.check_caps(svg('<text>BAD</text>'))
+        self.assertTrue(any(lvl == "ERROR" for lvl, _ in out))
+
+    def test_single_letter_label_passes(self):
+        # Single-letter labels like "A" or "B" should not be flagged
+        out = render.check_caps(svg('<text class="t">A</text>'))
+        self.assertFalse(any(lvl == "ERROR" for lvl, _ in out))
+
+
 class TestBounds(unittest.TestCase):
     def test_in_bounds_passes(self):
         out = render.check_bounds(svg('<rect x="10" y="10" width="100" height="50"/>'))

@@ -503,4 +503,12 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - `.claude/skills/concept-illustrator/scripts/render.py`: added `_lint_reveal(root, frame, name)` helper. Checks that `data-reveal` SVG groups and the `figure.json` frame `beats` array are consistent: tags without beats → ERROR, beats without tags → ERROR, non-consecutive indices → ERROR, count mismatch → ERROR. Frames with neither are silently skipped (backward-compatible). Called from `validate_figure` immediately after `lint_svg` for each frame.
 - `.claude/skills/concept-illustrator/scripts/tests/test_render.py`: added `TestRevealLint` class with 5 tests covering all four error paths and the well-formed no-error path. Suite: 63 tests, 1 skip, all passing.
 - `knowledge/concepts/dummies-notes/illustration-engine.md`: appended Reveal-consistency lint paragraph under SVG linter section; updated suite total to 63.
+
+## [2026-06-12] feat(illustrator): allow short tech acronyms in caps lint; restore SYN/ACK labels
+
+- `.claude/skills/concept-illustrator/scripts/render.py`: added module-level `CAPS_ACRONYMS` set of 29 protocol/tech tokens. Modified `check_caps` to split text into purely-alphabetic tokens (length ≥ 2, all-caps); the ALL-CAPS error fires only when at least one such token is absent from the allowlist. Single-letter labels (length < 2) are unconditionally exempt. Shouting text ("BAD", "HELLO WORLD") and unlisted acronyms remain flagged.
+- `.claude/skills/concept-illustrator/examples/tcp-handshake-reveal/frame-01.svg`: restored protocol-accurate uppercase labels: "SYN →", "← SYN-ACK", "ACK →" (previously lowercased as "Syn →", "← Syn-ack", "Ack →" to work around the caps lint).
+- `.claude/skills/concept-illustrator/scripts/tests/test_render.py`: added `TestCapsAcronymAllowlist` class (9 tests) covering SYN/ACK/SYN-ACK pass, single acronym pass, single-letter pass, and BADLY/HELLO WORLD/BAD still-error cases. Suite: 73 tests, 1 skip, all passing.
+- `knowledge/concepts/dummies-notes/illustration-engine.md`: added acronym-allowlist paragraph in SVG linter section; updated suite total to 73.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
