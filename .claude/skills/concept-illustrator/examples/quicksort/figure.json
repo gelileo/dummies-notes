@@ -14,7 +14,12 @@
       "file": "frame-02.svg",
       "caption": "2 is smaller than pivot 3, so it swapped with 5 into the left zone. Now scanning 8.",
       "runbook": "Same six fixed positions. Values are now [2, 5, 8, 1, 9, 3]. Cell 0 (value 2) is gray (c-gray): it was smaller than the pivot and has settled into the left zone. Cell 1 (value 5) is neutral, bumped right by that swap. Cell 2 (value 8) is teal (c-teal), the cell being scanned right now. Cells 3 (1) and 4 (9) are neutral, not yet scanned. Cell 5 (3) stays the coral pivot. Three pointers above the row: 'j (scanning)' over cell 2 (index 2), 'i (write slot)' over cell 1 (index 1), and 'pivot' over cell 5. Changed from frame 1: 2 and 5 swapped, 2 turned gray, the scan reached 8.",
-      "commentary": "Now we walk the array from left to right. The pivot is our yardstick. The 2 came up smaller, so it slid into the left zone and turned gray. The teal box is where we are looking right now: an 8. The little i marks the next open slot waiting for a small value."
+      "commentary": "Now we walk the array from left to right. The pivot is our yardstick. The 2 came up smaller, so it slid into the left zone and turned gray. The teal box is where we are looking right now: an 8. The little i marks the next open slot waiting for a small value.",
+      "beats": [
+        {"caption": "Scan the next value", "narration": "Now we walk the array from left to right. The teal box is the value we are looking at right now."},
+        {"caption": "Where small values land", "narration": "The little i marks the next open slot, waiting for a value smaller than the pivot."},
+        {"caption": "The pivot is our yardstick", "narration": "Everything is compared against the pivot — the coral value on the right."}
+      ]
     },
     {
       "file": "frame-03.svg",

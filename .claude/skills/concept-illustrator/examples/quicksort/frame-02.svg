@@ -60,17 +60,23 @@ rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
   <!-- Title -->
   <text x="340" y="32" class="th" text-anchor="middle" dominant-baseline="central">Quicksort — one partition pass</text>
 
-  <!-- Pivot label above last cell (coral throughout) -->
-  <text x="480" y="65" class="ts" text-anchor="middle" dominant-baseline="central">pivot</text>
-  <path class="arr" d="M480,75 L480,95"/>
-
   <!-- j (scanning) pointer above cell 2 (value 8, currently being scanned) -->
-  <text x="270" y="55" class="ts" text-anchor="middle" dominant-baseline="central">j (scanning)</text>
-  <path class="arr" d="M270,65 L270,95"/>
+  <g data-reveal="1" data-anim="rise">
+    <text x="270" y="55" class="ts" text-anchor="middle" dominant-baseline="central">j (scanning)</text>
+    <path class="arr" d="M270,65 L270,95"/>
+  </g>
 
   <!-- i (write slot) pointer above cell 1 (next slot for a small value) -->
-  <text x="200" y="44" class="ts" text-anchor="middle" dominant-baseline="central">i (write slot)</text>
-  <path class="arr" d="M200,54 L200,95"/>
+  <g data-reveal="2" data-anim="rise">
+    <text x="200" y="44" class="ts" text-anchor="middle" dominant-baseline="central">i (write slot)</text>
+    <path class="arr" d="M200,54 L200,95"/>
+  </g>
+
+  <!-- Pivot label above last cell (coral throughout) -->
+  <g data-reveal="3" data-anim="rise">
+    <text x="480" y="65" class="ts" text-anchor="middle" dominant-baseline="central">pivot</text>
+    <path class="arr" d="M480,75 L480,95"/>
+  </g>
 
   <!-- Array cells — same fixed positions as frame 1 -->
   <!-- Cell 0: value 2 — swapped into left zone (c-gray = settled left) -->
