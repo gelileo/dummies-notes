@@ -419,5 +419,32 @@ class TestBeatExpansion(unittest.TestCase):
             self.assertIsNone(manifest["slides"][0]["reveal_to"])
 
 
+_REVEAL_SVG = (
+    '<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" '
+    'viewBox="0 0 680 220" role="img">'
+    '<g data-reveal="1"><rect x="1" y="1" width="10" height="10"/></g>'
+    '<g data-reveal="2" data-anim="draw"><line x1="0" y1="0" x2="9" y2="0"/></g>'
+    '<g data-reveal="3"><text>z</text></g>'
+    '<g><text>backdrop</text></g>'
+    '</svg>')
+
+
+class TestRevealSvg(unittest.TestCase):
+    def test_none_passes_through(self):
+        self.assertEqual(bv._reveal_svg(_REVEAL_SVG, None), _REVEAL_SVG)
+
+    def test_hides_groups_beyond_reveal_to(self):
+        out = bv._reveal_svg(_REVEAL_SVG, 2)
+        ET.fromstring(out)  # well-formed
+        self.assertEqual(out.count("visibility:hidden"), 1)
+        self.assertIn('data-reveal="3"', out)
+        g3 = out[out.index('data-reveal="3"') - 30: out.index('data-reveal="3"') + 30]
+        self.assertIn("visibility:hidden", g3)
+
+    def test_reveal_all_hides_nothing(self):
+        out = bv._reveal_svg(_REVEAL_SVG, 3)
+        self.assertNotIn("visibility:hidden", out)
+
+
 if __name__ == "__main__":
     unittest.main()

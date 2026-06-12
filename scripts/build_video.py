@@ -214,6 +214,29 @@ def build_player(manifest, template_path, out_path):
     return out_path
 
 
+_REVEAL_G_RE = re.compile(r'<g\b[^>]*\bdata-reveal="(\d+)"[^>]*>')
+
+
+def _reveal_svg(inner, reveal_to):
+    """Return the figure markup with groups whose data-reveal index exceeds
+    reveal_to marked visibility:hidden (layout preserved, simply not painted).
+    Per-element inline style — no reliance on the rasterizer's CSS selector
+    support. reveal_to=None returns the markup unchanged (show everything)."""
+    if reveal_to is None:
+        return inner
+
+    def repl(m):
+        tag = m.group(0)
+        if int(m.group(1)) <= reveal_to:
+            return tag
+        if 'style="' in tag:
+            return tag.replace('style="', 'style="visibility:hidden;', 1)
+        # Insert style right after "<g " so it precedes data-reveal (window-safe)
+        return tag[:3] + 'style="visibility:hidden" ' + tag[3:]
+
+    return _REVEAL_G_RE.sub(repl, inner)
+
+
 def _nest_figure(inner, x, y, width, height):
     """Position a figure SVG inside the stage by injecting layout attributes on
     its root <svg>. The figure's own width/height (real figures carry width="100%")
@@ -243,8 +266,8 @@ def stage_svg(slide, stage):
                      f'font-family="sans-serif" font-size="22" fill="#444">'
                      f'{_esc(label.replace("-", " "))}</text>')
         inner_w, inner_h = w - 2 * pad, h - top_h - cap_h
-        parts.append(_nest_figure(_read_inner_svg(slide["image"]),
-                                  pad, top_h, inner_w, inner_h))
+        inner = _reveal_svg(_read_inner_svg(slide["image"]), slide.get("reveal_to"))
+        parts.append(_nest_figure(inner, pad, top_h, inner_w, inner_h))
         parts.append(f'<text x="{w/2:.0f}" y="{h-34}" text-anchor="middle" '
                      f'font-family="sans-serif" font-size="24" fill="#222">'
                      f'{_esc(slide["caption"])}</text>')

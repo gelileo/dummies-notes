@@ -2,6 +2,13 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-12] feat(reveal): cumulative-state SVG for MP4 pop (_reveal_svg)
+
+- `scripts/build_video.py`: added `_REVEAL_G_RE` regex and `_reveal_svg(inner, reveal_to)` function. Hides SVG `<g>` groups with `data-reveal` index exceeding `reveal_to` via inline `style="visibility:hidden"` injected before the attribute (rasterizer-agnostic). `reveal_to=None` is a no-op. Updated `stage_svg` to call `_reveal_svg` before `_nest_figure` for frame slides, keying off `slide.get("reveal_to")`. Non-frame slides unaffected.
+- `scripts/tests/test_build_video.py`: added `_REVEAL_SVG` fixture and `TestRevealSvg` with 3 tests: `test_none_passes_through`, `test_hides_groups_beyond_reveal_to`, `test_reveal_all_hides_nothing`. 31 tests, 1 skip, all passing.
+- `knowledge/concepts/dummies-notes/video-engine.md`: appended Phase 7 Task 3 paragraph.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-12] docs(video): update `load_frames` docstring to document `beats` key
 
 - `scripts/build_video.py`: updated `load_frames` function docstring from `"""[{file (abs), caption, commentary}]..."""` to `"""[{file (abs), caption, commentary, beats}]..."""` to accurately document that the `beats` field was added in Phase 7 Task 1. The field was already being returned and tested; this is a documentation-only fix.
