@@ -1,6 +1,40 @@
 # Build Log
 
-Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
+Reverse-chronological log (newest entries first) of significant changes to this project. Each entry records what changed, why, and which articles were touched.
+
+## [2026-06-12] fix(reveal): fade = opacity-only; validator warns non-<g> data-reveal; mixed-frame test
+
+Three final-polish fixes for the progressive-reveal feature:
+
+1. **`data-anim="fade"` is now a pure opacity transition** — added `[data-reveal][data-anim="fade"]{transform:none}` immediately after the `rise` translateY rule in `video.template.html`. Equal-specificity, later source order wins: `fade` groups get opacity-only entrance; `rise` keeps the translateY.
+2. **Validator warns on `data-reveal` outside a `<g>`** — `_lint_reveal` in `render.py` now emits a WARN (not ERROR) when `data-reveal` is found on a non-`<g>` element (e.g. `<rect data-reveal="1">`). Local name is compared after stripping any XML namespace. Count/gap checks still run. Test `test_non_g_reveal_warns_not_errors` added to `TestRevealLint`.
+3. **Mixed-frame regression test** — `TestMixedMultiFrame.test_beats_frame_plus_plain_frame` in `test_build_video.py`: a 2-frame figure where frame 1 has 2 beats (→ `reveal_to` 1,2) and frame 2 has none (→ `reveal_to` None); asserts the beat-slides share one container and the plain frame gets a distinct one.
+
+- `.claude/skills/concept-illustrator/assets/video.template.html`: added `[data-reveal][data-anim="fade"]{transform:none}` rule.
+- `.claude/skills/concept-illustrator/scripts/render.py`: added non-`<g>` WARN in `_lint_reveal` for-loop, before the int-parse.
+- `.claude/skills/concept-illustrator/scripts/tests/test_render.py`: added `test_non_g_reveal_warns_not_errors` to `TestRevealLint`. Suite: 74 tests, all passing.
+- `scripts/tests/test_build_video.py`: added `TestMixedMultiFrame` class. Suite: 93 tests, 1 skip, all passing.
+- `knowledge/concepts/dummies-notes/video-engine.md`: appended fade-is-opacity-only note.
+- `knowledge/concepts/dummies-notes/illustration-engine.md`: appended non-`<g>` WARN note to reveal-consistency lint paragraph.
+- Articles touched: `concepts/dummies-notes/video-engine.md`, `concepts/dummies-notes/illustration-engine.md`.
+
+## [2026-06-12] feat(illustrator): allow short tech acronyms in caps lint; restore SYN/ACK labels
+
+- `.claude/skills/concept-illustrator/scripts/render.py`: added module-level `CAPS_ACRONYMS` set of 29 protocol/tech tokens. Modified `check_caps` to split text into purely-alphabetic tokens (length ≥ 2, all-caps); the ALL-CAPS error fires only when at least one such token is absent from the allowlist. Single-letter labels (length < 2) are unconditionally exempt. Shouting text ("BAD", "HELLO WORLD") and unlisted acronyms remain flagged.
+- `.claude/skills/concept-illustrator/examples/tcp-handshake-reveal/frame-01.svg`: restored protocol-accurate uppercase labels: "SYN →", "← SYN-ACK", "ACK →" (previously lowercased as "Syn →", "← Syn-ack", "Ack →" to work around the caps lint).
+- `.claude/skills/concept-illustrator/scripts/tests/test_render.py`: added `TestCapsAcronymAllowlist` class (9 tests) covering SYN/ACK/SYN-ACK pass, single acronym pass, single-letter pass, and BADLY/HELLO WORLD/BAD still-error cases. Suite: 73 tests, 1 skip, all passing.
+- `knowledge/concepts/dummies-notes/illustration-engine.md`: added acronym-allowlist paragraph in SVG linter section; updated suite total to 73.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
+## [2026-06-12] feat(reveal): figure validator lints beats <-> data-reveal consistency
+
+- `.claude/skills/concept-illustrator/scripts/render.py`: added `_lint_reveal(root, frame, name)` helper. Checks that `data-reveal` SVG groups and the `figure.json` frame `beats` array are consistent: tags without beats → ERROR, beats without tags → ERROR, non-consecutive indices → ERROR, count mismatch → ERROR. Frames with neither are silently skipped (backward-compatible). Called from `validate_figure` immediately after `lint_svg` for each frame.
+- `.claude/skills/concept-illustrator/scripts/tests/test_render.py`: added `TestRevealLint` class with 5 tests covering all four error paths and the well-formed no-error path. Suite: 63 tests, 1 skip, all passing.
+- `knowledge/concepts/dummies-notes/illustration-engine.md`: appended Reveal-consistency lint paragraph under SVG linter section; updated suite total to 63.
+
+- 2026-06-12 — MP4 path validated end-to-end: installed `rsvg-convert` (librsvg 2.62.3; ffmpeg + `say` already present), ran `--format both` on tcp-connection-lifecycle → video.mp4 (H.264 + AAC, 19 slides, ~6m37s, 8.5 MB). Nested-SVG rasterization, ffmpeg concat, `say` narration, and audio mux all confirmed working; `test_real_mp4_smoke` now runs and passes. Closes the Phase 6 "MP4 unproven" caveat. (Note: captions.srt uses the computed timeline while the MP4 uses the spoken-audio timeline — a documented divergence.)
+- 2026-06-12 — Phase 7 (progressive reveal): data-reveal/data-anim on SVG groups + per-frame `beats` in figure.json. build_video expands frames into per-beat slides (reveal_to); MP4 pops via _reveal_svg (per-element visibility); HTML player groups beats per frame and animates entrance (rise / arrow-draw / fade) with optional dim-past. Validator lints beats↔reveal; caps lint exempts tech acronyms. Golden example: tcp-handshake-reveal (6 beats); quicksort frame-02 tagged. Backward-compatible.
 
 ## [2026-06-12] feat(reveal): HTML player reveal engine (group beats per frame, animate entrance)
 
@@ -30,6 +64,116 @@ Append-only chronological log of significant changes to this project. Each entry
 - `scripts/tests/test_build_video.py`: added `test_missing_rasterizer_skips_mp4` (new regression test); patched `_have_rasterizer=True` in `test_missing_say_renders_silent_with_note` and `test_say_present_drives_audio_mux` so those tests are not falsely broken by the new guard. 23 tests, 1 skip, all passing.
 - `knowledge/concepts/dummies-notes/video-engine.md`: corrected MP4 bullet — removed "xfade-crossfades with ffmpeg" claim; now says "holds each frame for its duration (hard cuts)". Added rasterizer to the list of runtime-detected tools. Xfade is deferred (already stated in the lower paragraph). Appended robustness-fix paragraph.
 - Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] fix(video): portable manifest.json + video_html in result + CLI output improvement
+
+- `scripts/build_video.py`: added `_REPO = os.path.dirname(_HERE)`. `build()` now writes repo-relative `image` paths in the on-disk `manifest.json` (via portable dict); in-memory manifest keeps absolute paths for renderers. `result` dict gains `video_html` key. CLI `OK` line points at `video.html` when produced.
+- `scripts/tests/test_build_video.py`: added `test_manifest_image_paths_not_absolute` to `TestBuildAndCli`. 22 tests, 1 skip, all passing.
+- `output/tcp-connection-lifecycle/video/manifest.json` regenerated with relative paths (`grep -c "/Users/" → 0`).
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] feat(video): build() orchestrator + CLI — Task 7 of Video Engine
+
+- `build(graph_dir, registry_root, out_dir, fmt, wpm, stage)` added to `scripts/build_video.py`: orchestrates `build_manifest` → write files → `build_player` / `render_mp4` based on `fmt`. Returns `(result_dict, issues)` or `(None, issues)` on ERROR.
+- `main(argv)` CLI added: `--format html|mp4|both`, `--wpm`, `--out`, `--registry`; exits 0 on success, 1 on error. Single `if __name__ == "__main__": sys.exit(main())` block at end of file.
+- 3 new tests (`TestBuildAndCli`): 21 tests total, 1 skip, all passing.
+- Smoke test: `tcp-connection-lifecycle` — 19 slides, `video.html` 109 KB with `window.__MANIFEST__` and 14 inline SVGs.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] fix(video): robustness + docstring fixes for render_mp4
+
+- Guard empty manifest: `render_mp4` returns `(None, ["empty manifest — no slides to render."])` when `manifest["slides"]` is absent/empty, preventing `IndexError` in `_build_silent_video` (`pngs[-1]`).
+- Diagnostic when all say segments fail: appends a note when `have_say` is True but no segment succeeded.
+- Docstrings clarified: `_effective_durations` and `_build_audio_track`.
+- Test file: `import shutil` and `from unittest import mock` moved to the top stdlib block (were mid-file).
+- 18 tests, 1 skip, all passing. `validate-articles` exit 0.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] fix(video): escape injected manifest JSON for inline <script> context
+
+- `build_player` in `scripts/build_video.py`: after `json.dumps(light)`, replace `<` → `<`, `>` → `>`, `&` → `&` to prevent narration/caption text containing `</script>` from breaking out of the inline script block (HTML injection vector).
+- Docstring added to `build_player`; shared-marker-id assumption comment added to `_slide_html`.
+- Regression test `TestPlayer.test_player_escapes_script_breakout_in_narration` added. 74 tests total, all passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] feat(video): HTML player — Task 5 of Video Engine
+
+- `.claude/skills/concept-illustrator/assets/video.template.html` created: self-contained player with `{{SLIDES_HTML}}` and `{{MANIFEST_JSON}}` substitution points, crossfade/cut transitions, play/pause + prev/next + progress bar, optional Web Speech TTS narration toggle.
+- `_slide_html(slide)` and `build_player(manifest, template_path, out_path)` added to `scripts/build_video.py`. Frame slides inline raw figure SVG via `_read_inner_svg`; card slides render caption as a styled div. Injected manifest is lightweight (no SVG text — only `kind`, `concept_slug`, `caption`, `narration`, `duration_s`, `transition` per slide).
+- 1 new test (`TestPlayer`) added: 13 tests total, all passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] feat(video): stage_svg — Task 4 of Video Engine
+
+- `stage_svg(slide, stage)` added to `scripts/build_video.py`: composes one 16:9 SVG per slide by nesting the figure SVG (frame slides) or rendering a centered text card (title/section/closing).
+- `_read_inner_svg(path)` strips XML prolog before `<svg` tag; `_esc(text)` escapes all interpolated user text.
+- 2 new tests (`TestStageSvg`) added to `scripts/tests/test_build_video.py`: well-formed XML asserted via `ET.fromstring`, nested-SVG count verified, caption presence verified. 12 tests total, all passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-11] feat(video): manifest builder — Task 2 of Video Engine
+
+- `scripts/build_video.py` created: `build_manifest`, `load_frames`, `_duration_for`, `_slide`. Shared constants `DEFAULT_WPM`, `MIN_DUR`, `MAX_DUR`, `MIN_TTS_DUR`, `STAGE` defined at module level for use by later tasks.
+- Reuses `asm.load_full_graph`, `asm.find_root`, `asm.topo_order`, `asm._figure_dir_for`, and `lookup` from the existing modules — no ordering logic reimplemented.
+- `scripts/tests/test_build_video.py` created: 7 tests covering duration clamping (min/max/exact), slide ordering (prereqs before root), slide kinds (title/section/frame/closing counts), frame-slide field shapes, figureless-node skipping, and crossfade-only-within-concept transition rule.
+- All 67 tests passing.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+- 2026-06-11 — Phase 6 COMPLETE (video engine shipped): scripts/build_video.py (manifest → script.md/captions.srt + self-contained HTML player; opt-in MP4 via ffmpeg+say with silent fallback), video.template.html, opt-in workflow Video phase. 158 tests green (1 ffmpeg-dependent MP4 smoke skipped). MP4 not yet validated end-to-end (no ffmpeg+rasterizer on the dev machine).
+- 2026-06-11 — Phase 6: wired opt-in `Video` phase into dummies-notes.js (makeVideo/videoFormat); runs build_video.py after Assemble. Default runs unchanged.
+- 2026-06-11 — Phase 6 (video engine): began `scripts/build_video.py` + new article `video-engine.md`. Manifest-first; HTML player + opt-in MP4; reuses assemble ordering + render.export_png.
+
+## [2026-06-10] feat | Phase 5 acceptance — TCP re-run closes the chain-review gap
+
+- Reset tcp-connection-lifecycle + best-effort-delivery; re-ran TCP (maxDepth 2).
+- 5 nodes; root illustrated with a self-sufficient 5-frame lifecycle figure (not a
+  composition map); unreliable-delivery + delivery-acknowledgement illustrated
+  (non-atomic-but-figurable — the Phase 5 fix); communication-protocol + data-packets
+  reused; computer-network honest frontier. 16 agents.
+- chain_review_pass: TRUE (4 blocking gaps -> 1 minor frontier note). Self-sufficient
+  mechanism figures work; composition retired. graph check clean; 60 tests green.
+
+## [2026-06-10] finding | deeper TCP run exposes the atomic↔illustrate coupling
+
+- Re-ran TCP at maxDepth 2. best-effort-delivery decomposed NON-atomic with a
+  single prereq (data-packets, already illustrated), so the run added no new
+  figure (illustrated:[], 7 agents) and the chain gaps persisted.
+- Root cause (sharper than the RSA composition gap): the system illustrates only
+  atomic leaves + the root composition. A node is "non-atomic" if it has ANY
+  prerequisite — but best-effort-delivery's OWN mechanism is figure-sized (its
+  decomposition literally says so). "Has a prerequisite" != "not worth drawing".
+- Fix is a design change, not a deeper run: decouple "illustrate" from "atomic
+  leaf" — give a node its own mechanism figure whenever its mechanism is
+  figure-sized, regardless of prerequisites. Same root cause as RSA's missing
+  mechanism figure. Candidate Phase 5.
+
+## [2026-06-10] feat | user run: TCP connection lifecycle
+
+- First user-requested topic: 4 nodes, 2 new figures (reviews clean), composition
+  figure, edges persisted, deliverable assembled; graph check clean. 15 agents.
+- Chain review failed with 4 gaps (shipped in chain-review.json) — repeating the
+  RSA pattern: the composition figure doesn't teach the target's own mechanism,
+  and a non-atomic mid-graph node (best-effort-delivery) renders without a figure
+  or stub. Two-topic confirmation of the documented future-work items.
+
+## [2026-06-10] feat | first full dummies-notes run (Phase 4 acceptance)
+
+- "RSA encryption" (maxDepth 1): covered-stop on modular-arithmetic; prime-numbers
+  + asymmetric-cryptography illustrated (reviews clean); composition figure for the
+  root; prerequisite edges persisted; output/rsa-encryption/index.html + map.html
+  assembled; graph check clean. 14 agents.
+- Chain review FAILED with 4 substantive graph-level gaps (chain-review.json ships
+  with the output) — the capstone check working as designed. Finding: composition
+  figures map structure but don't teach the target's mechanism; deeper runs needed
+  for security-core nodes (factoring hardness).
+
+## [2026-06-10] feat | first dummies-notes workflow run (Phase 3 smoke)
+
+- Ran the orchestrator end-to-end on "modular arithmetic": 1 node, atomic; figure
+  illustrated into `registry/modular-arithmetic/figure/` (5 frames, lint clean);
+  blind-reader + fidelity-critic review passed with no repairs; entry promoted to
+  `illustrated`; `graph_check --require-illustrated` clean. 6 agents total.
+- Hardened the workflow script to accept JSON-string args (caller footgun).
+- Updated the seeded-registry test pin: modular-arithmetic is now illustrated.
 
 ## [2026-06-10] compile | Phase 5 shipped — self-sufficient figures, composition retired
 
@@ -245,6 +389,64 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - Updated `knowledge/concepts/dummies-notes/concept-decomposition.md`: resolved the open atomicity-test question with the shipped rule (one figure ≤ ~6 frames + common-knowledge prerequisites; jargon ⇒ prerequisite; enforced by `validate_decomposition.py`).
 - Articles touched: `concepts/dummies-notes/concept-decomposition.md`.
 
+## [2026-06-10] fix | concept-illustrator: final-review hardening (CLI guards + doc accuracy + resource leak)
+
+- `scripts/render.py main()`: added path-shape guards for `--viewer` (requires directory) and `--png` (requires `.svg` file); wrong-kind inputs now print a clean ERROR line and return 1 instead of crashing with a traceback.
+- `SKILL.md`: corrected false claim that `--theme dark` "forces the dark palette"; replaced with accurate statement that PNG export rasterizes the document's default (light) rendering and `--theme` is reserved for a future enhancement.
+- `scripts/check_skill_refs.py`: closed the `open(...).read()` file handle with a `with` block to eliminate ResourceWarning.
+- `scripts/tests/test_render.py`: added `TestCli` (5 tests) covering both error-path guards and happy-path lint/viewer cases; suite total is now 51 tests, 1 skip.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
+## [2026-06-10] feat | concept-illustrator: closure rule — process figures end with the result
+
+- `SKILL.md § Workflow step 2`: added the **End with the result** rule — a process/sequence figure must close with a frame showing the end state; for recursive or iterative algorithms a final fast-forward frame may collapse the remaining iterations and show the finished result, so the reader sees the mechanism AND that it worked.
+- `references/archetypes.md § Sequence`: added the same closure rule citing the quicksort example (four frames show one partition pass; a final frame fast-forwards to the fully sorted array).
+- Golden quicksort example extended from 4 to 5 frames: added `frame-05.svg` (runbook-first), the fast-forward closure showing the fully sorted `[1, 2, 3, 5, 8, 9]`. The pivot 3 stays coral at index 2 (placed pivots never move — pays off the dividing-wall metaphor); every other cell is gray and sorted. Appended the matching `frame-05` entry (file/caption/runbook/commentary) to `examples/quicksort/figure.json` and rebuilt `figure.html` (now 5 SVGs). Frames 1–4 untouched.
+- Validation: figure lints clean, viewer rebuilt with 5 frames, 57 tests / 1 skip, `check_skill_refs.py` exit 0, articles valid.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
+## [2026-06-10] feat | concept-registry: seed first entries — quicksort (illustrated) + modular-arithmetic (Phase 2 Task 7)
+
+- Seeded registry via CLI: `quicksort` registered and attached to the Phase 1 golden figure (`.claude/skills/concept-illustrator/examples/quicksort`); `status: illustrated`, relative `figure` path round-trips correctly. `modular-arithmetic` registered with a definition byte-identical to the golden decomposition (`concept-decompose/examples/modular-arithmetic/decomposition.json`); `status: registered`, awaiting its figure.
+- `registry/index.json` rebuilt via `scripts/concept-registry index`; reports 2 concepts; byte-identical after test-suite rebuild (`git status` shows no diff).
+- Added `TestSeededRegistry` (3 tests) to `scripts/tests/test_concept_registry.py`; suite total: 22 tests, all passing. Concept-decompose suite: 14 tests. Concept-illustrator suite: 57 tests, 1 skip.
+- Updated `knowledge/concepts/dummies-notes/atomic-illustration-catalog.md`: noted the registry is live with its first two entries and the byte-identity guarantee; kept `status: thin` since versioning/invalidation is still an open question.
+- Articles touched: `concepts/dummies-notes/atomic-illustration-catalog.md`.
+
+## [2026-06-10] doc | scope Phase 2 drift mapping (decompose skill, registry)
+
+- Narrowed `concept-decomposition.md` `affects:` from `src/decomposition/**` to the two concrete Phase 2 paths: `.claude/skills/concept-decompose/SKILL.md` and `.claude/skills/concept-decompose/scripts/validate_decomposition.py`.
+- Narrowed `atomic-illustration-catalog.md` `affects:` from `src/catalog/**` to `scripts/concept_registry.py` and `registry/**`.
+- Updated CLAUDE.md article-mapping table: replaced two broad rows with four specific rows matching the new globs. Illustration-engine rows unchanged.
+
+## [2026-06-10] fix | concept-registry: harden against corrupted/partial entries (Task 3 amend)
+
+- `scripts/concept_registry.py _read_json`: wraps `open`/`json.load` in a try/except; `OSError` and `json.JSONDecodeError` now raise `RegistryError("corrupt registry entry at …")` instead of propagating a raw traceback.
+- `scripts/concept_registry.py build_index`: added try/except around the required-key lookups; `KeyError`/`TypeError` raises `RegistryError("malformed entry for '…'")`.
+- `scripts/tests/test_concept_registry.py`: added `TestRobustness` (4 tests — corrupt JSON, corrupt-via-CLI, partial entry in index, attach-figure relpath outside root). Suite total: 19 tests, all passing.
+- Articles touched: `concepts/dummies-notes/atomic-illustration-catalog.md`.
+
+## [2026-06-10] feat | concept-registry: attach-figure, index, CLI wrapper (Phase 2 Task 3)
+
+- Added `attach_figure(root, slug, figure_dir)` to `scripts/concept_registry.py`: validates slug is already registered and `figure_dir` contains `figure.json`, then stores the relative path and transitions `status` to `illustrated`.
+- Added `build_index(root)`: scans all `<slug>/entry.json` files under root, writes `registry/index.json`, and returns the summary dict.
+- Added `main(argv=None)` CLI with subcommands `register`, `lookup`, `attach-figure`, and `index`; errors from `RegistryError` print a clean `ERROR` line and return exit code 1.
+- Created executable wrapper `scripts/concept-registry` so all verbs are reachable from the shell without a `python3 -m` prefix.
+- Added `TestAttachAndIndex` (4 tests) and `TestCli` (4 tests) to `scripts/tests/test_concept_registry.py`; suite total is now 15 tests, all passing.
+- Updated `knowledge/concepts/dummies-notes/atomic-illustration-catalog.md`: documented `status` lifecycle, `figure` relative-path field, and all four CLI verbs.
+
+## [2026-06-10] feat | concept-registry: zero-dep register + lookup (Phase 2 Task 2)
+
+- Created `scripts/concept_registry.py`: `register(root, slug, name, definition, prerequisites=())` and `lookup(root, slug)`. Entries persist at `registry/<slug>/entry.json`. Same-slug + same-definition is idempotent; same-slug + different-definition raises `RegistryError`; invalid slugs (non-kebab-case) and blank name/definition also raise `RegistryError`.
+- Created `scripts/tests/__init__.py` and `scripts/tests/test_concept_registry.py` (7 tests, all passing).
+- Updated `knowledge/concepts/dummies-notes/atomic-illustration-catalog.md`: resolved the open storage question — filesystem `registry/<slug>/entry.json` + rebuildable `registry/index.json` via `scripts/concept_registry.py`.
+
+## [2026-06-10] fix | concept-illustrator: harden per-frame runbook/commentary check in validate_figure
+
+- `scripts/render.py validate_figure`: replaced the `(frame.get(field) or "").strip()` pattern with `isinstance(val, str) and val.strip()`, so non-string values (e.g. `123`) are caught as missing rather than raising `AttributeError`. Added an `else` branch for bare-string frames (e.g. `"frame-01.svg"`) so they now report ERROR ("frame must be an object …") instead of silently bypassing the runbook/commentary check.
+- `scripts/tests/test_render.py`: added `test_non_string_runbook_errors` and `test_bare_string_frame_errors` to `TestRunbookCommentary`. Suite total: 57 tests, 1 skip.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
 ## [2026-06-09] compile | adopt living-doc + seed vision articles
 
 - Adopted the living-documentation methodology (https://github.com/mpklu/living-doc) on this greenfield repo: installed `knowledge/`, `schemas/`, `scripts/` (drift-check, validate-articles), and `actions/drift-check/`.
@@ -293,14 +495,6 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - Added multi-frame figures with the frame-consistency rule; golden quicksort example.
 - Matured `illustration-engine.md`; scoped its affects to the skill directory.
 
-## [2026-06-10] fix | concept-illustrator: final-review hardening (CLI guards + doc accuracy + resource leak)
-
-- `scripts/render.py main()`: added path-shape guards for `--viewer` (requires directory) and `--png` (requires `.svg` file); wrong-kind inputs now print a clean ERROR line and return 1 instead of crashing with a traceback.
-- `SKILL.md`: corrected false claim that `--theme dark` "forces the dark palette"; replaced with accurate statement that PNG export rasterizes the document's default (light) rendering and `--theme` is reserved for a future enhancement.
-- `scripts/check_skill_refs.py`: closed the `open(...).read()` file handle with a `with` block to eliminate ResourceWarning.
-- `scripts/tests/test_render.py`: added `TestCli` (5 tests) covering both error-path guards and happy-path lint/viewer cases; suite total is now 51 tests, 1 skip.
-- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
-
 ## [2026-06-09] doc | narrow illustration-engine drift mapping to SKILL.md + render.py (Phase 1.5)
 
 - Scoped `illustration-engine.md` `affects:` from the broad `concept-illustrator/**` glob to exactly `SKILL.md` and `scripts/render.py`; reference docs and assets no longer trigger article drift checks.
@@ -335,198 +529,3 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - `SKILL.md § Workflow`: replaced the separate "Plan coordinates before writing SVG" step with a blockquote note clarifying that coordinate planning happens inside the runbook step, not after drawing. Renumbered subsequent steps (old 4–9 → new 3–8).
 - `references/figure-json.md`: trimmed the `runbook` row's Notes cell to just the definition; the standalone bold **runbook-first** paragraph below the table continues to carry the ordering rule.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
-
-## [2026-06-10] fix | concept-illustrator: harden per-frame runbook/commentary check in validate_figure
-
-- `scripts/render.py validate_figure`: replaced the `(frame.get(field) or "").strip()` pattern with `isinstance(val, str) and val.strip()`, so non-string values (e.g. `123`) are caught as missing rather than raising `AttributeError`. Added an `else` branch for bare-string frames (e.g. `"frame-01.svg"`) so they now report ERROR ("frame must be an object …") instead of silently bypassing the runbook/commentary check.
-- `scripts/tests/test_render.py`: added `test_non_string_runbook_errors` and `test_bare_string_frame_errors` to `TestRunbookCommentary`. Suite total: 57 tests, 1 skip.
-- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
-
-## [2026-06-10] feat | concept-registry: seed first entries — quicksort (illustrated) + modular-arithmetic (Phase 2 Task 7)
-
-- Seeded registry via CLI: `quicksort` registered and attached to the Phase 1 golden figure (`.claude/skills/concept-illustrator/examples/quicksort`); `status: illustrated`, relative `figure` path round-trips correctly. `modular-arithmetic` registered with a definition byte-identical to the golden decomposition (`concept-decompose/examples/modular-arithmetic/decomposition.json`); `status: registered`, awaiting its figure.
-- `registry/index.json` rebuilt via `scripts/concept-registry index`; reports 2 concepts; byte-identical after test-suite rebuild (`git status` shows no diff).
-- Added `TestSeededRegistry` (3 tests) to `scripts/tests/test_concept_registry.py`; suite total: 22 tests, all passing. Concept-decompose suite: 14 tests. Concept-illustrator suite: 57 tests, 1 skip.
-- Updated `knowledge/concepts/dummies-notes/atomic-illustration-catalog.md`: noted the registry is live with its first two entries and the byte-identity guarantee; kept `status: thin` since versioning/invalidation is still an open question.
-- Articles touched: `concepts/dummies-notes/atomic-illustration-catalog.md`.
-
-## [2026-06-10] doc | scope Phase 2 drift mapping (decompose skill, registry)
-
-- Narrowed `concept-decomposition.md` `affects:` from `src/decomposition/**` to the two concrete Phase 2 paths: `.claude/skills/concept-decompose/SKILL.md` and `.claude/skills/concept-decompose/scripts/validate_decomposition.py`.
-- Narrowed `atomic-illustration-catalog.md` `affects:` from `src/catalog/**` to `scripts/concept_registry.py` and `registry/**`.
-- Updated CLAUDE.md article-mapping table: replaced two broad rows with four specific rows matching the new globs. Illustration-engine rows unchanged.
-
-## [2026-06-10] feat | concept-illustrator: closure rule — process figures end with the result
-
-- `SKILL.md § Workflow step 2`: added the **End with the result** rule — a process/sequence figure must close with a frame showing the end state; for recursive or iterative algorithms a final fast-forward frame may collapse the remaining iterations and show the finished result, so the reader sees the mechanism AND that it worked.
-- `references/archetypes.md § Sequence`: added the same closure rule citing the quicksort example (four frames show one partition pass; a final frame fast-forwards to the fully sorted array).
-- Golden quicksort example extended from 4 to 5 frames: added `frame-05.svg` (runbook-first), the fast-forward closure showing the fully sorted `[1, 2, 3, 5, 8, 9]`. The pivot 3 stays coral at index 2 (placed pivots never move — pays off the dividing-wall metaphor); every other cell is gray and sorted. Appended the matching `frame-05` entry (file/caption/runbook/commentary) to `examples/quicksort/figure.json` and rebuilt `figure.html` (now 5 SVGs). Frames 1–4 untouched.
-- Validation: figure lints clean, viewer rebuilt with 5 frames, 57 tests / 1 skip, `check_skill_refs.py` exit 0, articles valid.
-- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
-
-## [2026-06-10] fix | concept-registry: harden against corrupted/partial entries (Task 3 amend)
-
-- `scripts/concept_registry.py _read_json`: wraps `open`/`json.load` in a try/except; `OSError` and `json.JSONDecodeError` now raise `RegistryError("corrupt registry entry at …")` instead of propagating a raw traceback.
-- `scripts/concept_registry.py build_index`: added try/except around the required-key lookups; `KeyError`/`TypeError` raises `RegistryError("malformed entry for '…'")`.
-- `scripts/tests/test_concept_registry.py`: added `TestRobustness` (4 tests — corrupt JSON, corrupt-via-CLI, partial entry in index, attach-figure relpath outside root). Suite total: 19 tests, all passing.
-- Articles touched: `concepts/dummies-notes/atomic-illustration-catalog.md`.
-
-## [2026-06-10] feat | concept-registry: attach-figure, index, CLI wrapper (Phase 2 Task 3)
-
-- Added `attach_figure(root, slug, figure_dir)` to `scripts/concept_registry.py`: validates slug is already registered and `figure_dir` contains `figure.json`, then stores the relative path and transitions `status` to `illustrated`.
-- Added `build_index(root)`: scans all `<slug>/entry.json` files under root, writes `registry/index.json`, and returns the summary dict.
-- Added `main(argv=None)` CLI with subcommands `register`, `lookup`, `attach-figure`, and `index`; errors from `RegistryError` print a clean `ERROR` line and return exit code 1.
-- Created executable wrapper `scripts/concept-registry` so all verbs are reachable from the shell without a `python3 -m` prefix.
-- Added `TestAttachAndIndex` (4 tests) and `TestCli` (4 tests) to `scripts/tests/test_concept_registry.py`; suite total is now 15 tests, all passing.
-- Updated `knowledge/concepts/dummies-notes/atomic-illustration-catalog.md`: documented `status` lifecycle, `figure` relative-path field, and all four CLI verbs.
-
-## [2026-06-10] feat | concept-registry: zero-dep register + lookup (Phase 2 Task 2)
-
-- Created `scripts/concept_registry.py`: `register(root, slug, name, definition, prerequisites=())` and `lookup(root, slug)`. Entries persist at `registry/<slug>/entry.json`. Same-slug + same-definition is idempotent; same-slug + different-definition raises `RegistryError`; invalid slugs (non-kebab-case) and blank name/definition also raise `RegistryError`.
-- Created `scripts/tests/__init__.py` and `scripts/tests/test_concept_registry.py` (7 tests, all passing).
-- Updated `knowledge/concepts/dummies-notes/atomic-illustration-catalog.md`: resolved the open storage question — filesystem `registry/<slug>/entry.json` + rebuildable `registry/index.json` via `scripts/concept_registry.py`.
-
-## [2026-06-10] feat | first dummies-notes workflow run (Phase 3 smoke)
-
-- Ran the orchestrator end-to-end on "modular arithmetic": 1 node, atomic; figure
-  illustrated into `registry/modular-arithmetic/figure/` (5 frames, lint clean);
-  blind-reader + fidelity-critic review passed with no repairs; entry promoted to
-  `illustrated`; `graph_check --require-illustrated` clean. 6 agents total.
-- Hardened the workflow script to accept JSON-string args (caller footgun).
-- Updated the seeded-registry test pin: modular-arithmetic is now illustrated.
-
-## [2026-06-10] feat | first full dummies-notes run (Phase 4 acceptance)
-
-- "RSA encryption" (maxDepth 1): covered-stop on modular-arithmetic; prime-numbers
-  + asymmetric-cryptography illustrated (reviews clean); composition figure for the
-  root; prerequisite edges persisted; output/rsa-encryption/index.html + map.html
-  assembled; graph check clean. 14 agents.
-- Chain review FAILED with 4 substantive graph-level gaps (chain-review.json ships
-  with the output) — the capstone check working as designed. Finding: composition
-  figures map structure but don't teach the target's mechanism; deeper runs needed
-  for security-core nodes (factoring hardness).
-
-## [2026-06-10] feat | user run: TCP connection lifecycle
-
-- First user-requested topic: 4 nodes, 2 new figures (reviews clean), composition
-  figure, edges persisted, deliverable assembled; graph check clean. 15 agents.
-- Chain review failed with 4 gaps (shipped in chain-review.json) — repeating the
-  RSA pattern: the composition figure doesn't teach the target's own mechanism,
-  and a non-atomic mid-graph node (best-effort-delivery) renders without a figure
-  or stub. Two-topic confirmation of the documented future-work items.
-
-## [2026-06-10] finding | deeper TCP run exposes the atomic↔illustrate coupling
-
-- Re-ran TCP at maxDepth 2. best-effort-delivery decomposed NON-atomic with a
-  single prereq (data-packets, already illustrated), so the run added no new
-  figure (illustrated:[], 7 agents) and the chain gaps persisted.
-- Root cause (sharper than the RSA composition gap): the system illustrates only
-  atomic leaves + the root composition. A node is "non-atomic" if it has ANY
-  prerequisite — but best-effort-delivery's OWN mechanism is figure-sized (its
-  decomposition literally says so). "Has a prerequisite" != "not worth drawing".
-- Fix is a design change, not a deeper run: decouple "illustrate" from "atomic
-  leaf" — give a node its own mechanism figure whenever its mechanism is
-  figure-sized, regardless of prerequisites. Same root cause as RSA's missing
-  mechanism figure. Candidate Phase 5.
-
-## [2026-06-10] feat | Phase 5 acceptance — TCP re-run closes the chain-review gap
-
-- Reset tcp-connection-lifecycle + best-effort-delivery; re-ran TCP (maxDepth 2).
-- 5 nodes; root illustrated with a self-sufficient 5-frame lifecycle figure (not a
-  composition map); unreliable-delivery + delivery-acknowledgement illustrated
-  (non-atomic-but-figurable — the Phase 5 fix); communication-protocol + data-packets
-  reused; computer-network honest frontier. 16 agents.
-- chain_review_pass: TRUE (4 blocking gaps -> 1 minor frontier note). Self-sufficient
-  mechanism figures work; composition retired. graph check clean; 60 tests green.
-
-- 2026-06-11 — Phase 6 (video engine): began `scripts/build_video.py` + new article `video-engine.md`. Manifest-first; HTML player + opt-in MP4; reuses assemble ordering + render.export_png.
-
-## [2026-06-11] feat(video): manifest builder — Task 2 of Video Engine
-
-- `scripts/build_video.py` created: `build_manifest`, `load_frames`, `_duration_for`, `_slide`. Shared constants `DEFAULT_WPM`, `MIN_DUR`, `MAX_DUR`, `MIN_TTS_DUR`, `STAGE` defined at module level for use by later tasks.
-- Reuses `asm.load_full_graph`, `asm.find_root`, `asm.topo_order`, `asm._figure_dir_for`, and `lookup` from the existing modules — no ordering logic reimplemented.
-- `scripts/tests/test_build_video.py` created: 7 tests covering duration clamping (min/max/exact), slide ordering (prereqs before root), slide kinds (title/section/frame/closing counts), frame-slide field shapes, figureless-node skipping, and crossfade-only-within-concept transition rule.
-- All 67 tests passing.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] feat(video): stage_svg — Task 4 of Video Engine
-
-- `stage_svg(slide, stage)` added to `scripts/build_video.py`: composes one 16:9 SVG per slide by nesting the figure SVG (frame slides) or rendering a centered text card (title/section/closing).
-- `_read_inner_svg(path)` strips XML prolog before `<svg` tag; `_esc(text)` escapes all interpolated user text.
-- 2 new tests (`TestStageSvg`) added to `scripts/tests/test_build_video.py`: well-formed XML asserted via `ET.fromstring`, nested-SVG count verified, caption presence verified. 12 tests total, all passing.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] feat(video): HTML player — Task 5 of Video Engine
-
-- `.claude/skills/concept-illustrator/assets/video.template.html` created: self-contained player with `{{SLIDES_HTML}}` and `{{MANIFEST_JSON}}` substitution points, crossfade/cut transitions, play/pause + prev/next + progress bar, optional Web Speech TTS narration toggle.
-- `_slide_html(slide)` and `build_player(manifest, template_path, out_path)` added to `scripts/build_video.py`. Frame slides inline raw figure SVG via `_read_inner_svg`; card slides render caption as a styled div. Injected manifest is lightweight (no SVG text — only `kind`, `concept_slug`, `caption`, `narration`, `duration_s`, `transition` per slide).
-- 1 new test (`TestPlayer`) added: 13 tests total, all passing.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] fix(video): escape injected manifest JSON for inline <script> context
-
-- `build_player` in `scripts/build_video.py`: after `json.dumps(light)`, replace `<` → `<`, `>` → `>`, `&` → `&` to prevent narration/caption text containing `</script>` from breaking out of the inline script block (HTML injection vector).
-- Docstring added to `build_player`; shared-marker-id assumption comment added to `_slide_html`.
-- Regression test `TestPlayer.test_player_escapes_script_breakout_in_narration` added. 74 tests total, all passing.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] fix(video): robustness + docstring fixes for render_mp4
-
-- Guard empty manifest: `render_mp4` returns `(None, ["empty manifest — no slides to render."])` when `manifest["slides"]` is absent/empty, preventing `IndexError` in `_build_silent_video` (`pngs[-1]`).
-- Diagnostic when all say segments fail: appends a note when `have_say` is True but no segment succeeded.
-- Docstrings clarified: `_effective_durations` and `_build_audio_track`.
-- Test file: `import shutil` and `from unittest import mock` moved to the top stdlib block (were mid-file).
-- 18 tests, 1 skip, all passing. `validate-articles` exit 0.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] feat(video): build() orchestrator + CLI — Task 7 of Video Engine
-
-- `build(graph_dir, registry_root, out_dir, fmt, wpm, stage)` added to `scripts/build_video.py`: orchestrates `build_manifest` → write files → `build_player` / `render_mp4` based on `fmt`. Returns `(result_dict, issues)` or `(None, issues)` on ERROR.
-- `main(argv)` CLI added: `--format html|mp4|both`, `--wpm`, `--out`, `--registry`; exits 0 on success, 1 on error. Single `if __name__ == "__main__": sys.exit(main())` block at end of file.
-- 3 new tests (`TestBuildAndCli`): 21 tests total, 1 skip, all passing.
-- Smoke test: `tcp-connection-lifecycle` — 19 slides, `video.html` 109 KB with `window.__MANIFEST__` and 14 inline SVGs.
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-## [2026-06-11] fix(video): portable manifest.json + video_html in result + CLI output improvement
-
-- `scripts/build_video.py`: added `_REPO = os.path.dirname(_HERE)`. `build()` now writes repo-relative `image` paths in the on-disk `manifest.json` (via portable dict); in-memory manifest keeps absolute paths for renderers. `result` dict gains `video_html` key. CLI `OK` line points at `video.html` when produced.
-- `scripts/tests/test_build_video.py`: added `test_manifest_image_paths_not_absolute` to `TestBuildAndCli`. 22 tests, 1 skip, all passing.
-- `output/tcp-connection-lifecycle/video/manifest.json` regenerated with relative paths (`grep -c "/Users/" → 0`).
-- Articles touched: `concepts/dummies-notes/video-engine.md`.
-
-- 2026-06-11 — Phase 6: wired opt-in `Video` phase into dummies-notes.js (makeVideo/videoFormat); runs build_video.py after Assemble. Default runs unchanged.
-- 2026-06-11 — Phase 6 COMPLETE (video engine shipped): scripts/build_video.py (manifest → script.md/captions.srt + self-contained HTML player; opt-in MP4 via ffmpeg+say with silent fallback), video.template.html, opt-in workflow Video phase. 158 tests green (1 ffmpeg-dependent MP4 smoke skipped). MP4 not yet validated end-to-end (no ffmpeg+rasterizer on the dev machine).
-- 2026-06-12 — MP4 path validated end-to-end: installed `rsvg-convert` (librsvg 2.62.3; ffmpeg + `say` already present), ran `--format both` on tcp-connection-lifecycle → video.mp4 (H.264 + AAC, 19 slides, ~6m37s, 8.5 MB). Nested-SVG rasterization, ffmpeg concat, `say` narration, and audio mux all confirmed working; `test_real_mp4_smoke` now runs and passes. Closes the Phase 6 "MP4 unproven" caveat. (Note: captions.srt uses the computed timeline while the MP4 uses the spoken-audio timeline — a documented divergence.)
-
-## [2026-06-12] feat(reveal): figure validator lints beats <-> data-reveal consistency
-
-- `.claude/skills/concept-illustrator/scripts/render.py`: added `_lint_reveal(root, frame, name)` helper. Checks that `data-reveal` SVG groups and the `figure.json` frame `beats` array are consistent: tags without beats → ERROR, beats without tags → ERROR, non-consecutive indices → ERROR, count mismatch → ERROR. Frames with neither are silently skipped (backward-compatible). Called from `validate_figure` immediately after `lint_svg` for each frame.
-- `.claude/skills/concept-illustrator/scripts/tests/test_render.py`: added `TestRevealLint` class with 5 tests covering all four error paths and the well-formed no-error path. Suite: 63 tests, 1 skip, all passing.
-- `knowledge/concepts/dummies-notes/illustration-engine.md`: appended Reveal-consistency lint paragraph under SVG linter section; updated suite total to 63.
-
-## [2026-06-12] feat(illustrator): allow short tech acronyms in caps lint; restore SYN/ACK labels
-
-- `.claude/skills/concept-illustrator/scripts/render.py`: added module-level `CAPS_ACRONYMS` set of 29 protocol/tech tokens. Modified `check_caps` to split text into purely-alphabetic tokens (length ≥ 2, all-caps); the ALL-CAPS error fires only when at least one such token is absent from the allowlist. Single-letter labels (length < 2) are unconditionally exempt. Shouting text ("BAD", "HELLO WORLD") and unlisted acronyms remain flagged.
-- `.claude/skills/concept-illustrator/examples/tcp-handshake-reveal/frame-01.svg`: restored protocol-accurate uppercase labels: "SYN →", "← SYN-ACK", "ACK →" (previously lowercased as "Syn →", "← Syn-ack", "Ack →" to work around the caps lint).
-- `.claude/skills/concept-illustrator/scripts/tests/test_render.py`: added `TestCapsAcronymAllowlist` class (9 tests) covering SYN/ACK/SYN-ACK pass, single acronym pass, single-letter pass, and BADLY/HELLO WORLD/BAD still-error cases. Suite: 73 tests, 1 skip, all passing.
-- `knowledge/concepts/dummies-notes/illustration-engine.md`: added acronym-allowlist paragraph in SVG linter section; updated suite total to 73.
-- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
-- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
-
-## [2026-06-12] fix(reveal): fade = opacity-only; validator warns non-<g> data-reveal; mixed-frame test
-
-Three final-polish fixes for the progressive-reveal feature:
-
-1. **`data-anim="fade"` is now a pure opacity transition** — added `[data-reveal][data-anim="fade"]{transform:none}` immediately after the `rise` translateY rule in `video.template.html`. Equal-specificity, later source order wins: `fade` groups get opacity-only entrance; `rise` keeps the translateY.
-2. **Validator warns on `data-reveal` outside a `<g>`** — `_lint_reveal` in `render.py` now emits a WARN (not ERROR) when `data-reveal` is found on a non-`<g>` element (e.g. `<rect data-reveal="1">`). Local name is compared after stripping any XML namespace. Count/gap checks still run. Test `test_non_g_reveal_warns_not_errors` added to `TestRevealLint`.
-3. **Mixed-frame regression test** — `TestMixedMultiFrame.test_beats_frame_plus_plain_frame` in `test_build_video.py`: a 2-frame figure where frame 1 has 2 beats (→ `reveal_to` 1,2) and frame 2 has none (→ `reveal_to` None); asserts the beat-slides share one container and the plain frame gets a distinct one.
-
-- `.claude/skills/concept-illustrator/assets/video.template.html`: added `[data-reveal][data-anim="fade"]{transform:none}` rule.
-- `.claude/skills/concept-illustrator/scripts/render.py`: added non-`<g>` WARN in `_lint_reveal` for-loop, before the int-parse.
-- `.claude/skills/concept-illustrator/scripts/tests/test_render.py`: added `test_non_g_reveal_warns_not_errors` to `TestRevealLint`. Suite: 74 tests, all passing.
-- `scripts/tests/test_build_video.py`: added `TestMixedMultiFrame` class. Suite: 93 tests, 1 skip, all passing.
-- `knowledge/concepts/dummies-notes/video-engine.md`: appended fade-is-opacity-only note.
-- `knowledge/concepts/dummies-notes/illustration-engine.md`: appended non-`<g>` WARN note to reveal-consistency lint paragraph.
-- Articles touched: `concepts/dummies-notes/video-engine.md`, `concepts/dummies-notes/illustration-engine.md`.
-
-- 2026-06-12 — Phase 7 (progressive reveal): data-reveal/data-anim on SVG groups + per-frame `beats` in figure.json. build_video expands frames into per-beat slides (reveal_to); MP4 pops via _reveal_svg (per-element visibility); HTML player groups beats per frame and animates entrance (rise / arrow-draw / fade) with optional dim-past. Validator lints beats↔reveal; caps lint exempts tech acronyms. Golden example: tcp-handshake-reveal (6 beats); quicksort frame-02 tagged. Backward-compatible.
