@@ -32,6 +32,58 @@ from it, then write the `caption` (terse viewer subtitle) and `commentary`
 (narration). The `caption`, `runbook`, and `commentary` fields are three different
 texts and need not match each other or the in-SVG annotation.
 
+## Progressive reveal (optional)
+
+A frame may reveal its content one element at a time, driven by `data-reveal`
+attributes in the SVG and a `beats` array in `figure.json`.
+
+### SVG groups
+
+Wrap each progressively-introduced element in a `<g>` with two attributes:
+
+- `data-reveal="k"` — a **1-based integer** giving the reveal step at which this
+  group becomes visible. Groups without `data-reveal` form the always-visible
+  backdrop.
+- `data-anim="rise|draw|fade"` — the entrance animation. Default is `rise`
+  (element lifts in from below). Use `draw` for `<line>` elements and arrows
+  (the path is stroked in progressively in the HTML player and "popped" via
+  `visibility:hidden` in the MP4 cumulative-state rasterization). `fade` for a
+  simple opacity cross-fade. The `data-anim` attribute is optional when `rise` is
+  desired.
+
+### `beats` array
+
+A frame in `figure.json` may carry an optional `beats` key:
+
+```
+"beats": [
+  { "caption": "short viewer subtitle for beat 1", "narration": "spoken sentence(s)" },
+  { "caption": "…", "narration": "…" },
+  …
+]
+```
+
+- Each object in `beats` corresponds to one reveal index, in order (beat 0 ↔
+  `data-reveal="1"`, beat 1 ↔ `data-reveal="2"`, …).
+- `len(beats)` **must equal** `max(data-reveal)` across the frame's SVG. The
+  validator (`render.py`) enforces this with an ERROR.
+- `data-reveal` indices must be gap-free `1..N` with no missing values (also
+  enforced).
+- A frame with neither `data-reveal` groups nor `beats` is a single beat —
+  the existing behavior is fully backward-compatible.
+
+The `build_video.py` manifest builder expands a beat-carrying frame into one
+manifest slide per beat, each with `transition: "reveal"` (except the first) and
+`reveal_to: k+1`. The HTML player groups beat-slides sharing one figure image into
+a single container div — the SVG is inlined **once**, with the JS animating
+`[data-reveal]` group entrances per beat. The MP4 path uses `_reveal_svg` to
+produce a cumulative-state SVG for each beat, hiding groups whose `data-reveal`
+exceeds `reveal_to`.
+
+**Canonical example:** `.claude/skills/concept-illustrator/examples/tcp-handshake-reveal`
+— a single-frame illustrative figure with 6 beats (two box rises + three arrow draws
++ one badge rise).
+
 Example:
 
 ```json

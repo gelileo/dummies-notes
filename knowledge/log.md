@@ -512,3 +512,5 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - `knowledge/concepts/dummies-notes/illustration-engine.md`: added acronym-allowlist paragraph in SVG linter section; updated suite total to 73.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+
+- 2026-06-12 — Phase 7 (progressive reveal): data-reveal/data-anim on SVG groups + per-frame `beats` in figure.json. build_video expands frames into per-beat slides (reveal_to); MP4 pops via _reveal_svg (per-element visibility); HTML player groups beats per frame and animates entrance (rise / arrow-draw / fade) with optional dim-past. Validator lints beats↔reveal; caps lint exempts tech acronyms. Golden example: tcp-handshake-reveal (6 beats); quicksort frame-02 tagged. Backward-compatible.

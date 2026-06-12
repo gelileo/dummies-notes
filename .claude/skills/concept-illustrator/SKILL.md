@@ -143,6 +143,43 @@ Decision heuristics:
 Don't mix archetypes in one figure. If the idea needs both intuition and a precise
 reference, make two figures (intuition first), each a separate directory.
 
+## Progressive reveal
+
+When a scene **builds up additively** — one new element appears at each step and
+everything prior stays on screen — use progressive reveal instead of separate
+frames. This keeps the layout stable (one `viewBox`, one figure inline in the
+HTML player) while walking the reader through the sequence beat by beat.
+
+**How to author:**
+
+1. Identify the elements that enter in explanation order (backdrop first, then
+   progressively-introduced groups).
+2. Leave the always-visible backdrop untagged. Wrap each progressively-introduced
+   element in `<g data-reveal="k" data-anim="…">` where `k` starts at 1 and
+   increments by 1 per step (gap-free).
+   - Shapes and boxes → `data-anim="rise"` (the default; lifts in from below).
+   - `<line>` elements and arrows → `data-anim="draw"` (path stroked in; use this
+     for any directed edge to show flow visually).
+   - Cross-fade → `data-anim="fade"`.
+3. Write exactly one short, plain-language **narration beat** per step into the
+   `beats` array in `figure.json`, in the same order as the `data-reveal` indices.
+   Each beat has a `caption` (terse viewer subtitle) and a `narration` (one or two
+   spoken sentences — human, plain, no jargon).
+4. `len(beats)` must equal `max(data-reveal)` — the validator (`render.py`) flags
+   any mismatch as an ERROR.
+
+**State mutation** between major scene shifts stays across frames as usual — use
+separate frames when the scene *changes* rather than *grows*. Progressive reveal
+is for additive build-up within one scene; cross-frame changes are for before/after
+states.
+
+**Protocol acronyms in labels** (SYN, ACK, FIN, TCP, UDP, …) are allowed. The
+caps lint checks an acronym allowlist and exempts known technical tokens, so
+protocol-accurate uppercase labels will pass without error.
+
+See `examples/tcp-handshake-reveal` for the canonical worked example (6 beats:
+two box rises, three arrow draws, one badge rise — all in one frame).
+
 ## Output contract
 
 The output is a **figure directory** containing:

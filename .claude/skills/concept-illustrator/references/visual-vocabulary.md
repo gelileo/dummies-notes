@@ -167,3 +167,19 @@ classes to the wrapping `<g>` — the shape fill and text ink update automatical
 
 In a sequence figure, the class is the only thing that changes between frames —
 the coordinates stay identical (frame-consistency rule).
+
+---
+
+## Reveal order and entrance styles
+
+When a scene builds up additively, wrap each progressively-introduced element in
+`<g data-reveal="k" data-anim="…">` where `k` is a gap-free 1-based integer
+giving the reveal step. Leave the always-visible backdrop untagged. Choose the
+entrance animation by element type: `rise` (default) for boxes, labels, and
+shapes that pop into view; `draw` for `<line>` elements and arrows so the stroke
+animates in progressively; `fade` for cross-fades. Write one plain-language
+`beats` entry in `figure.json` per reveal step — caption and narration — matching
+the order of the `data-reveal` indices. The validator checks that
+`len(beats) == max(data-reveal)`. See the `examples/tcp-handshake-reveal` figure
+for a complete worked example (6 beats, two `rise` boxes, three `draw` arrows,
+one `rise` badge).
