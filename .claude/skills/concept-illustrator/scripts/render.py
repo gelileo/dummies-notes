@@ -280,6 +280,9 @@ def _lint_reveal(root, frame, name):
         rv = el.get("data-reveal")
         if rv is None:
             continue
+        local = el.tag.rsplit("}", 1)[-1]  # strip XML namespace
+        if local != "g":
+            issues.append(("WARN", f"{name}: data-reveal on <{local}> — only <g> groups reveal in the MP4; wrap it in a <g>"))
         try:
             reveals.append(int(rv))
         except ValueError:

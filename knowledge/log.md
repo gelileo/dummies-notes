@@ -513,4 +513,20 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
 
+## [2026-06-12] fix(reveal): fade = opacity-only; validator warns non-<g> data-reveal; mixed-frame test
+
+Three final-polish fixes for the progressive-reveal feature:
+
+1. **`data-anim="fade"` is now a pure opacity transition** — added `[data-reveal][data-anim="fade"]{transform:none}` immediately after the `rise` translateY rule in `video.template.html`. Equal-specificity, later source order wins: `fade` groups get opacity-only entrance; `rise` keeps the translateY.
+2. **Validator warns on `data-reveal` outside a `<g>`** — `_lint_reveal` in `render.py` now emits a WARN (not ERROR) when `data-reveal` is found on a non-`<g>` element (e.g. `<rect data-reveal="1">`). Local name is compared after stripping any XML namespace. Count/gap checks still run. Test `test_non_g_reveal_warns_not_errors` added to `TestRevealLint`.
+3. **Mixed-frame regression test** — `TestMixedMultiFrame.test_beats_frame_plus_plain_frame` in `test_build_video.py`: a 2-frame figure where frame 1 has 2 beats (→ `reveal_to` 1,2) and frame 2 has none (→ `reveal_to` None); asserts the beat-slides share one container and the plain frame gets a distinct one.
+
+- `.claude/skills/concept-illustrator/assets/video.template.html`: added `[data-reveal][data-anim="fade"]{transform:none}` rule.
+- `.claude/skills/concept-illustrator/scripts/render.py`: added non-`<g>` WARN in `_lint_reveal` for-loop, before the int-parse.
+- `.claude/skills/concept-illustrator/scripts/tests/test_render.py`: added `test_non_g_reveal_warns_not_errors` to `TestRevealLint`. Suite: 74 tests, all passing.
+- `scripts/tests/test_build_video.py`: added `TestMixedMultiFrame` class. Suite: 93 tests, 1 skip, all passing.
+- `knowledge/concepts/dummies-notes/video-engine.md`: appended fade-is-opacity-only note.
+- `knowledge/concepts/dummies-notes/illustration-engine.md`: appended non-`<g>` WARN note to reveal-consistency lint paragraph.
+- Articles touched: `concepts/dummies-notes/video-engine.md`, `concepts/dummies-notes/illustration-engine.md`.
+
 - 2026-06-12 — Phase 7 (progressive reveal): data-reveal/data-anim on SVG groups + per-frame `beats` in figure.json. build_video expands frames into per-beat slides (reveal_to); MP4 pops via _reveal_svg (per-element visibility); HTML player groups beats per frame and animates entrance (rise / arrow-draw / fade) with optional dim-past. Validator lints beats↔reveal; caps lint exempts tech acronyms. Golden example: tcp-handshake-reveal (6 beats); quicksort frame-02 tagged. Backward-compatible.

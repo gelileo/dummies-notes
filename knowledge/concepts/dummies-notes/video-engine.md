@@ -93,3 +93,5 @@ Every run also writes `script.md` (human voiceover) and `captions.srt`.
 - 32 tests total (including `TestPlayerContainers.test_beats_share_one_container_cards_separate`), all passing.
 
 **Player bug fixes (drawLines re-entry + per-container cut).** `drawLines` now captures the true endpoint once via `ln.dataset.tx2/ty2` (so rapid prev/next never reads a mid-animation value as the target) and uses a per-line generation token (`ln._gen`) to cancel stale RAF callbacks. In `show(n)`, `.cut` is now toggled only on the incoming container (not all containers), preventing the outgoing container from losing its crossfade/reveal transition. A `dim.onchange` handler was added so the "dim past" checkbox takes effect immediately on the current slide without requiring navigation.
+
+**Polish (fade = opacity-only).** Added `[data-reveal][data-anim="fade"]{transform:none}` immediately after the `rise` translateY rule in `video.template.html`. Because both rules have equal specificity and `fade` comes later in source order, `fade` groups are now pure opacity transitions; `rise` groups keep the 10 px translateY entrance.

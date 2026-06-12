@@ -463,5 +463,24 @@ class TestRevealSvg(unittest.TestCase):
         self.assertNotIn("visibility:hidden", out)
 
 
+class TestMixedMultiFrame(unittest.TestCase):
+    def test_beats_frame_plus_plain_frame(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "g")
+            registry = os.path.join(base, "r")
+            write_decomp(graph, "tcp", True)
+            make_figure(registry, "tcp", 2,
+                        beats=[{"caption": "a", "narration": "a"},
+                               {"caption": "b", "narration": "b"}])
+            manifest, _ = bv.build_manifest(graph, registry)
+            frames = [s for s in manifest["slides"] if s["kind"] == "frame"]
+            # frame 1 -> 2 beat slides (reveal_to 1,2); frame 2 -> 1 slide (reveal_to None)
+            self.assertEqual([s["reveal_to"] for s in frames], [1, 2, None])
+            conts, idx = bv._containers(manifest["slides"])
+            fidx = [j for j, s in enumerate(manifest["slides"]) if s["kind"] == "frame"]
+            self.assertEqual(idx[fidx[0]], idx[fidx[1]])      # frame-1 beats share a container
+            self.assertNotEqual(idx[fidx[1]], idx[fidx[2]])   # frame-2 is a distinct container
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -563,6 +563,15 @@ class TestRevealLint(unittest.TestCase):
             self._figure(tmp, '<g data-reveal="abc"><rect/></g>', None)
             self.assertTrue(any("integer" in e.lower() for e in self._errors(tmp)))
 
+    def test_non_g_reveal_warns_not_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self._figure(tmp, '<rect data-reveal="1"/>',
+                         [{"caption": "a", "narration": "a"}])
+            issues = render.validate_figure(tmp, os.path.join(tmp, "nostyle.css"))
+            self.assertTrue(any(lvl == "WARN" and "only <g>" in m for lvl, m in issues))
+            # it's a WARN, not an ERROR (count/gap still OK: 1 reveal, 1 beat)
+            self.assertFalse(any(lvl == "ERROR" and "data-reveal" in m for lvl, m in issues))
+
 
 if __name__ == "__main__":
     unittest.main()
