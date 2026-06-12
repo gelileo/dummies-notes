@@ -465,5 +465,59 @@ class TestRunbookCommentary(unittest.TestCase):
             self.assertTrue(any("must be an object" in m for m in errs))
 
 
+class TestRevealLint(unittest.TestCase):
+    def _figure(self, tmp, svg_body, beats):
+        os.makedirs(tmp, exist_ok=True)
+        with open(os.path.join(tmp, "frame-01.svg"), "w", encoding="utf-8") as fh:
+            fh.write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 220">'
+                     + svg_body + '</svg>')
+        frame = {"file": "frame-01.svg", "caption": "c", "runbook": "r",
+                 "commentary": "c"}
+        if beats is not None:
+            frame["beats"] = beats
+        with open(os.path.join(tmp, "figure.json"), "w", encoding="utf-8") as fh:
+            json.dump({"concept_slug": "x", "archetype": "illustrative",
+                       "playback": "static", "frames": [frame]}, fh)
+
+    def _errors(self, tmp):
+        issues = render.validate_figure(tmp, os.path.join(tmp, "nostyle.css"))
+        return [m for lvl, m in issues if lvl == "ERROR"]
+
+    def test_beats_match_max_reveal_ok(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self._figure(tmp, '<g data-reveal="1"><rect/></g><g data-reveal="2"><rect/></g>',
+                         [{"caption": "a", "narration": "a"}, {"caption": "b", "narration": "b"}])
+            self.assertFalse(any("reveal" in e or "beat" in e for e in self._errors(tmp)))
+
+    def test_beats_count_mismatch_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self._figure(tmp, '<g data-reveal="1"><rect/></g><g data-reveal="2"><rect/></g>',
+                         [{"caption": "a", "narration": "a"}])
+            self.assertTrue(any("beat" in e.lower() for e in self._errors(tmp)))
+
+    def test_reveal_gap_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self._figure(tmp, '<g data-reveal="1"><rect/></g><g data-reveal="3"><rect/></g>',
+                         [{"caption": "a", "narration": "a"}, {"caption": "b", "narration": "b"},
+                          {"caption": "c", "narration": "c"}])
+            self.assertTrue(any("gap" in e.lower() or "consecutive" in e.lower()
+                                for e in self._errors(tmp)))
+
+    def test_tagged_without_beats_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self._figure(tmp, '<g data-reveal="1"><rect/></g>', None)
+            self.assertTrue(any("beat" in e.lower() for e in self._errors(tmp)))
+
+    def test_beats_without_tags_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self._figure(tmp, '<g><rect/></g>', [{"caption": "a", "narration": "a"}])
+            self.assertTrue(any("data-reveal" in e for e in self._errors(tmp)))
+
+    def test_non_integer_reveal_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self._figure(tmp, '<g data-reveal="abc"><rect/></g>', None)
+            self.assertTrue(any("integer" in e.lower() for e in self._errors(tmp)))
+
+
 if __name__ == "__main__":
     unittest.main()

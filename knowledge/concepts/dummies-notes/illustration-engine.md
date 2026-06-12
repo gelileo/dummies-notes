@@ -2,7 +2,7 @@
 title: Illustration engine
 type: concept
 area: dummies-notes
-updated: 2026-06-10
+updated: 2026-06-12
 status: mature
 affects:
   - ".claude/skills/concept-illustrator/SKILL.md"
@@ -66,6 +66,8 @@ The Phase-4 compose-from-children mode is **retired** in Phase 5: the compositio
 
 `lint_svg` / `lint_file` run a suite of checks: correct `viewBox` width (680), text-class presence, no inline `font-size`, no placeholder tokens, palette-only colors, no filters/emoji, sentence-case text, rect bounds, connector fill rules. All checks return `(level, message)` pairs so callers can filter by severity.
 
+**Reveal-consistency lint** (`_lint_reveal`): `validate_figure` also checks that `data-reveal` groups in a frame's SVG are consistent with the `beats` array in `figure.json`. Rules: (1) if a frame has `data-reveal` groups but no `beats`, that is an ERROR; (2) if a frame has `beats` but no `data-reveal` groups, that is an ERROR; (3) `data-reveal` indices must form a gap-free `1..N` sequence (missing indices are an ERROR); (4) the count of `beats` must equal the max `data-reveal` value (mismatch is an ERROR); (5) `data-reveal` values must be integers (a non-integer like `"abc"` is an ERROR). Frames with neither `data-reveal` nor `beats` are silently skipped — existing figures without progressive reveal validate clean.
+
 ### CLI guards (final-review hardening)
 
 The `main()` CLI dispatch now validates path shape before calling backend functions, so wrong-kind paths fail cleanly instead of producing raw tracebacks:
@@ -73,7 +75,7 @@ The `main()` CLI dispatch now validates path shape before calling backend functi
 - `--viewer` requires a directory; passing a file path prints `ERROR … --viewer needs a figure directory` and exits 1.
 - `--png` requires a single `.svg` file; passing a directory prints `ERROR … --png needs a single .svg file` and exits 1.
 
-Five `TestCli` tests cover these guards plus the happy-path lint and viewer cases. Suite total: 58 tests, 1 skip.
+Five `TestCli` tests cover these guards plus the happy-path lint and viewer cases. Suite total: 63 tests, 1 skip.
 
 ### PNG export and `--theme`
 

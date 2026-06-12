@@ -260,6 +260,35 @@ FIGURE_REQUIRED = ("concept_slug", "archetype", "playback", "frames")
 FIGURE_PLAYBACK = ("static", "slideshow")
 
 
+def _lint_reveal(root, frame, name):
+    """Beats <-> data-reveal consistency for one frame. Returns issues list."""
+    issues = []
+    reveals = []
+    for el in root.iter():
+        rv = el.get("data-reveal")
+        if rv is None:
+            continue
+        try:
+            reveals.append(int(rv))
+        except ValueError:
+            issues.append(("ERROR", f"{name}: data-reveal must be an integer (got {rv!r})"))
+    beats = frame.get("beats") if isinstance(frame, dict) else None
+    if not reveals and not beats:
+        return issues
+    if reveals and not beats:
+        issues.append(("ERROR", f"{name}: has data-reveal groups but figure.json frame has no 'beats'"))
+        return issues
+    if beats and not reveals:
+        issues.append(("ERROR", f"{name}: frame has 'beats' but the SVG has no data-reveal groups"))
+        return issues
+    mx = max(reveals)
+    if sorted(set(reveals)) != list(range(1, mx + 1)):
+        issues.append(("ERROR", f"{name}: data-reveal indices must be a gap-free 1..N (got {sorted(set(reveals))})"))
+    if len(beats) != mx:
+        issues.append(("ERROR", f"{name}: beats count ({len(beats)}) must equal the max data-reveal ({mx})"))
+    return issues
+
+
 def validate_figure(dir_path, style_path):
     figure_json = os.path.join(dir_path, "figure.json")
     if not os.path.exists(figure_json):
@@ -305,6 +334,7 @@ def validate_figure(dir_path, style_path):
         if vb:
             viewboxes.add(vb)
         issues += [(lvl, f"{name}: {m}") for lvl, m in lint_svg(root, palette)]
+        issues += _lint_reveal(root, frame, name)
     if len(viewboxes) > 1:
         issues.append(("ERROR", "frames have inconsistent viewBox (frame-consistency rule)"))
     return issues

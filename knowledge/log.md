@@ -489,3 +489,10 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - 2026-06-11 — Phase 6: wired opt-in `Video` phase into dummies-notes.js (makeVideo/videoFormat); runs build_video.py after Assemble. Default runs unchanged.
 - 2026-06-11 — Phase 6 COMPLETE (video engine shipped): scripts/build_video.py (manifest → script.md/captions.srt + self-contained HTML player; opt-in MP4 via ffmpeg+say with silent fallback), video.template.html, opt-in workflow Video phase. 158 tests green (1 ffmpeg-dependent MP4 smoke skipped). MP4 not yet validated end-to-end (no ffmpeg+rasterizer on the dev machine).
 - 2026-06-12 — MP4 path validated end-to-end: installed `rsvg-convert` (librsvg 2.62.3; ffmpeg + `say` already present), ran `--format both` on tcp-connection-lifecycle → video.mp4 (H.264 + AAC, 19 slides, ~6m37s, 8.5 MB). Nested-SVG rasterization, ffmpeg concat, `say` narration, and audio mux all confirmed working; `test_real_mp4_smoke` now runs and passes. Closes the Phase 6 "MP4 unproven" caveat. (Note: captions.srt uses the computed timeline while the MP4 uses the spoken-audio timeline — a documented divergence.)
+
+## [2026-06-12] feat(reveal): figure validator lints beats <-> data-reveal consistency
+
+- `.claude/skills/concept-illustrator/scripts/render.py`: added `_lint_reveal(root, frame, name)` helper. Checks that `data-reveal` SVG groups and the `figure.json` frame `beats` array are consistent: tags without beats → ERROR, beats without tags → ERROR, non-consecutive indices → ERROR, count mismatch → ERROR. Frames with neither are silently skipped (backward-compatible). Called from `validate_figure` immediately after `lint_svg` for each frame.
+- `.claude/skills/concept-illustrator/scripts/tests/test_render.py`: added `TestRevealLint` class with 5 tests covering all four error paths and the well-formed no-error path. Suite: 63 tests, 1 skip, all passing.
+- `knowledge/concepts/dummies-notes/illustration-engine.md`: appended Reveal-consistency lint paragraph under SVG linter section; updated suite total to 63.
+- Articles touched: `concepts/dummies-notes/illustration-engine.md`.
