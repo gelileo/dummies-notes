@@ -73,11 +73,11 @@ def load_frames(figure_dir):
     return frames
 
 
-def _slide(kind, slug, image, caption, narration, wpm, transition):
+def _slide(kind, slug, image, caption, narration, wpm, transition, reveal_to=None):
     return {"kind": kind, "concept_slug": slug, "image": image,
             "caption": caption, "narration": narration,
             "duration_s": round(_duration_for(narration, wpm), 3),
-            "transition": transition}
+            "transition": transition, "reveal_to": reveal_to}
 
 
 def build_manifest(graph_dir, registry_root=DEFAULT_ROOT, wpm=DEFAULT_WPM, stage=STAGE):
@@ -102,9 +102,16 @@ def build_manifest(graph_dir, registry_root=DEFAULT_ROOT, wpm=DEFAULT_WPM, stage
             "section", slug, None, node["name"],
             f"Next: {node['name'].lower()}. {node['definition']}", wpm, "cut"))
         for i, fr in enumerate(frames):
-            slides.append(_slide(
-                "frame", slug, fr["file"], fr["caption"], fr["commentary"],
-                wpm, "crossfade" if i > 0 else "cut"))
+            frame_first = "crossfade" if i > 0 else "cut"
+            if fr["beats"]:
+                for bi, beat in enumerate(fr["beats"]):
+                    slides.append(_slide(
+                        "frame", slug, fr["file"], beat["caption"], beat["narration"],
+                        wpm, "reveal" if bi > 0 else frame_first, reveal_to=bi + 1))
+            else:
+                slides.append(_slide(
+                    "frame", slug, fr["file"], fr["caption"], fr["commentary"],
+                    wpm, frame_first, reveal_to=None))
     slides.append(_slide(
         "closing", None, None, "Recap",
         f"That is {title_node['name'].lower()}, built up one idea at a time.",

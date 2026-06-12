@@ -377,5 +377,47 @@ class TestLoadFramesBeats(unittest.TestCase):
             self.assertIsNone(frames[0]["beats"])
 
 
+class TestBeatExpansion(unittest.TestCase):
+    def test_frame_with_beats_expands_to_one_slide_per_beat(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "g")
+            registry = os.path.join(base, "r")
+            write_decomp(graph, "tcp", True)
+            beats = [{"caption": "c1", "narration": "n one"},
+                     {"caption": "c2", "narration": "n two"},
+                     {"caption": "c3", "narration": "n three"}]
+            make_figure(registry, "tcp", 1, beats=beats)
+            manifest, _ = bv.build_manifest(graph, registry)
+            frames = [s for s in manifest["slides"] if s["kind"] == "frame"]
+            self.assertEqual(len(frames), 3)
+            self.assertEqual([s["reveal_to"] for s in frames], [1, 2, 3])
+            self.assertEqual(frames[0]["caption"], "c1")
+            self.assertEqual(frames[1]["narration"], "n two")
+            self.assertNotEqual(frames[0]["transition"], "reveal")
+            self.assertEqual(frames[1]["transition"], "reveal")
+            self.assertEqual(frames[2]["transition"], "reveal")
+            self.assertEqual(len({s["image"] for s in frames}), 1)
+
+    def test_frame_without_beats_is_single_slide_reveal_none(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "g")
+            registry = os.path.join(base, "r")
+            write_decomp(graph, "tcp", True)
+            make_figure(registry, "tcp", 2)
+            manifest, _ = bv.build_manifest(graph, registry)
+            frames = [s for s in manifest["slides"] if s["kind"] == "frame"]
+            self.assertEqual(len(frames), 2)
+            self.assertTrue(all(s["reveal_to"] is None for s in frames))
+
+    def test_title_slides_have_reveal_to_none(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "g")
+            registry = os.path.join(base, "r")
+            write_decomp(graph, "tcp", True)
+            make_figure(registry, "tcp", 1)
+            manifest, _ = bv.build_manifest(graph, registry)
+            self.assertIsNone(manifest["slides"][0]["reveal_to"])
+
+
 if __name__ == "__main__":
     unittest.main()

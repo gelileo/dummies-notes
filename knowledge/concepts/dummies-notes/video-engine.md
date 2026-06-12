@@ -2,7 +2,7 @@
 title: Video engine
 type: concept
 area: dummies-notes
-updated: 2026-06-11
+updated: 2026-06-12
 status: thin
 affects:
   - "scripts/build_video.py"
@@ -77,3 +77,5 @@ Every run also writes `script.md` (human voiceover) and `captions.srt`.
 **Rasterizer guard.** `render_mp4` previously only checked for `ffmpeg`/`say`, but `render.export_png` raises `SystemExit` when neither `rsvg-convert` nor `cairosvg` is available — crashing `main` because only `ValueError` was caught. Fix: `_have_rasterizer()` helper detects availability of either rasterizer up front; `render_mp4` now exits early with a `NOTE` when neither is present. The doc bullet above was corrected to say "hard cuts" (xfade is deferred to the HTML player). 1 regression test added (`test_missing_rasterizer_skips_mp4`); 2 existing tests patched to mock `_have_rasterizer=True`. 23 tests, 1 skip, all passing.
 
 **Phase 7 Task 1 (progressive-reveal beats).** `load_frames` now reads the optional `beats` field from each frame entry in `figure.json`. If `beats` is a non-empty list it is returned as-is; any other value (absent, `null`, empty list, wrong type) is normalised to `None`. Every returned frame dict now always carries a `beats` key. The `make_figure` test helper accepts an optional `beats` kwarg applied to the first frame. The function's docstring was updated to document the `beats` key in the return value: `[{file (abs), caption, commentary, beats}]`. 2 new tests in `TestLoadFramesBeats` (`test_beats_read_when_present`, `test_beats_none_when_absent`). 25 tests, 1 skip, all passing.
+
+**Phase 7 Task 2 (beat expansion in manifest builder).** `_slide` gained a `reveal_to=None` keyword argument stored in the returned dict; all title/section/closing call sites pass 7 positional args unchanged and inherit `reveal_to=None`. `build_manifest`'s frame loop now branch-expands: if a frame carries `beats`, it emits one slide per beat using the beat's `caption`/`narration`, transition `"reveal"` for beats after the first (first beat keeps the frame's normal `"cut"`/`"crossfade"`), and `reveal_to=bi+1` (1-indexed). A beat-less frame emits one slide as before with `reveal_to=None`. This means every slide dict now carries `reveal_to` regardless of beat presence — a backward-compatible new field. Three new tests in `TestBeatExpansion`: beat-frame expands correctly, beat-less frame stays single slide with `reveal_to=None`, title slide has `reveal_to=None`. 28 tests, 1 skip, all passing.
