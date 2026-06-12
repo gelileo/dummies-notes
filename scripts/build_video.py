@@ -46,7 +46,7 @@ def _duration_for(text, wpm):
 
 
 def load_frames(figure_dir):
-    """[{file (abs), caption, commentary}] for a figure dir, or [] if absent."""
+    """[{file (abs), caption, commentary, beats}] for a figure dir, or [] if absent."""
     figure_json = os.path.join(figure_dir, "figure.json")
     if not os.path.exists(figure_json):
         return []
@@ -63,9 +63,13 @@ def load_frames(figure_dir):
         path = os.path.join(figure_dir, name or "")
         if not name or not os.path.exists(path):
             return []
+        beats = frame.get("beats")
+        if not isinstance(beats, list) or not beats:
+            beats = None
         frames.append({"file": os.path.abspath(path),
                        "caption": frame.get("caption", ""),
-                       "commentary": frame.get("commentary", "")})
+                       "commentary": frame.get("commentary", ""),
+                       "beats": beats})
     return frames
 
 

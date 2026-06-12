@@ -2,6 +2,13 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-12] docs(video): update `load_frames` docstring to document `beats` key
+
+- `scripts/build_video.py`: updated `load_frames` function docstring from `"""[{file (abs), caption, commentary}]..."""` to `"""[{file (abs), caption, commentary, beats}]..."""` to accurately document that the `beats` field was added in Phase 7 Task 1. The field was already being returned and tested; this is a documentation-only fix.
+- `knowledge/concepts/dummies-notes/video-engine.md`: updated Phase 7 Task 1 paragraph to note that the docstring was updated to document the `beats` key.
+- All existing tests pass (25 tests, 1 skip).
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-11] fix(video): skip MP4 gracefully when no SVG rasterizer; correct xfade doc
 
 - `scripts/build_video.py`: added `_have_rasterizer()` helper (checks `shutil.which("rsvg-convert")` then tries `import cairosvg`). Added guard in `render_mp4` immediately after the ffmpeg check: returns `(None, notes)` with a "no SVG rasterizer" note when neither rasterizer is available. Previously `render.export_png` raised `SystemExit` (not `ValueError`) in this case, crashing `main` uncaught.

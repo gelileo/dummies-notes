@@ -40,8 +40,9 @@ def write_decomp(graph_dir, slug, atomic, prereqs=(), figurable=None):
         json.dump(data, fh)
 
 
-def make_figure(registry_root, slug, n_frames=2):
-    """Register slug and attach a figure dir with n_frames SVG frames."""
+def make_figure(registry_root, slug, n_frames=2, beats=None):
+    """Register slug and attach a figure dir with n_frames SVG frames.
+    If beats is given, attach it to the first frame's figure.json entry."""
     reg.register(registry_root, slug, slug.replace("-", " ").title(),
                  f"Plain definition of {slug}.")
     fig_dir = os.path.join(registry_root, slug, "figure")
@@ -53,8 +54,11 @@ def make_figure(registry_root, slug, n_frames=2):
             fh.write('<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" '
                      'width="100%" viewBox="0 0 680 220" role="img">'
                      f'<text>{slug} {i}</text></svg>')
-        frames.append({"file": fname, "caption": f"{slug} caption {i}",
-                       "runbook": "rb", "commentary": f"This is narration for {slug} frame {i}."})
+        frame = {"file": fname, "caption": f"{slug} caption {i}",
+                 "runbook": "rb", "commentary": f"This is narration for {slug} frame {i}."}
+        if i == 1 and beats:
+            frame["beats"] = beats
+        frames.append(frame)
     with open(os.path.join(fig_dir, "figure.json"), "w", encoding="utf-8") as fh:
         json.dump({"concept_slug": slug, "archetype": "illustrative",
                    "playback": "slideshow", "frames": frames}, fh)
@@ -353,6 +357,24 @@ class TestBuildAndCli(unittest.TestCase):
             self.assertTrue(imgs)  # there are frame slides
             self.assertFalse(any(os.path.isabs(p) for p in imgs),
                              "on-disk manifest image paths must be repo-relative, not absolute")
+
+
+class TestLoadFramesBeats(unittest.TestCase):
+    def test_beats_read_when_present(self):
+        with tempfile.TemporaryDirectory() as base:
+            registry = os.path.join(base, "r")
+            beats = [{"caption": "b1", "narration": "first beat"},
+                     {"caption": "b2", "narration": "second beat"}]
+            make_figure(registry, "tcp", 1, beats=beats)
+            frames = bv.load_frames(os.path.join(registry, "tcp", "figure"))
+            self.assertEqual(frames[0]["beats"], beats)
+
+    def test_beats_none_when_absent(self):
+        with tempfile.TemporaryDirectory() as base:
+            registry = os.path.join(base, "r")
+            make_figure(registry, "tcp", 2)
+            frames = bv.load_frames(os.path.join(registry, "tcp", "figure"))
+            self.assertIsNone(frames[0]["beats"])
 
 
 if __name__ == "__main__":
