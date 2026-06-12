@@ -2,6 +2,14 @@
 
 Append-only chronological log of significant changes to this project. Each entry records what changed, why, and which articles were touched. Read sequentially, this log tells the story of the project's decisions.
 
+## [2026-06-12] feat(reveal): HTML player reveal engine (group beats per frame, animate entrance)
+
+- `.claude/skills/concept-illustrator/assets/video.template.html`: replaced entirely. New template uses a container model — one `.slide` div per unique figure image (not per manifest slide). JS queries `#stage > .slide` as `conts[]`. `show(n)` reads `s.container` from the manifest to pick which container to `.show`, and calls `reveal(cont, s.reveal_to)` to animate `[data-reveal]` groups via `.on`/`.dim` CSS classes. `drawLines(g)` cubic-ease line animation for `data-anim="draw"` groups. Caption moved to a fixed `#cap` element. Added "dim past" checkbox.
+- `scripts/build_video.py`: replaced `_slide_html` + old `build_player` with the container model. `_containers(slides)` groups consecutive frame slides sharing the same image into one container, returning `(containers, idx)`. `_container_html(c)` renders each container. `build_player` now uses containers for `SLIDES_HTML` and injects `reveal_to` + `container` per slide into the light manifest. `_slide_html` function removed.
+- `scripts/tests/test_build_video.py`: replaced body of `TestPlayer.test_player_contains_manifest_and_controls` — now uses a 3-beat single-frame figure and asserts the SVG is inlined exactly once. Added `TestPlayerContainers.test_beats_share_one_container_cards_separate`. 32 tests total, all passing.
+- `knowledge/concepts/dummies-notes/video-engine.md`: appended Phase 7 Task 5 paragraph.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-12] feat(reveal): cumulative-state SVG for MP4 pop (_reveal_svg)
 
 - `scripts/build_video.py`: added `_REVEAL_G_RE` regex and `_reveal_svg(inner, reveal_to)` function. Hides SVG `<g>` groups with `data-reveal` index exceeding `reveal_to` via inline `style="visibility:hidden"` injected before the attribute (rasterizer-agnostic). `reveal_to=None` is a no-op. Updated `stage_svg` to call `_reveal_svg` before `_nest_figure` for frame slides, keying off `slide.get("reveal_to")`. Non-frame slides unaffected.

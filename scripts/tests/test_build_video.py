@@ -206,20 +206,21 @@ class TestPlayer(unittest.TestCase):
             graph = os.path.join(base, "g")
             registry = os.path.join(base, "r")
             write_decomp(graph, "tcp", True)
-            make_figure(registry, "tcp", 2)
+            beats = [{"caption": "c1", "narration": "n1"},
+                     {"caption": "c2", "narration": "n2"},
+                     {"caption": "c3", "narration": "n3"}]
+            make_figure(registry, "tcp", 1, beats=beats)
             manifest, _ = bv.build_manifest(graph, registry)
             out = os.path.join(base, "video.html")
             bv.build_player(manifest, bv.PLAYER_TEMPLATE, out)
             text = open(out, encoding="utf-8").read()
             self.assertIn("window.__MANIFEST__", text)
             self.assertIn('id="play"', text)
-            self.assertIn('class="slide', text)
             self.assertNotIn("{{MANIFEST_JSON}}", text)
             self.assertNotIn("{{SLIDES_HTML}}", text)
-            # one .slide div per manifest slide
-            self.assertEqual(text.count('class="slide'), len(manifest["slides"]))
-            # frame SVGs are inlined
-            self.assertIn("<svg", text)
+            self.assertEqual(text.count("tcp 1"), 1)  # figure inlined ONCE despite 3 beats
+            self.assertIn('"reveal_to"', text)
+            self.assertIn('"container"', text)
 
     def test_player_escapes_script_breakout_in_narration(self):
         with tempfile.TemporaryDirectory() as base:
@@ -236,6 +237,22 @@ class TestPlayer(unittest.TestCase):
             self.assertNotIn("</script><script>alert", text)
             # it appears in escaped form instead
             self.assertIn("\\u003c/script\\u003e", text)
+
+
+class TestPlayerContainers(unittest.TestCase):
+    def test_beats_share_one_container_cards_separate(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph = os.path.join(base, "g")
+            registry = os.path.join(base, "r")
+            write_decomp(graph, "tcp", True)
+            make_figure(registry, "tcp", 1,
+                        beats=[{"caption": "a", "narration": "a"},
+                               {"caption": "b", "narration": "b"}])
+            manifest, _ = bv.build_manifest(graph, registry)
+            conts, idx = bv._containers(manifest["slides"])
+            frame_slides = [j for j, s in enumerate(manifest["slides"]) if s["kind"] == "frame"]
+            self.assertEqual(idx[frame_slides[0]], idx[frame_slides[1]])  # beats -> same container
+            self.assertEqual(len(set(idx)), len(conts))  # idx covers every container
 
 
 class TestMp4Fallback(unittest.TestCase):

@@ -176,38 +176,49 @@ def _esc(text):
 _ROOT_DIM_RE = re.compile(r'\s(?:width|height)="[^"]*"')
 
 
-def _slide_html(slide):
-    # NOTE: figures share id="arrow" on their <marker>; when several frame SVGs are
-    # inlined into one player document, url(#arrow) resolves to the first in document
-    # order. Safe only because the design system uses one marker geometry across figures.
-    if slide["kind"] == "frame":
-        inner = _read_inner_svg(slide["image"])
-        body = inner + f'<p class="cap">{_esc(slide["caption"])}</p>'
-    else:
-        body = f'<div class="card">{_esc(slide["caption"])}</div>'
-    cls = "slide" + ("" if slide["transition"] == "crossfade" else " cut")
-    return f'<div class="{cls}">{body}</div>'
+def _containers(slides):
+    """Assign each slide to a DOM container. Consecutive 'frame' slides sharing
+    the same image collapse into one container (the figure SVG is inlined once);
+    every non-frame slide is its own container.
+    Returns (containers, idx) where containers is a list of
+    {"kind","image"|None,"caption"} and idx[i] is slide i's container index."""
+    containers, idx = [], []
+    cur_img, cur = None, -1
+    for s in slides:
+        if s["kind"] == "frame" and s["image"] == cur_img and cur >= 0:
+            idx.append(cur)
+            continue
+        if s["kind"] == "frame":
+            containers.append({"kind": "frame", "image": s["image"], "caption": ""})
+            cur, cur_img = len(containers) - 1, s["image"]
+        else:
+            containers.append({"kind": s["kind"], "image": None, "caption": s["caption"]})
+            cur, cur_img = len(containers) - 1, None
+        idx.append(cur)
+    return containers, idx
+
+
+def _container_html(c):
+    if c["kind"] == "frame":
+        return f'<div class="slide">{_read_inner_svg(c["image"])}</div>'
+    return f'<div class="slide"><div class="card">{_esc(c["caption"])}</div></div>'
 
 
 def build_player(manifest, template_path, out_path):
     """Render the self-contained HTML player from a manifest + template; returns out_path."""
     with open(template_path, encoding="utf-8") as fh:
         template = fh.read()
-    slides_html = "\n".join(_slide_html(s) for s in manifest["slides"])
-    # store only lightweight fields in the injected manifest (no SVG text)
+    containers, idx = _containers(manifest["slides"])
+    slides_html = "\n".join(_container_html(c) for c in containers)
     light = dict(manifest)
-    light["slides"] = [{k: s[k] for k in ("kind", "concept_slug", "caption",
-                                          "narration", "duration_s", "transition")}
-                       for s in manifest["slides"]]
-    # json.dumps does not escape <,>,& — escape them for safe embedding inside an
-    # inline <script> (prevents a narration containing "</script>" from breaking out).
-    # \uXXXX escapes are valid JSON and JSON.parse / the var assignment decode them back.
+    light["slides"] = [{"kind": s["kind"], "concept_slug": s["concept_slug"],
+                        "caption": s["caption"], "narration": s["narration"],
+                        "duration_s": s["duration_s"], "transition": s["transition"],
+                        "reveal_to": s["reveal_to"], "container": idx[j]}
+                       for j, s in enumerate(manifest["slides"])]
     manifest_json = (json.dumps(light)
-                     .replace("<", "\\u003c")
-                     .replace(">", "\\u003e")
-                     .replace("&", "\\u0026"))
-    html_out = (template
-                .replace("{{SLIDES_HTML}}", slides_html)
+                     .replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026"))
+    html_out = (template.replace("{{SLIDES_HTML}}", slides_html)
                 .replace("{{MANIFEST_JSON}}", manifest_json))
     with open(out_path, "w", encoding="utf-8") as fh:
         fh.write(html_out)

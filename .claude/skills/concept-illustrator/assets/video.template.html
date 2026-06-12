@@ -5,59 +5,82 @@
 <style>
 :root{color-scheme:light dark}
 body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;
-     background:#0f1115;color:#e8e8e8;display:flex;flex-direction:column;
-     align-items:center;min-height:100vh}
+     background:#0f1115;color:#e8e8e8;display:flex;flex-direction:column;align-items:center;min-height:100vh}
 #stage{position:relative;width:min(96vw,1100px);aspect-ratio:16/9;background:#15181f;
        border-radius:10px;overflow:hidden;margin-top:1.2rem}
 .slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
-       justify-content:center;opacity:0;transition:opacity .5s ease;padding:2.5rem;box-sizing:border-box}
-.slide.show{opacity:1}
-.slide.cut{transition:none}
-.slide svg{max-width:100%;max-height:70%;height:auto}
+       justify-content:center;opacity:0;transition:opacity .5s ease;padding:2.2rem 2.2rem 3.4rem;box-sizing:border-box}
+.slide.show{opacity:1} .slide.cut{transition:none}
+.slide svg{max-width:100%;max-height:78%;height:auto}
 .card{font-size:2.4rem;text-align:center;line-height:1.3}
-.cap{position:absolute;bottom:1.1rem;left:0;right:0;text-align:center;font-size:1.05rem;
-     color:#cfd2d8;padding:0 2rem}
+#cap{position:absolute;bottom:1rem;left:0;right:0;text-align:center;font-size:1.05rem;color:#cfd2d8;padding:0 2rem;min-height:1.4em}
+[data-reveal]{opacity:0;transition:opacity .55s ease,transform .55s ease}
+[data-reveal]:not([data-anim="draw"]){transform:translateY(10px)}
+[data-reveal].on{opacity:1;transform:none}
+[data-reveal].dim{opacity:.32}
 #bar{width:min(96vw,1100px);display:flex;gap:.8rem;align-items:center;margin:.8rem 0}
 #prog{flex:1;height:5px;background:#2a2d36;border-radius:3px;overflow:hidden}
 #prog>div{height:100%;width:0;background:#5DCAA5}
-button{font:inherit;background:#23262e;color:#e8e8e8;border:1px solid #3a3d46;
-       border-radius:6px;padding:.35rem .8rem;cursor:pointer}
+button{font:inherit;background:#23262e;color:#e8e8e8;border:1px solid #3a3d46;border-radius:6px;padding:.35rem .8rem;cursor:pointer}
 label{font-size:.9rem;color:#aab;display:flex;gap:.35rem;align-items:center}
 </style></head><body>
-<div id="stage">{{SLIDES_HTML}}</div>
+<div id="stage">{{SLIDES_HTML}}<div id="cap"></div></div>
 <div id="bar">
   <button id="play">⏸ Pause</button>
   <button id="prev">←</button><button id="next">→</button>
   <div id="prog"><div></div></div>
   <span id="count"></span>
   <label><input type="checkbox" id="tts"> 🔊 narrate</label>
+  <label><input type="checkbox" id="dim" checked> dim past</label>
 </div>
 <script>
 var M=window.__MANIFEST__={{MANIFEST_JSON}};
-var slides=[].slice.call(document.querySelectorAll('.slide'));
+var conts=[].slice.call(document.querySelectorAll('#stage > .slide'));
+var cap=document.getElementById('cap'),count=document.getElementById('count');
+var progEl=document.querySelector('#prog>div');
+var tts=document.getElementById('tts'),dim=document.getElementById('dim');
 var i=0,playing=true,timer=null,progRAF=null,start=0;
-var progEl=document.querySelector('#prog>div'),count=document.getElementById('count');
 function speak(t){try{var u=new SpeechSynthesisUtterance(t);u.onend=function(){if(playing&&tts.checked)next();};speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
-function show(n){
-  slides.forEach(function(s){s.classList.remove('show');});
-  i=(n+slides.length)%slides.length;
-  var s=slides[i];s.classList.toggle('cut',M.slides[i].transition!=='crossfade');
-  s.classList.add('show');
-  count.textContent=(i+1)+' / '+slides.length;
-  clearTimeout(timer);start=performance.now();
-  var dur=M.slides[i].duration_s*1000;
-  if(tts.checked){speak(M.slides[i].narration);}
-  else if(playing){timer=setTimeout(next,dur);}
-  animateProg(dur);
+function drawLines(g){
+  var lines=g.tagName.toLowerCase()==='line'?[g]:[].slice.call(g.querySelectorAll('line'));
+  lines.forEach(function(ln){
+    // capture the TRUE target once (initial attributes are the full endpoint),
+    // so re-entry never reads a mid-animation value
+    if(!ln.dataset.tx2){ln.dataset.tx2=ln.getAttribute('x2');ln.dataset.ty2=ln.getAttribute('y2');}
+    var x1=+ln.getAttribute('x1'),y1=+ln.getAttribute('y1'),x2=+ln.dataset.tx2,y2=+ln.dataset.ty2;
+    var gen=(ln._gen=(ln._gen||0)+1),t0=null,D=650;   // generation token cancels a stale RAF
+    ln.setAttribute('x2',x1); ln.setAttribute('y2',y1);
+    function fr(ts){if(ln._gen!==gen)return; if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/D),e=1-Math.pow(1-p,3);
+      ln.setAttribute('x2',(x1+(x2-x1)*e).toFixed(1));ln.setAttribute('y2',(y1+(y2-y1)*e).toFixed(1));
+      if(p<1)requestAnimationFrame(fr);}
+    requestAnimationFrame(fr);
+  });
 }
-function animateProg(dur){cancelAnimationFrame(progRAF);
-  (function step(){var p=Math.min(1,(performance.now()-start)/dur);progEl.style.width=(p*100)+'%';
-    if(p<1&&playing)progRAF=requestAnimationFrame(step);})();}
+function reveal(cont,level){
+  [].slice.call(cont.querySelectorAll('[data-reveal]')).forEach(function(g){
+    var k=+g.getAttribute('data-reveal'), shown=(level===null||k<=level);
+    if(shown){
+      if(!g.classList.contains('on')){g.classList.add('on'); if(g.getAttribute('data-anim')==='draw')drawLines(g);}
+      g.classList.toggle('dim', dim.checked && level!==null && k<level);
+    } else { g.classList.remove('on','dim'); }
+  });
+}
+function show(n){
+  i=(n+M.slides.length)%M.slides.length; var s=M.slides[i];
+  conts.forEach(function(c,ci){c.classList.toggle('show',ci===s.container);});
+  var cont=conts[s.container];
+  if(cont)cont.classList.toggle('cut',s.transition!=='crossfade'&&s.transition!=='reveal');
+  if(cont && cont.querySelector('[data-reveal]')) reveal(cont, s.reveal_to);
+  cap.textContent = s.kind==='frame' ? (s.caption||'') : '';
+  count.textContent=(i+1)+' / '+M.slides.length;
+  clearTimeout(timer);start=performance.now();var dur=s.duration_s*1000;
+  if(tts.checked)speak(s.narration); else if(playing)timer=setTimeout(next,dur);
+  prog(dur);
+}
+function prog(dur){cancelAnimationFrame(progRAF);(function step(){var p=Math.min(1,(performance.now()-start)/dur);progEl.style.width=(p*100)+'%';if(p<1&&playing)progRAF=requestAnimationFrame(step);})();}
 function next(){show(i+1);}function prev(){show(i-1);}
-var tts=document.getElementById('tts');
-document.getElementById('next').onclick=next;
-document.getElementById('prev').onclick=prev;
-document.getElementById('play').onclick=function(){playing=!playing;
-  this.textContent=playing?'⏸ Pause':'▶ Play';if(playing)show(i);else{clearTimeout(timer);speechSynthesis.cancel();}};
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;
+document.getElementById('play').onclick=function(){playing=!playing;this.textContent=playing?'⏸ Pause':'▶ Play';if(playing)show(i);else{clearTimeout(timer);speechSynthesis.cancel();}};
+dim.onchange=function(){var s=M.slides[i],c=conts[s.container];if(c&&c.querySelector('[data-reveal]'))reveal(c,s.reveal_to);};
 show(0);
 </script></body></html>
