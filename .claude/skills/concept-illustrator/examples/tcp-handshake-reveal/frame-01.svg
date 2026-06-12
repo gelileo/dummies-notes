@@ -1,0 +1,51 @@
+<svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 300" role="img" font-family="sans-serif">
+  <title>TCP three-way handshake — progressive reveal</title>
+  <desc>Client and server open a connection with SYN, SYN-ACK, ACK, then the line is open.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;fill:#1c1c1a;} text.ts{font-size:12px;fill:#6b6a64;} text.th{font-size:15px;font-weight:500;fill:#111110;}
+.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.c-teal>rect{fill:#E1F5EE;stroke:#0F6E56;} .c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect{fill:#FAECE7;stroke:#993C1D;} .c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-green>rect{fill:#EAF3DE;stroke:#3B6D11;} .c-green .th{fill:#27500A;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.arr.coral{stroke:#993C1D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.c-teal>rect{fill:#085041;stroke:#5DCAA5;} .c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect{fill:#712B13;stroke:#F0997B;} .c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-green>rect{fill:#27500A;stroke:#A7D977;} .c-green .th{fill:#DDF0C6;}
+.arr{stroke:#b0aea4;} .arr.coral{stroke:#F0997B;}}}</style>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path class="arrow-head" d="M0,0 L7,3.5 L0,7 z" fill="#6b6a64"/></marker>
+  </defs>
+
+  <g class="node c-teal" data-reveal="1" data-anim="rise">
+    <rect x="60" y="70" width="150" height="140" rx="8"/>
+    <text class="th" x="135" y="132" text-anchor="middle">Client</text>
+    <text class="ts" x="135" y="154" text-anchor="middle">your laptop</text>
+  </g>
+  <g class="node c-coral" data-reveal="2" data-anim="rise">
+    <rect x="470" y="70" width="150" height="140" rx="8"/>
+    <text class="th" x="545" y="132" text-anchor="middle">Server</text>
+    <text class="ts" x="545" y="154" text-anchor="middle">the website</text>
+  </g>
+
+  <g data-reveal="3" data-anim="draw">
+    <line class="arr" x1="210" y1="108" x2="468" y2="108" marker-end="url(#arrow)"/>
+    <text class="ts" x="340" y="100" text-anchor="middle">Syn →</text>
+  </g>
+  <g data-reveal="4" data-anim="draw">
+    <line class="arr coral" x1="470" y1="142" x2="212" y2="142" marker-end="url(#arrow)"/>
+    <text class="ts" x="340" y="166" text-anchor="middle">← Syn-ack</text>
+  </g>
+  <g data-reveal="5" data-anim="draw">
+    <line class="arr" x1="210" y1="184" x2="468" y2="184" marker-end="url(#arrow)"/>
+    <text class="ts" x="340" y="200" text-anchor="middle">Ack →</text>
+  </g>
+
+  <g class="c-green" data-reveal="6" data-anim="rise">
+    <rect x="276" y="244" width="128" height="30" rx="15"/>
+    <text class="th" x="340" y="264" text-anchor="middle">connection open</text>
+  </g>
+</svg>

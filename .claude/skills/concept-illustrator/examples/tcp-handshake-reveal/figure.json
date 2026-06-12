@@ -1,0 +1,21 @@
+{
+  "concept_slug": "tcp-handshake-reveal",
+  "archetype": "illustrative",
+  "playback": "static",
+  "frames": [
+    {
+      "file": "frame-01.svg",
+      "caption": "The three-way handshake",
+      "runbook": "One frame, six reveal steps. Client box (c-teal, data-reveal 1) and Server box (c-coral, 2) rise in. Three arrows draw in order: SYN client->server (3), SYN-ACK server->client (4, coral), ACK client->server (5). Finally a green 'connection open' badge (6) rises in. Arrows use data-anim=draw; boxes and badge use rise. Fixed 680x300 viewBox.",
+      "commentary": "Before any data moves, the two computers shake hands: the client sends SYN, the server replies SYN-ACK, the client sends ACK, and the connection is open.",
+      "beats": [
+        {"caption": "Two computers want to talk.", "narration": "Two computers want to talk to each other."},
+        {"caption": "Client and server", "narration": "Think of one as you — the client — and one as the website — the server."},
+        {"caption": "SYN: the client waves", "narration": "First, your computer gives the server a little wave to get its attention. Engineers call it a SYN."},
+        {"caption": "SYN-ACK: the server waves back", "narration": "The server waves back: I hear you, let's talk. That's the SYN-ACK."},
+        {"caption": "ACK: the client confirms", "narration": "Your computer nods: great, I'm ready. The final ACK."},
+        {"caption": "The line is open", "narration": "And just like that, the line is open — now they can actually start sending data."}
+      ]
+    }
+  ]
+}
