@@ -506,5 +506,83 @@ class TestSynthesizeSegments(unittest.TestCase):
             self.assertTrue(any("say" in n for n in notes))
 
 
+class TestProviderPlumbing(unittest.TestCase):
+    def _manifest(self, base):
+        graph = os.path.join(base, "g"); registry = os.path.join(base, "r")
+        write_decomp(graph, "tcp", True); make_figure(registry, "tcp", 2)
+        return bv.build_manifest(graph, registry)[0]
+
+    def test_kokoro_unconfigured_raises(self):
+        with tempfile.TemporaryDirectory() as base:
+            m = self._manifest(base); fr = os.path.join(base, "f"); os.makedirs(fr)
+            cfg = {"python": "/no/such/py", "model": "x.onnx", "voices": "v.bin", "voice": "af_heart"}
+            with self.assertRaises(bv.TtsError):
+                bv._synthesize_segments(m, fr, "kokoro", cfg, have_say=True)
+
+    def test_neutts_unconfigured_falls_back_to_say(self):
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as base:
+            m = self._manifest(base); fr = os.path.join(base, "f"); os.makedirs(fr)
+            cfg = {"python": "/no/such/py", "voice_dir": os.path.join(base, "vp"), "backbone": "bb"}
+            with mock.patch("build_video._say_segment",
+                            side_effect=lambda t, p: (open(p, "wb").close() or p) if t.strip() else None):
+                segs, notes = bv._synthesize_segments(m, fr, "neutts", cfg, have_say=True)
+            self.assertTrue(any("neutts" in n.lower() for n in notes))
+            self.assertEqual(len(segs), len(m["slides"]))
+
+    def test_kokoro_ready_calls_runner_and_maps_segments(self):
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as base:
+            m = self._manifest(base); fr = os.path.join(base, "f"); os.makedirs(fr)
+            py = os.path.join(base, "py"); open(py, "w").close()
+            model = os.path.join(base, "m.onnx"); open(model, "w").close()
+            voices = os.path.join(base, "v.bin"); open(voices, "w").close()
+            cfg = {"python": py, "model": model, "voices": voices, "voice": "af_heart"}
+            def fake_run(args, **k):
+                job = json.load(open(args[-1]))
+                for s in job["segments"]:
+                    open(s["out_path"], "wb").close()
+                return mock.Mock(returncode=0)
+            with mock.patch("build_video.subprocess.run", side_effect=fake_run) as run:
+                segs, notes = bv._synthesize_segments(m, fr, "kokoro", cfg, have_say=True)
+            self.assertTrue(run.called)
+            narrated = [s for s, sl in zip(segs, m["slides"]) if sl["narration"].strip()]
+            self.assertTrue(all(p and os.path.exists(p) for p in narrated))
+
+    def test_runner_writes_nothing_raises(self):
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as base:
+            m = self._manifest(base); fr = os.path.join(base, "f"); os.makedirs(fr)
+            py = os.path.join(base, "py"); open(py, "w").close()
+            model = os.path.join(base, "m.onnx"); open(model, "w").close()
+            voices = os.path.join(base, "v.bin"); open(voices, "w").close()
+            cfg = {"python": py, "model": model, "voices": voices, "voice": "af_heart"}
+            with mock.patch("build_video.subprocess.run", return_value=mock.Mock(returncode=0)):
+                with self.assertRaises(bv.TtsError):   # runner wrote no files -> OSError -> TtsError
+                    bv._synthesize_segments(m, fr, "kokoro", cfg, have_say=True)
+
+    def test_cache_invalidated_when_model_changes(self):
+        from unittest import mock
+        import time
+        with tempfile.TemporaryDirectory() as base:
+            m = self._manifest(base); fr = os.path.join(base, "f"); os.makedirs(fr)
+            py = os.path.join(base, "py"); open(py, "w").close()
+            model = os.path.join(base, "m.onnx"); open(model, "w").close()
+            voices = os.path.join(base, "v.bin"); open(voices, "w").close()
+            cfg = {"python": py, "model": model, "voices": voices, "voice": "af_heart"}
+            calls = []
+            def fake_run(args, **k):
+                job = json.load(open(args[-1])); calls.append(len(job["segments"]))
+                for s in job["segments"]:
+                    open(s["out_path"], "wb").close()
+                return mock.Mock(returncode=0)
+            with mock.patch("build_video.subprocess.run", side_effect=fake_run):
+                bv._synthesize_segments(m, fr, "kokoro", cfg, have_say=True)   # 1st: synth all
+                os.utime(model, (time.time() + 10, time.time() + 10))          # model "changed"
+                bv._synthesize_segments(m, fr, "kokoro", cfg, have_say=True)   # 2nd: re-synth
+            self.assertEqual(len(calls), 2)            # both runs invoked the runner (not all cached)
+            self.assertEqual(calls[0], calls[1])       # same number of beats re-synthesized
+
+
 if __name__ == "__main__":
     unittest.main()

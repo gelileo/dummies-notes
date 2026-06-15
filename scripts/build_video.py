@@ -9,6 +9,7 @@ Deterministic and zero-dependency on the default (HTML) path: no agent writes
 the video. Reuses assemble.py (graph + ordering), the registry, and render.py."""
 
 import argparse
+import hashlib
 import html
 import json
 import os
@@ -32,6 +33,7 @@ PLAYER_TEMPLATE = os.path.join(os.path.dirname(_HERE), ".claude", "skills",
                                "video.template.html")
 
 _REPO = os.path.dirname(_HERE)  # repo root (parent of scripts/)
+TTS_RUNNER = os.path.join(_HERE, "tts_runner.py")
 
 DEFAULT_WPM = 150
 MIN_DUR, MAX_DUR = 2.5, 18.0
@@ -345,14 +347,108 @@ def _say_segments(manifest, frames_dir, have_say, notes):
     return segs
 
 
+def _kokoro_ready(cfg):
+    if not cfg or not cfg.get("python") or not os.path.exists(cfg["python"]):
+        return False, "set --kokoro-python / KOKORO_PYTHON to the Kokoro venv"
+    for key in ("model", "voices"):
+        if not cfg.get(key) or not os.path.exists(cfg[key]):
+            return False, f"set --kokoro-{key} / KOKORO_{key.upper()} (missing {key} file)"
+    return True, None
+
+
+def _neutts_ready(cfg):
+    if not cfg or not cfg.get("python") or not os.path.exists(cfg["python"]):
+        return False, "set --neutts-python / NEUTTS_PYTHON to the NeuTTS venv"
+    ref = os.path.join(cfg.get("voice_dir", ""), "ref.wav")
+    if not os.path.exists(ref):
+        return False, f"missing reference clip: {ref}"
+    return True, None
+
+
+def _seg_cache_path(frames_dir, engine, voice_key, text):
+    h = hashlib.sha1(f"{engine}|{voice_key}|{text}".encode("utf-8")).hexdigest()[:16]
+    return os.path.join(frames_dir, f"tts-{engine}-{h}.wav")
+
+
+def _prepare_neutts_ref(voice_dir):
+    """Ensure a denoised ref_clean.wav exists and is up to date (ffmpeg); return
+    its path. Regenerates if missing or older than ref.wav; writes atomically."""
+    raw = os.path.join(voice_dir, "ref.wav")
+    clean = os.path.join(voice_dir, "ref_clean.wav")
+    if not os.path.exists(clean) or os.path.getmtime(raw) > os.path.getmtime(clean):
+        tmp = clean + ".tmp.wav"
+        subprocess.run(["ffmpeg", "-y", "-i", raw, "-ac", "1", "-ar", "16000",
+                        "-af", "highpass=f=80,afftdn=nr=24:nf=-35", tmp], check=True)
+        os.replace(tmp, clean)
+    return clean
+
+
+def _engine_segments(engine, cfg, manifest, frames_dir):
+    """Build a job (uncached beats only), run the venv runner once (with a
+    timeout), verify outputs, and return a per-slide list of wav paths (or None
+    for non-narration slides)."""
+    if engine == "kokoro":
+        voice_key = f"{cfg.get('voice', 'af_heart')}@{os.path.getmtime(cfg['model']):.0f}"
+    else:
+        ref_clean = _prepare_neutts_ref(cfg["voice_dir"])
+        voice_key = f"{cfg.get('backbone', '')}@{os.path.getmtime(ref_clean):.0f}"
+    out_paths, todo = [], []
+    for s in manifest["slides"]:
+        text = (s["narration"] or "").strip()
+        if not text:
+            out_paths.append(None)
+            continue
+        p = _seg_cache_path(frames_dir, engine, voice_key, text)
+        out_paths.append(p)
+        if not os.path.exists(p):
+            todo.append({"text": text, "out_path": p})
+    if todo:
+        job = {"engine": engine, "segments": todo}
+        if engine == "kokoro":
+            job.update(model=cfg["model"], voices=cfg["voices"], voice=cfg.get("voice", "af_heart"))
+        else:
+            job.update(ref_audio=ref_clean,
+                       ref_text_path=os.path.join(cfg["voice_dir"], "ref.txt"),
+                       backbone=cfg.get("backbone", "neuphonic/neutts-air-q8-gguf"))
+        os.makedirs(frames_dir, exist_ok=True)
+        job_path = os.path.join(frames_dir, f"tts-job-{engine}.json")
+        with open(job_path, "w", encoding="utf-8") as fh:
+            json.dump(job, fh)
+        subprocess.run([cfg["python"], TTS_RUNNER, "--engine", engine, job_path],
+                       check=True, timeout=900)
+        missing = [s["out_path"] for s in todo if not os.path.exists(s["out_path"])]
+        if missing:
+            raise OSError(f"tts_runner exited 0 but did not write {len(missing)} segment(s)")
+    return out_paths
+
+
 def _synthesize_segments(manifest, frames_dir, tts, cfg, have_say):
     """Per-slide audio paths (or None) + NOTE list. Raises TtsError for the
-    kokoro hard-fail case (added later); neutts failures fall back to say with a
-    NOTE (added later). For now every provider routes to the say path so this
-    refactor is behaviour-preserving."""
+    kokoro hard-fail case; neutts failures fall back to say with a NOTE."""
     notes = []
     if tts == "say":
         return _say_segments(manifest, frames_dir, have_say, notes), notes
+    if tts == "kokoro":
+        ok, why = _kokoro_ready(cfg)
+        if not ok:
+            raise TtsError(f"--tts kokoro: {why}. See docs/tts-and-ffmpeg-notes.md, "
+                           f"or use --tts say.")
+        try:
+            return _engine_segments("kokoro", cfg, manifest, frames_dir), notes
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError, KeyError) as exc:
+            raise TtsError(f"kokoro synthesis failed: {exc}. See docs/tts-and-ffmpeg-notes.md, "
+                           f"or use --tts say.")
+    if tts == "neutts":
+        ok, why = _neutts_ready(cfg)
+        if not ok:
+            notes.append(f"--tts neutts unavailable ({why}) — narrating with `say`. "
+                         f"See docs/tts-and-ffmpeg-notes.md.")
+            return _say_segments(manifest, frames_dir, have_say, notes), notes
+        try:
+            return _engine_segments("neutts", cfg, manifest, frames_dir), notes
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError, KeyError) as exc:
+            notes.append(f"neutts synthesis failed ({exc}) — narrating with `say`.")
+            return _say_segments(manifest, frames_dir, have_say, notes), notes
     return _say_segments(manifest, frames_dir, have_say, notes), notes
 
 

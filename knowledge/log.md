@@ -2,6 +2,23 @@
 
 Reverse-chronological log (newest entries first) of significant changes to this project. Each entry records what changed, why, and which articles were touched.
 
+## [2026-06-14] fix(tts): robustness — cache key fingerprint, atomic ref-clean write, post-run check, wider exceptions
+
+Four robustness fixes to `scripts/build_video.py`: (1) `_engine_segments` voice_key now includes the model/ref file mtime so cache is invalidated on model/voice swap; (2) post-run existence check raises OSError when runner exits 0 but writes no segments; (3) `_prepare_neutts_ref` writes atomically and regenerates when ref.wav is newer than ref_clean.wav; (4) both `_synthesize_segments` except clauses widened to `(CalledProcessError, TimeoutExpired, OSError, KeyError)`. Two new regression tests in `TestProviderPlumbing`. 40 tests total, 1 skip, all passing.
+
+- `scripts/build_video.py`: rewrote `_engine_segments` and `_prepare_neutts_ref`; widened exception tuples in `_synthesize_segments`.
+- `scripts/tests/test_build_video.py`: added `test_runner_writes_nothing_raises` and `test_cache_invalidated_when_model_changes` to `TestProviderPlumbing`.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-14] feat(tts): kokoro/neutts dispatch, readiness checks, caching, ref denoise
+
+Implemented the full kokoro/neutts provider dispatch in `_synthesize_segments`. Added `_kokoro_ready`/`_neutts_ready` readiness checks (file-existence guards), `_seg_cache_path` (SHA-1 per-beat cache under `frames_dir`), `_prepare_neutts_ref` (ffmpeg denoising to `ref_clean.wav`), and `_engine_segments` (builds uncached job, writes `tts-job-<engine>.json`, calls the venv runner once). Error policy: kokoro unconfigured/failed → raises `TtsError`; neutts unconfigured/failed → NOTE + `say` fallback. Added `TTS_RUNNER` module constant and `import hashlib`. 3 new tests in `TestProviderPlumbing`; 38 tests total, 1 skip, all passing.
+
+- `scripts/build_video.py`: added `import hashlib`; added `TTS_RUNNER`; added `_kokoro_ready`, `_neutts_ready`, `_seg_cache_path`, `_prepare_neutts_ref`, `_engine_segments`; replaced `_synthesize_segments` body with full kokoro/neutts dispatch.
+- `scripts/tests/test_build_video.py`: added `TestProviderPlumbing` class (3 tests).
+- `knowledge/concepts/dummies-notes/video-engine.md`: appended Phase 8 Task 4 note.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-14] fix(tts): file handle cleanup in synth_neutts — use context managers + _has_text helper
 
 Hygiene fix: replaced bare `open()` calls in `synth_neutts` with proper context managers and a new module-level helper. Added `_has_text(path)` function — returns True if a path is a readable file with non-whitespace content, properly closing the file handle. Used by `synth_neutts` to check for an existing reference-text file without leaking a file handle in a boolean condition. Both the write (Whisper transcription) and read (reference text) now use `with` blocks. Added `test_has_text` (4 assertions: empty string, missing file, empty file, file with content).
