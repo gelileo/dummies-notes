@@ -529,3 +529,4 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - `SKILL.md § Workflow`: replaced the separate "Plan coordinates before writing SVG" step with a blockquote note clarifying that coordinate planning happens inside the runbook step, not after drawing. Renumbered subsequent steps (old 4–9 → new 3–8).
 - `references/figure-json.md`: trimmed the `runbook` row's Notes cell to just the definition; the standalone bold **runbook-first** paragraph below the table continues to carry the ordering rule.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
+- 2026-06-14 — Phase 8 start: scaffolding for pluggable --tts providers (gitignore voice-profiles/, README, drift mapping for tts_runner.py).

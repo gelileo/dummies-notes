@@ -4,3 +4,7 @@ __pycache__/
 .DS_Store
 
 .superpowers/
+
+# NeuTTS voice profiles (personal voice clips) — keep only the README
+voice-profiles/*
+!voice-profiles/README.md
