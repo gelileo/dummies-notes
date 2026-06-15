@@ -139,9 +139,10 @@ provider-dispatch entry point called by `render_mp4`. It:
 2. **Per-beat caching** (`_seg_cache_path`): SHA-1 of `engine|voice_key|text`
    (first 16 hex chars) → `tts-<engine>-<hash>.wav` under `frames_dir`. Only
    uncached beats are synthesized; cached beats are mapped directly. The voice
-   key includes the model/ref file mtime (`af_heart@<mtime>` for kokoro;
-   `<backbone>@<mtime>` for neutts) so changing the model file invalidates the
-   cache automatically.
+   key includes file mtimes (`af_heart@<model_mtime>@<voices_mtime>` for kokoro;
+   `<backbone>@<ref_clean_mtime>` for neutts) so swapping the model, voices, or
+   reference file invalidates the cache automatically. v1 does not persist an
+   encoded-reference `.pt` cache — `synth_neutts` encodes in memory each run.
 3. **Job runner** (`_engine_segments`): builds a job dict for all uncached beats,
    writes `tts-job-<engine>.json`, calls `subprocess.run([cfg["python"],
    TTS_RUNNER, "--engine", engine, job_path], timeout=900, check=True)`. After
@@ -170,7 +171,3 @@ env-var defaults:
   `--neutts-backbone`. `voice_dir` is resolved as `_REPO/voice-profiles/<name>`.
 
 Setup instructions: `docs/tts-and-ffmpeg-notes.md`.
-
-**fix(tts): voices-file mtime in kokoro cache key.** The kokoro `voice_key` previously included only the model file mtime (`af_heart@<model_mtime>`). Swapping the voices `.bin` file (same voice name, unchanged model) would silently serve stale cached audio. Fixed: `voice_key` is now `af_heart@<model_mtime>@<voices_mtime>`, so replacing either file invalidates the cache. Regression test `test_cache_invalidated_when_voices_change` added to `TestProviderPlumbing`. The NeuTTS branch is unchanged — its `ref_clean.wav` mtime already covers the reference. 46 tests total, 1 skip, all passing.
-
-**doc fix: `ref_clean.pt` over-promise corrected.** `synth_neutts` in `scripts/tts_runner.py` encodes the reference waveform in memory each run and does not persist a `.pt` file. `voice-profiles/README.md` previously listed `ref_clean.pt` as a generated artifact; that bullet has been replaced with an accurate note that v1 encodes in memory with no cache file written.
