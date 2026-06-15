@@ -170,3 +170,7 @@ env-var defaults:
   `--neutts-backbone`. `voice_dir` is resolved as `_REPO/voice-profiles/<name>`.
 
 Setup instructions: `docs/tts-and-ffmpeg-notes.md`.
+
+**fix(tts): voices-file mtime in kokoro cache key.** The kokoro `voice_key` previously included only the model file mtime (`af_heart@<model_mtime>`). Swapping the voices `.bin` file (same voice name, unchanged model) would silently serve stale cached audio. Fixed: `voice_key` is now `af_heart@<model_mtime>@<voices_mtime>`, so replacing either file invalidates the cache. Regression test `test_cache_invalidated_when_voices_change` added to `TestProviderPlumbing`. The NeuTTS branch is unchanged — its `ref_clean.wav` mtime already covers the reference. 46 tests total, 1 skip, all passing.
+
+**doc fix: `ref_clean.pt` over-promise corrected.** `synth_neutts` in `scripts/tts_runner.py` encodes the reference waveform in memory each run and does not persist a `.pt` file. `voice-profiles/README.md` previously listed `ref_clean.pt` as a generated artifact; that bullet has been replaced with an accurate note that v1 encodes in memory with no cache file written.

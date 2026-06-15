@@ -388,7 +388,9 @@ def _engine_segments(engine, cfg, manifest, frames_dir):
     timeout), verify outputs, and return a per-slide list of wav paths (or None
     for non-narration slides)."""
     if engine == "kokoro":
-        voice_key = f"{cfg.get('voice', 'af_heart')}@{os.path.getmtime(cfg['model']):.0f}"
+        voice_key = (f"{cfg.get('voice', 'af_heart')}"
+                     f"@{os.path.getmtime(cfg['model']):.0f}"
+                     f"@{os.path.getmtime(cfg['voices']):.0f}")
     else:
         ref_clean = _prepare_neutts_ref(cfg["voice_dir"])
         voice_key = f"{cfg.get('backbone', '')}@{os.path.getmtime(ref_clean):.0f}"

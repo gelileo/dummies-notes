@@ -2,6 +2,16 @@
 
 Reverse-chronological log (newest entries first) of significant changes to this project. Each entry records what changed, why, and which articles were touched.
 
+## [2026-06-14] fix(tts): fingerprint kokoro voices file in cache key; correct ref.pt docs
+
+Two fixes to the TTS subsystem. (1) Cache correctness: the kokoro `voice_key` previously included only the model file mtime, so swapping the voices `.bin` (same voice name, model unchanged) would serve stale cached audio. `voice_key` now also includes the voices file mtime, invalidating the cache when either binary changes. Regression test `test_cache_invalidated_when_voices_change` added to `TestProviderPlumbing` — mirrors the existing model-change test but bumps the voices file. (2) Doc accuracy: `voice-profiles/README.md` listed `ref_clean.pt` as a generated artifact; `synth_neutts` actually encodes the reference in memory each run with no `.pt` file written. That bullet replaced with an honest note. `knowledge/concepts/dummies-notes/video-engine.md` updated to record both fixes. 46 tests total, 1 skip, all passing.
+
+- `scripts/build_video.py`: `_engine_segments` kokoro branch — `voice_key` now `af_heart@<model_mtime>@<voices_mtime>`.
+- `scripts/tests/test_build_video.py`: added `test_cache_invalidated_when_voices_change` to `TestProviderPlumbing`.
+- `voice-profiles/README.md`: replaced `ref_clean.pt` bullet with accurate in-memory-encoding note.
+- `knowledge/concepts/dummies-notes/video-engine.md`: appended fixes record; updated `updated:` date.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-14] fix(workflow): clarify tts provider env-var flag passing (prompt wording)
 
 Rewrote the tts env-var instruction in the Video phase's agent prompt from ambiguous conditional nesting to explicit per-flag logic. The instruction now says: "When tts is \"kokoro\": for EACH of the env vars KOKORO_PYTHON, KOKORO_MODEL, KOKORO_VOICES that is set, append the matching flag independently — --kokoro-python \"$KOKORO_PYTHON\", --kokoro-model \"$KOKORO_MODEL\", --kokoro-voices \"$KOKORO_VOICES\". When tts is \"neutts\": if NEUTTS_PYTHON is set append --neutts-python \"$NEUTTS_PYTHON\", and append --neutts-voice with the requested voice name. When tts is \"say\" (the default), append no provider flags." Removes the possibility of an LLM treating the flags as an all-or-none block.

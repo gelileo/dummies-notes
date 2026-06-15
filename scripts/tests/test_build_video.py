@@ -583,6 +583,28 @@ class TestProviderPlumbing(unittest.TestCase):
             self.assertEqual(len(calls), 2)            # both runs invoked the runner (not all cached)
             self.assertEqual(calls[0], calls[1])       # same number of beats re-synthesized
 
+    def test_cache_invalidated_when_voices_change(self):
+        from unittest import mock
+        import time
+        with tempfile.TemporaryDirectory() as base:
+            m = self._manifest(base); fr = os.path.join(base, "f"); os.makedirs(fr)
+            py = os.path.join(base, "py"); open(py, "w").close()
+            model = os.path.join(base, "m.onnx"); open(model, "w").close()
+            voices = os.path.join(base, "v.bin"); open(voices, "w").close()
+            cfg = {"python": py, "model": model, "voices": voices, "voice": "af_heart"}
+            calls = []
+            def fake_run(args, **k):
+                job = json.load(open(args[-1])); calls.append(len(job["segments"]))
+                for s in job["segments"]:
+                    open(s["out_path"], "wb").close()
+                return mock.Mock(returncode=0)
+            with mock.patch("build_video.subprocess.run", side_effect=fake_run):
+                bv._synthesize_segments(m, fr, "kokoro", cfg, have_say=True)   # 1st: synth all
+                os.utime(voices, (time.time() + 10, time.time() + 10))         # voices file "changed"
+                bv._synthesize_segments(m, fr, "kokoro", cfg, have_say=True)   # 2nd: re-synth
+            self.assertEqual(len(calls), 2)        # both runs invoked the runner (cache invalidated)
+            self.assertEqual(calls[0], calls[1])
+
 
 class TestRenderMp4Tts(unittest.TestCase):
     def _manifest(self, base):
