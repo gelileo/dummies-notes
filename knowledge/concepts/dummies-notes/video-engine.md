@@ -104,3 +104,5 @@ heavy local engines run in their own venvs through one batch subprocess runner,
 `scripts/tts_runner.py` (loads the model once, synthesizes all beats). Kokoro
 unconfigured → hard error; NeuTTS unconfigured → `say` + NOTE. TTS only applies
 to `--format mp4|both`. Setup: `docs/tts-and-ffmpeg-notes.md`.
+
+**Phase 8 Task 2 (`_synthesize_segments` extraction).** The inline say-synthesis block in `render_mp4` was extracted into two helpers: `_say_segments(manifest, frames_dir, have_say, notes)` (handles the `say` provider, mutates `notes`, returns list of aiff paths or Nones) and `_synthesize_segments(manifest, frames_dir, tts, cfg, have_say)` (provider dispatch — currently routes all providers to `_say_segments`; returns `(segments, notes)`). `render_mp4` now calls `_synthesize_segments(…, "say", None, have_say)` and extends its notes list. Behaviour is identical. `TtsError` exception class added for future hard-fail providers. Two new tests in `TestSynthesizeSegments` (`test_say_path_one_segment_per_slide`, `test_say_unavailable_notes_and_all_none`). 35 tests, 1 skip, all passing.

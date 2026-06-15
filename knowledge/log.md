@@ -2,6 +2,15 @@
 
 Reverse-chronological log (newest entries first) of significant changes to this project. Each entry records what changed, why, and which articles were touched.
 
+## [2026-06-14] refactor(tts): extract _synthesize_segments (say path, behaviour-preserving)
+
+Extracted the inline say-synthesis block from `render_mp4` into `_say_segments` and `_synthesize_segments`. Behaviour is identical: same notes emitted, same segment list produced. `TtsError` exception class added as a placeholder for future hard-fail providers. 2 new tests in `TestSynthesizeSegments`; 35 tests total, 1 skip, all passing.
+
+- `scripts/build_video.py`: added `TtsError`, `_say_segments`, `_synthesize_segments`; replaced inline say block in `render_mp4`.
+- `scripts/tests/test_build_video.py`: added `TestSynthesizeSegments` class.
+- `knowledge/concepts/dummies-notes/video-engine.md`: appended Phase 8 Task 2 note.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-12] fix(reveal): fade = opacity-only; validator warns non-<g> data-reveal; mixed-frame test
 
 Three final-polish fixes for the progressive-reveal feature:

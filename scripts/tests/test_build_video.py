@@ -482,5 +482,29 @@ class TestMixedMultiFrame(unittest.TestCase):
             self.assertNotEqual(idx[fidx[1]], idx[fidx[2]])   # frame-2 is a distinct container
 
 
+class TestSynthesizeSegments(unittest.TestCase):
+    def _manifest(self, base):
+        graph = os.path.join(base, "g"); registry = os.path.join(base, "r")
+        write_decomp(graph, "tcp", True); make_figure(registry, "tcp", 2)
+        m, _ = bv.build_manifest(graph, registry); return m
+
+    def test_say_path_one_segment_per_slide(self):
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as base:
+            m = self._manifest(base); fr = os.path.join(base, "f"); os.makedirs(fr)
+            with mock.patch("build_video._say_segment",
+                            side_effect=lambda t, p: (open(p, "wb").close() or p) if t.strip() else None):
+                segs, notes = bv._synthesize_segments(m, fr, "say", None, have_say=True)
+            self.assertEqual(len(segs), len(m["slides"]))
+            self.assertEqual(notes, [])
+
+    def test_say_unavailable_notes_and_all_none(self):
+        with tempfile.TemporaryDirectory() as base:
+            m = self._manifest(base); fr = os.path.join(base, "f"); os.makedirs(fr)
+            segs, notes = bv._synthesize_segments(m, fr, "say", None, have_say=False)
+            self.assertTrue(all(s is None for s in segs))
+            self.assertTrue(any("say" in n for n in notes))
+
+
 if __name__ == "__main__":
     unittest.main()

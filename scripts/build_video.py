@@ -330,6 +330,32 @@ def _say_segment(text, out_aiff):
         return None
 
 
+class TtsError(Exception):
+    """A hard-required TTS provider (kokoro) is unavailable or failed."""
+
+
+def _say_segments(manifest, frames_dir, have_say, notes):
+    if not have_say:
+        notes.append("`say` not found — rendering a silent MP4 with burned-in captions.")
+        return [None] * len(manifest["slides"])
+    segs = [_say_segment(s["narration"], os.path.join(frames_dir, f"seg-{n:03d}.aiff"))
+            for n, s in enumerate(manifest["slides"])]
+    if not any(segs):
+        notes.append("`say` was available but all speech segments failed — MP4 will be silent.")
+    return segs
+
+
+def _synthesize_segments(manifest, frames_dir, tts, cfg, have_say):
+    """Per-slide audio paths (or None) + NOTE list. Raises TtsError for the
+    kokoro hard-fail case (added later); neutts failures fall back to say with a
+    NOTE (added later). For now every provider routes to the say path so this
+    refactor is behaviour-preserving."""
+    notes = []
+    if tts == "say":
+        return _say_segments(manifest, frames_dir, have_say, notes), notes
+    return _say_segments(manifest, frames_dir, have_say, notes), notes
+
+
 def _effective_durations(manifest, segments):
     """Per-slide seconds: spoken-audio length when ffprobe is present, else computed duration_s."""
     durs = []
@@ -401,14 +427,8 @@ def render_mp4(manifest, out_dir, stage):
     frames_dir = os.path.join(out_dir, "frames")
     pngs = _png_for_slides(manifest, frames_dir, stage)
     have_say = bool(shutil.which("say"))
-    if not have_say:
-        notes.append("`say` not found — rendering a silent MP4 with burned-in captions.")
-    segments = [
-        _say_segment(s["narration"], os.path.join(frames_dir, f"seg-{n:03d}.aiff"))
-        if have_say else None
-        for n, s in enumerate(manifest["slides"])]
-    if have_say and not any(segments):
-        notes.append("`say` was available but all speech segments failed — MP4 will be silent.")
+    segments, seg_notes = _synthesize_segments(manifest, frames_dir, "say", None, have_say)
+    notes.extend(seg_notes)
     durations = _effective_durations(manifest, segments)
     silent = os.path.join(frames_dir, "silent.mp4")
     _build_silent_video(pngs, durations, silent)
