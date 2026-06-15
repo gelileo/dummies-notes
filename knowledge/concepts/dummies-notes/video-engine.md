@@ -6,6 +6,7 @@ updated: 2026-06-14
 status: thin
 affects:
   - "scripts/build_video.py"
+  - "scripts/tts_runner.py"
   - ".claude/skills/concept-illustrator/assets/video.template.html"
 references:
   - "concepts/dummies-notes/illustration-engine.md"
@@ -106,3 +107,7 @@ unconfigured → hard error; NeuTTS unconfigured → `say` + NOTE. TTS only appl
 to `--format mp4|both`. Setup: `docs/tts-and-ffmpeg-notes.md`.
 
 **Phase 8 Task 2 (`_synthesize_segments` extraction).** The inline say-synthesis block in `render_mp4` was extracted into two helpers: `_say_segments(manifest, frames_dir, have_say, notes)` (handles the `say` provider, mutates `notes`, returns list of aiff paths or Nones) and `_synthesize_segments(manifest, frames_dir, tts, cfg, have_say)` (provider dispatch — currently routes all providers to `_say_segments`; returns `(segments, notes)`). `render_mp4` now calls `_synthesize_segments(…, "say", None, have_say)` and extends its notes list. Behaviour is identical. `TtsError` exception class added for future hard-fail providers. Two new tests in `TestSynthesizeSegments` (`test_say_path_one_segment_per_slide`, `test_say_unavailable_notes_and_all_none`). 35 tests, 1 skip, all passing.
+
+**Phase 8 Task 3 (`scripts/tts_runner.py` — batch venv runner).** `scripts/tts_runner.py` is the subprocess entry point executed by a provider's own venv Python (not the system Python). Top-level imports are stdlib-only (`argparse`, `json`, `os`, `sys`); engine packages (`kokoro_onnx`, `neuttsair`, `transformers`) are imported lazily inside `synth_kokoro` and `synth_neutts`, keeping the dispatch logic importable under the system Python without the heavy engines installed. `synth_kokoro(job)` loads a Kokoro ONNX model once and synthesizes all segments. `synth_neutts(job)` transcribes the reference audio via Whisper if no transcript exists, loads `NeuTTSAir` (backbone + codec) once, encodes the reference once, then loops `tts.infer` per segment writing 24 kHz WAV. `main(argv)` dispatches by `--engine kokoro|neutts`, catches any engine exception as exit code 1, prints a JSON result on success (exit 0). Three unit tests (dispatch kokoro, dispatch neutts, engine failure → nonzero) all passing under system Python with engines mocked.
+
+**Phase 8 hygiene (file handle cleanup).** Replaced bare `open()` calls in `synth_neutts` with proper context managers. Added module-level `_has_text(path)` helper — returns True if a path is a readable file with non-whitespace content, closing the file handle properly. Used by `synth_neutts` to check for an existing reference-text file without leaking a file handle in a boolean condition. Both subsequent writes and reads now use `with` blocks. Added `test_has_text` (4 assertions: empty string, missing file, empty file, file with content). 4 tests total, all passing.

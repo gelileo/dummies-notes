@@ -2,6 +2,24 @@
 
 Reverse-chronological log (newest entries first) of significant changes to this project. Each entry records what changed, why, and which articles were touched.
 
+## [2026-06-14] fix(tts): file handle cleanup in synth_neutts — use context managers + _has_text helper
+
+Hygiene fix: replaced bare `open()` calls in `synth_neutts` with proper context managers and a new module-level helper. Added `_has_text(path)` function — returns True if a path is a readable file with non-whitespace content, properly closing the file handle. Used by `synth_neutts` to check for an existing reference-text file without leaking a file handle in a boolean condition. Both the write (Whisper transcription) and read (reference text) now use `with` blocks. Added `test_has_text` (4 assertions: empty string, missing file, empty file, file with content).
+
+- `scripts/tts_runner.py`: added `import os` to top-level imports; added module-level `_has_text(path)` helper; rewrote `synth_neutts` to use context managers and the helper; removed inline `import os`.
+- `scripts/tests/test_tts_runner.py`: added `test_has_text` method to `TestTtsRunner` class.
+- `knowledge/concepts/dummies-notes/video-engine.md`: appended Phase 8 hygiene note; updated top-level imports to include `os`.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+## [2026-06-14] feat(tts): batch venv runner (kokoro/neutts dispatch, lazy engine imports)
+
+Created `scripts/tts_runner.py` — the subprocess entry point executed by a provider's own venv Python. Stdlib-only top-level imports keep it importable under any Python; engine packages (`kokoro_onnx`, `neuttsair`, `transformers`) are lazily imported inside `synth_kokoro` / `synth_neutts`. `main` dispatches by `--engine`, catches engine failures as exit 1, prints JSON result on success. NeuTTS API confirmed against `/tmp/neutts-air`: constructor kwargs, `encode_reference`, `infer`, and 24 kHz sample rate all match exactly. 3 new tests, all passing under system Python with engines mocked.
+
+- `scripts/tts_runner.py`: created.
+- `scripts/tests/test_tts_runner.py`: created (3 tests — dispatch kokoro, dispatch neutts, engine failure → exit 1).
+- `knowledge/concepts/dummies-notes/video-engine.md`: appended Phase 8 Task 3 note; added `scripts/tts_runner.py` to `affects:`.
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
+
 ## [2026-06-14] refactor(tts): extract _synthesize_segments (say path, behaviour-preserving)
 
 Extracted the inline say-synthesis block from `render_mp4` into `_say_segments` and `_synthesize_segments`. Behaviour is identical: same notes emitted, same segment list produced. `TtsError` exception class added as a placeholder for future hard-fail providers. 2 new tests in `TestSynthesizeSegments`; 35 tests total, 1 skip, all passing.
