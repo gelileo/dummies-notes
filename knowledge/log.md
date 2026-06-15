@@ -600,3 +600,5 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - `scripts/build_video.py`: updated `render_mp4` signature + `_synthesize_segments` call; updated `build` signature + `render_mp4` call.
 - `scripts/tests/test_build_video.py`: added `TestRenderMp4Tts` class (`test_render_mp4_default_tts_is_say`, `test_render_mp4_kokoro_unconfigured_raises`).
 - Articles touched: `concepts/dummies-notes/video-engine.md`.
+
+- 2026-06-14 — Phase 8 complete: pluggable --tts say|kokoro|neutts. CLI default kokoro (hard-error if unconfigured), neutts opt-in cloned voice (falls back to say), say zero-dep fallback. One venv batch runner scripts/tts_runner.py; ffmpeg-denoised + Whisper-auto-transcribed NeuTTS reference; per-beat caching keyed on model/voice fingerprint; MP4-only. Workflow default stays say.

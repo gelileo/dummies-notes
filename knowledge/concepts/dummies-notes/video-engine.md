@@ -99,42 +99,74 @@ Every run also writes `script.md` (human voiceover) and `captions.srt`.
 
 ## TTS providers (Phase 8)
 
-MP4 narration is pluggable via `--tts say|kokoro|neutts` (default **kokoro** at
-the CLI). `say` is the built-in zero-dep fallback. `kokoro` and `neutts` are
-heavy local engines run in their own venvs through one batch subprocess runner,
-`scripts/tts_runner.py` (loads the model once, synthesizes all beats). Kokoro
-unconfigured → hard error; NeuTTS unconfigured → `say` + NOTE. TTS only applies
-to `--format mp4|both`. Setup: `docs/tts-and-ffmpeg-notes.md`.
+MP4 narration is pluggable via `--tts say|kokoro|neutts`. TTS only applies to
+`--format mp4|both`; the `--format html` path runs no synthesis at all.
 
-**Phase 8 Task 2 (`_synthesize_segments` extraction).** The inline say-synthesis block in `render_mp4` was extracted into two helpers: `_say_segments(manifest, frames_dir, have_say, notes)` (handles the `say` provider, mutates `notes`, returns list of aiff paths or Nones) and `_synthesize_segments(manifest, frames_dir, tts, cfg, have_say)` (provider dispatch — currently routes all providers to `_say_segments`; returns `(segments, notes)`). `render_mp4` now calls `_synthesize_segments(…, "say", None, have_say)` and extends its notes list. Behaviour is identical. `TtsError` exception class added for future hard-fail providers. Two new tests in `TestSynthesizeSegments` (`test_say_path_one_segment_per_slide`, `test_say_unavailable_notes_and_all_none`). 35 tests, 1 skip, all passing.
+**Default behaviour**: the CLI (`main()`) defaults to `--tts kokoro`; the
+workflow passes `--tts say` (zero-dep, always available). `render_mp4` itself
+defaults to `tts="say"` to preserve the unit-test contract. `build()` defaults
+to `tts="kokoro"` (the user-facing MP4 default) but the `fmt="html"` path is
+inert regardless.
 
-**Phase 8 Task 3 (`scripts/tts_runner.py` — batch venv runner).** `scripts/tts_runner.py` is the subprocess entry point executed by a provider's own venv Python (not the system Python). Top-level imports are stdlib-only (`argparse`, `json`, `os`, `sys`); engine packages (`kokoro_onnx`, `neuttsair`, `transformers`) are imported lazily inside `synth_kokoro` and `synth_neutts`, keeping the dispatch logic importable under the system Python without the heavy engines installed. `synth_kokoro(job)` loads a Kokoro ONNX model once and synthesizes all segments. `synth_neutts(job)` transcribes the reference audio via Whisper if no transcript exists, loads `NeuTTSAir` (backbone + codec) once, encodes the reference once, then loops `tts.infer` per segment writing 24 kHz WAV. `main(argv)` dispatches by `--engine kokoro|neutts`, catches any engine exception as exit code 1, prints a JSON result on success (exit 0). Three unit tests (dispatch kokoro, dispatch neutts, engine failure → nonzero) all passing under system Python with engines mocked.
+### The three providers
 
-**Phase 8 hygiene (file handle cleanup).** Replaced bare `open()` calls in `synth_neutts` with proper context managers. Added module-level `_has_text(path)` helper — returns True if a path is a readable file with non-whitespace content, closing the file handle properly. Used by `synth_neutts` to check for an existing reference-text file without leaking a file handle in a boolean condition. Both subsequent writes and reads now use `with` blocks. Added `test_has_text` (4 assertions: empty string, missing file, empty file, file with content). 4 tests total, all passing.
+| Provider | When to use | Error policy |
+| --- | --- | --- |
+| `say` | macOS zero-dep fallback | Silent MP4 with NOTE when `say` is absent |
+| `kokoro` | High-quality ONNX TTS | Hard error (`TtsError`) if unconfigured or synthesis fails — caller must fix config or switch to `--tts say` |
+| `neutts` | Cloned-voice TTS | Soft fail — appends NOTE and falls back to `say` when unconfigured or synthesis fails |
 
-**Phase 8 Task 4 (kokoro/neutts dispatch in `_synthesize_segments`).** The provider dispatch in `_synthesize_segments` is now fully implemented:
+### Batch venv runner (`scripts/tts_runner.py`)
 
-- **Readiness checks**: `_kokoro_ready(cfg)` verifies that `python`, `model`, and `voices` keys point to existing files; `_neutts_ready(cfg)` verifies `python` exists and `<voice_dir>/ref.wav` is present. Both return `(ok, reason_str)`.
-- **Error policy**: kokoro unconfigured or synthesis failure → raises `TtsError` (hard fail, caller must fix or switch to `--tts say`). Neutts unconfigured or synthesis failure → appends a NOTE and falls back to `_say_segments` (soft fail).
-- **Per-beat caching**: `_seg_cache_path(frames_dir, engine, voice_key, text)` hashes `engine|voice_key|text` via SHA-1 (first 16 hex chars) and returns a `tts-<engine>-<hash>.wav` path under `frames_dir`. Only beats whose cache file does not yet exist are added to the `todo` list; cached beats are mapped directly. This means re-running a topic skips already-synthesized beats.
-- **Reference denoising**: `_prepare_neutts_ref(voice_dir)` calls ffmpeg to produce `ref_clean.wav` (mono 16 kHz, highpass + afftdn denoising) from `ref.wav`; result is cached on disk and skipped on subsequent calls.
-- **Job runner**: `_engine_segments(engine, cfg, manifest, frames_dir)` builds the uncached job dict (format per engine), writes `tts-job-<engine>.json`, and calls `subprocess.run([cfg["python"], TTS_RUNNER, "--engine", engine, job_path], check=True)`. Returns a per-slide list of wav paths (or None for slides with empty narration).
-- **Module constant**: `TTS_RUNNER = os.path.join(_HERE, "tts_runner.py")` added near other path constants.
-- **New import**: `import hashlib` added to the import block.
-- 3 new tests in `TestProviderPlumbing` (kokoro-unconfigured raises, neutts-unconfigured falls back with NOTE, kokoro-ready builds job and maps segments). 38 tests total, 1 skip, all passing.
+Heavy engines run in their own virtualenvs via a single subprocess batch call,
+not one process per beat. `scripts/tts_runner.py` is the entry point executed
+by the provider's own venv Python. Top-level imports are stdlib-only (`argparse`,
+`json`, `os`, `sys`); engine packages (`kokoro_onnx`, `neuttsair`, `transformers`)
+are lazily imported inside `synth_kokoro` / `synth_neutts`, so the runner is
+importable under the system Python without the heavy engines installed. `main`
+dispatches by `--engine kokoro|neutts`, loads the model once, synthesizes all
+segments in one pass, prints a JSON result on success (exit 0), exits 1 on any
+engine exception.
 
-**Phase 8 robustness fixes.**
+### Dispatch and caching in `build_video.py`
 
-- **Cache key fingerprint** (`_engine_segments`): `voice_key` now includes the model/ref file mtime (`af_heart@<mtime>` for kokoro; `<backbone>@<mtime>` for neutts), so changing the Kokoro model file or NeuTTS reference audio invalidates all cached segments. `_prepare_neutts_ref` is called up front to compute the key even when the todo list is empty.
-- **Post-run existence check** (`_engine_segments`): after `subprocess.run` exits 0, every expected output path is verified; any missing files raise `OSError` (surfaced as `TtsError` for kokoro, NOTE+say fallback for neutts). `subprocess.run` now passes `timeout=900`.
-- **Atomic ref-clean write** (`_prepare_neutts_ref`): writes to `ref_clean.wav.tmp.wav` then `os.replace`-renames atomically. Also regenerates when `ref.wav` is newer than `ref_clean.wav` (mtime comparison), not just when the file is absent.
-- **Wider exception tuples** (`_synthesize_segments`): both the kokoro and neutts `except` clauses now catch `(subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError, KeyError)` — covering runner timeouts and missing config keys.
-- 2 new regression tests in `TestProviderPlumbing` (`test_runner_writes_nothing_raises`, `test_cache_invalidated_when_model_changes`). 40 tests total, 1 skip, all passing.
+`_synthesize_segments(manifest, frames_dir, tts, cfg, have_say)` is the
+provider-dispatch entry point called by `render_mp4`. It:
 
-**Phase 8 Task 5 (thread tts/cfg through render_mp4 and build).**
+1. **Readiness checks**: `_kokoro_ready(cfg)` verifies `python`, `model`, and
+   `voices` keys point to existing files. `_neutts_ready(cfg)` verifies `python`
+   exists and `<voice_dir>/ref.wav` is present. Both return `(ok, reason_str)`.
+2. **Per-beat caching** (`_seg_cache_path`): SHA-1 of `engine|voice_key|text`
+   (first 16 hex chars) → `tts-<engine>-<hash>.wav` under `frames_dir`. Only
+   uncached beats are synthesized; cached beats are mapped directly. The voice
+   key includes the model/ref file mtime (`af_heart@<mtime>` for kokoro;
+   `<backbone>@<mtime>` for neutts) so changing the model file invalidates the
+   cache automatically.
+3. **Job runner** (`_engine_segments`): builds a job dict for all uncached beats,
+   writes `tts-job-<engine>.json`, calls `subprocess.run([cfg["python"],
+   TTS_RUNNER, "--engine", engine, job_path], timeout=900, check=True)`. After
+   the runner exits 0, verifies all expected output paths exist (missing → `OSError`).
+4. **Exception handling**: both dispatch branches catch
+   `(CalledProcessError, TimeoutExpired, OSError, KeyError)`. Kokoro: re-raises
+   as `TtsError`. NeuTTS: appends NOTE and falls back to `_say_segments`.
 
-- `render_mp4(manifest, out_dir, stage, tts="say", cfg=None)`: gained `tts` and `cfg` keyword parameters. The `_synthesize_segments` call now passes these through instead of the previously hardcoded `"say", None`. `render_mp4`'s own default is `tts="say"` so all existing direct callers and unit tests are unaffected.
-- `build(graph_dir, registry_root, out_dir, fmt="html", wpm=DEFAULT_WPM, stage=STAGE, tts="kokoro", cfg=None)`: gained `tts` and `cfg` keyword parameters. Its `render_mp4` call now passes `tts=tts, cfg=cfg`. `build`'s default is `tts="kokoro"` — the user-facing MP4 default — while `render_mp4`'s own default stays `"say"` to preserve the existing unit-test contract. The `fmt="html"` path (the default) never calls `render_mp4`, so `build`'s `tts="kokoro"` default is inert unless `fmt="mp4"` or `"both"`.
-- 2 new tests in `TestRenderMp4Tts` (`test_render_mp4_default_tts_is_say`, `test_render_mp4_kokoro_unconfigured_raises`). 42 tests total, 1 skip, all passing.
+### NeuTTS reference audio
 
-**Phase 8 Task 6 (CLI `--tts` flags + `TtsError` exit).** `main()` now exposes `--tts say|kokoro|neutts` (default `kokoro`), `--kokoro-python/model/voices/voice`, `--neutts-python/voice/backbone`. Provider-specific env vars (`KOKORO_PYTHON`, `KOKORO_MODEL`, `KOKORO_VOICES`, `NEUTTS_PYTHON`) are the defaults for the corresponding flags. `cfg` is assembled from the parsed args (kokoro dict, neutts dict with `voice_dir` rooted at `_REPO/voice-profiles/<name>`, or `None` for say) and forwarded to `build()`. The `try/except` block now catches both `ValueError` and `TtsError` — an unconfigured kokoro on `--format mp4` prints `ERROR ...` and exits 1. TTS only applies when `fmt` is `mp4` or `both`; `--format html` runs no TTS so kokoro config is irrelevant. 2 new tests in `TestTtsCli`; 44 tests total, 1 skip, all passing.
+`_prepare_neutts_ref(voice_dir)` produces `ref_clean.wav` from `voice_dir/ref.wav`
+via ffmpeg (mono 16 kHz, highpass + `afftdn` denoising). The cleaned file is
+written atomically (`ref_clean.wav.tmp.wav` → `os.replace`) and regenerated when
+`ref.wav` is newer. If no transcript exists, `synth_neutts` auto-transcribes the
+reference with Whisper and stores the text alongside the audio. Voice profiles
+live at `voice-profiles/<name>/` (gitignored).
+
+### CLI flags
+
+`--tts say|kokoro|neutts` (default `kokoro`). Provider-specific flags and their
+env-var defaults:
+
+- Kokoro: `--kokoro-python` (`KOKORO_PYTHON`), `--kokoro-model` (`KOKORO_MODEL`),
+  `--kokoro-voices` (`KOKORO_VOICES`), `--kokoro-voice` (default `af_heart`).
+- NeuTTS: `--neutts-python` (`NEUTTS_PYTHON`), `--neutts-voice`,
+  `--neutts-backbone`. `voice_dir` is resolved as `_REPO/voice-profiles/<name>`.
+
+Setup instructions: `docs/tts-and-ffmpeg-notes.md`.

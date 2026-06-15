@@ -642,5 +642,20 @@ class TestTtsCli(unittest.TestCase):
             self.assertEqual(rc, 1)
 
 
+class TestKokoroReal(unittest.TestCase):
+    @unittest.skipUnless(os.environ.get("KOKORO_PYTHON") and os.environ.get("KOKORO_MODEL")
+                         and os.environ.get("KOKORO_VOICES"), "Kokoro venv not configured")
+    def test_real_kokoro_one_beat(self):
+        with tempfile.TemporaryDirectory() as base:
+            fr = os.path.join(base, "f"); os.makedirs(fr)
+            cfg = {"python": os.environ["KOKORO_PYTHON"], "model": os.environ["KOKORO_MODEL"],
+                   "voices": os.environ["KOKORO_VOICES"], "voice": "af_heart"}
+            m = {"slides": [{"narration": "Hello from Kokoro.", "image": None,
+                             "caption": "", "kind": "frame", "concept_slug": "x",
+                             "duration_s": 2.0, "transition": "cut", "reveal_to": None}]}
+            segs, notes = bv._synthesize_segments(m, fr, "kokoro", cfg, have_say=True)
+            self.assertTrue(segs[0] and os.path.exists(segs[0]) and os.path.getsize(segs[0]) > 0)
+
+
 if __name__ == "__main__":
     unittest.main()
