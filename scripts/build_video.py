@@ -579,11 +579,28 @@ def main(argv=None):
     parser.add_argument("--out", required=True)
     parser.add_argument("--format", choices=("html", "mp4", "both"), default="html")
     parser.add_argument("--wpm", type=int, default=DEFAULT_WPM)
+    parser.add_argument("--tts", choices=("say", "kokoro", "neutts"), default="kokoro")
+    parser.add_argument("--kokoro-python", default=os.environ.get("KOKORO_PYTHON"))
+    parser.add_argument("--kokoro-model", default=os.environ.get("KOKORO_MODEL"))
+    parser.add_argument("--kokoro-voices", default=os.environ.get("KOKORO_VOICES"))
+    parser.add_argument("--kokoro-voice", default="af_heart")
+    parser.add_argument("--neutts-python", default=os.environ.get("NEUTTS_PYTHON"))
+    parser.add_argument("--neutts-voice", default="default")
+    parser.add_argument("--neutts-backbone", default="neuphonic/neutts-air-q8-gguf")
     args = parser.parse_args(argv)
+    if args.tts == "kokoro":
+        cfg = {"python": args.kokoro_python, "model": args.kokoro_model,
+               "voices": args.kokoro_voices, "voice": args.kokoro_voice}
+    elif args.tts == "neutts":
+        cfg = {"python": args.neutts_python,
+               "voice_dir": os.path.join(_REPO, "voice-profiles", args.neutts_voice),
+               "backbone": args.neutts_backbone}
+    else:
+        cfg = None
     try:
         result, issues = build(args.graph_dir, args.registry, args.out,
-                               fmt=args.format, wpm=args.wpm)
-    except ValueError as exc:
+                               fmt=args.format, wpm=args.wpm, tts=args.tts, cfg=cfg)
+    except (ValueError, TtsError) as exc:
         print(f"ERROR  {exc}")
         return 1
     for level, message in issues:

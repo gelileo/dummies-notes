@@ -2,6 +2,24 @@
 
 Reverse-chronological log (newest entries first) of significant changes to this project. Each entry records what changed, why, and which articles were touched.
 
+## [2026-06-14] fix(workflow): clarify tts provider env-var flag passing (prompt wording)
+
+Rewrote the tts env-var instruction in the Video phase's agent prompt from ambiguous conditional nesting to explicit per-flag logic. The instruction now says: "When tts is \"kokoro\": for EACH of the env vars KOKORO_PYTHON, KOKORO_MODEL, KOKORO_VOICES that is set, append the matching flag independently — --kokoro-python \"$KOKORO_PYTHON\", --kokoro-model \"$KOKORO_MODEL\", --kokoro-voices \"$KOKORO_VOICES\". When tts is \"neutts\": if NEUTTS_PYTHON is set append --neutts-python \"$NEUTTS_PYTHON\", and append --neutts-voice with the requested voice name. When tts is \"say\" (the default), append no provider flags." Removes the possibility of an LLM treating the flags as an all-or-none block.
+
+- `.claude/workflows/dummies-notes.js`: rewrote lines 299–300 (the Video agent's env-var instruction) to be explicit per flag.
+- `knowledge/concepts/dummies-notes/orchestration-workflow.md`: updated the step 7 description of how the Video agent passes provider env vars — now reads per-flag instead of conditional nesting.
+- `node --check` passes; `python3 scripts/validate-articles` exits 0.
+- Articles touched: `concepts/dummies-notes/orchestration-workflow.md`.
+
+## [2026-06-14] feat(tts): --tts CLI flags + kokoro hard-error exit + workflow pass-through
+
+Added `--tts say|kokoro|neutts` (default `kokoro`) to `main()` in `scripts/build_video.py` along with `--kokoro-python/model/voices/voice` and `--neutts-python/voice/backbone` flags. Provider env vars (`KOKORO_PYTHON`, `KOKORO_MODEL`, `KOKORO_VOICES`, `NEUTTS_PYTHON`) serve as flag defaults. `main()` assembles a `cfg` dict per provider and forwards `tts`/`cfg` to `build()`. `TtsError` is now caught alongside `ValueError` so an unconfigured kokoro on `--format mp4` exits 1 with a clear `ERROR` message. HTML format ignores TTS entirely. Workflow Video phase now passes `--tts ${TTS}` (workflow default `"say"`) and instructs the agent to forward provider env vars. `meta.whenToUse` updated to mention `tts` arg. 2 new tests in `TestTtsCli`; 44 tests total, 1 skip, all passing.
+
+- `scripts/build_video.py`: added `--tts`/provider flags to `main()`; `cfg` assembly per provider; extended `except` to `(ValueError, TtsError)`.
+- `.claude/workflows/dummies-notes.js`: added `TTS` const; `--tts ${TTS}` in Video agent command; env-var pass-through instructions; updated `whenToUse`.
+- `scripts/tests/test_build_video.py`: added `TestTtsCli` class (`test_cli_html_ignores_tts`, `test_cli_mp4_kokoro_unconfigured_exits_1`).
+- Articles touched: `concepts/dummies-notes/video-engine.md`, `concepts/dummies-notes/orchestration-workflow.md`.
+
 ## [2026-06-14] fix(tts): robustness — cache key fingerprint, atomic ref-clean write, post-run check, wider exceptions
 
 Four robustness fixes to `scripts/build_video.py`: (1) `_engine_segments` voice_key now includes the model/ref file mtime so cache is invalidated on model/voice swap; (2) post-run existence check raises OSError when runner exits 0 but writes no segments; (3) `_prepare_neutts_ref` writes atomically and regenerates when ref.wav is newer than ref_clean.wav; (4) both `_synthesize_segments` except clauses widened to `(CalledProcessError, TimeoutExpired, OSError, KeyError)`. Two new regression tests in `TestProviderPlumbing`. 40 tests total, 1 skip, all passing.

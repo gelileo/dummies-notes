@@ -1,7 +1,7 @@
 export const meta = {
   name: 'dummies-notes',
   description: 'Decompose a topic into a concept graph, illustrate every figurable concept (self-sufficient figures), review with fresh eyes, and register figures',
-  whenToUse: 'args: {topic: string, definition?: string, maxDepth?: number, maxNodes?: number, makeVideo?: boolean, videoFormat?: "html"|"mp4"|"both"}. Run produces output/<topic>/index.html + map.html; with makeVideo it also builds output/<topic>/video/.',
+  whenToUse: 'args: {topic: string, definition?: string, maxDepth?: number, maxNodes?: number, makeVideo?: boolean, videoFormat?: "html"|"mp4"|"both", tts?: "say"|"kokoro"|"neutts"}. Run produces output/<topic>/index.html + map.html; with makeVideo it also builds output/<topic>/video/.',
   phases: [
     { title: 'Decompose', detail: 'registry-aware BFS, one skill call per node' },
     { title: 'Illustrate', detail: 'self-sufficient runbook-first figure per figurable concept' },
@@ -22,6 +22,7 @@ const MAX_DEPTH = (A && A.maxDepth) || 2
 const MAX_NODES = (A && A.maxNodes) || 12
 const MAKE_VIDEO = !!(A && A.makeVideo)
 const VIDEO_FORMAT = (A && A.videoFormat) || 'html'
+const TTS = (A && A.tts) || 'say'
 const MAX_REPAIRS = 2
 const AUDIENCE = 'a curious adult with no domain background'
 
@@ -294,7 +295,8 @@ if (MAKE_VIDEO) {
   }
   videoResult = await agent(
     `Run from the repo root: python3 scripts/build_video.py output/${rootSlug}/graph ` +
-    `--out output/${rootSlug} --format ${VIDEO_FORMAT}\n` +
+    `--out output/${rootSlug} --format ${VIDEO_FORMAT} --tts ${TTS}\n` +
+    `When tts is "kokoro": for EACH of the env vars KOKORO_PYTHON, KOKORO_MODEL, KOKORO_VOICES that is set, append the matching flag independently — --kokoro-python "$KOKORO_PYTHON", --kokoro-model "$KOKORO_MODEL", --kokoro-voices "$KOKORO_VOICES". When tts is "neutts": if NEUTTS_PYTHON is set append --neutts-python "$NEUTTS_PYTHON", and append --neutts-voice with the requested voice name. When tts is "say" (the default), append no provider flags.\n` +
     'It must exit 0 (prints "OK built N slide(s) ..."). Return video_dir = ' +
     `output/${rootSlug}/video, video_clean = (exit code was 0), and notes = any NOTE ` +
     'lines (e.g. ffmpeg/say missing fallbacks), joined with "; ".',

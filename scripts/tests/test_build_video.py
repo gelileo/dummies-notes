@@ -616,5 +616,31 @@ class TestRenderMp4Tts(unittest.TestCase):
                                   cfg={"python": "/no/such", "model": "m", "voices": "v", "voice": "af_heart"})
 
 
+class TestTtsCli(unittest.TestCase):
+    def _topic(self, base):
+        graph = os.path.join(base, "g"); registry = os.path.join(base, "r")
+        write_decomp(graph, "tcp", True); make_figure(registry, "tcp", 1)
+        return graph, registry
+
+    def test_cli_html_ignores_tts(self):
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry = self._topic(base); out = os.path.join(base, "o")
+            rc = bv.main([graph, "--registry", registry, "--out", out,
+                          "--format", "html", "--tts", "kokoro"])
+            self.assertEqual(rc, 0)  # html runs no TTS, so kokoro config is irrelevant
+
+    def test_cli_mp4_kokoro_unconfigured_exits_1(self):
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as base:
+            graph, registry = self._topic(base); out = os.path.join(base, "o")
+            def which(c): return "/usr/bin/ffmpeg" if c == "ffmpeg" else None
+            with mock.patch("build_video.shutil.which", side_effect=which), \
+                 mock.patch("build_video._have_rasterizer", return_value=True), \
+                 mock.patch("build_video.render.export_png", side_effect=lambda s, p, **k: open(p, "wb").close() or p):
+                rc = bv.main([graph, "--registry", registry, "--out", out,
+                              "--format", "mp4", "--tts", "kokoro"])  # no KOKORO_PYTHON
+            self.assertEqual(rc, 1)
+
+
 if __name__ == "__main__":
     unittest.main()

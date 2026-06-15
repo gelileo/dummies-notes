@@ -2,7 +2,7 @@
 title: Orchestration workflow
 type: concept
 area: dummies-notes
-updated: 2026-06-11
+updated: 2026-06-14
 status: mature
 affects:
   - ".claude/workflows/**"
@@ -58,13 +58,22 @@ review them with fresh eyes, and register everything.
    thumbnails for illustrated nodes, edges for each prerequisite link, click-through
    to the explainer sections).
 7. **Video** (opt-in): when `makeVideo: true` is passed (default off), runs
-   `scripts/build_video.py output/<root>/graph --out output/<root> --format <videoFormat>`
+   `scripts/build_video.py output/<root>/graph --out output/<root> --format <videoFormat> --tts <tts>`
    (default format `"html"`; also accepts `"mp4"` or `"both"`) and writes the
    narrated animated slideshow to `output/<root>/video/`. Runs after Assemble and
    before ChainReview so the deliverable HTML is already in place. See
    [[video-engine]] for the build_video.py contract. The `videoFormat` arg
    controls whether an HTML player, an MP4 file, or both are produced. When the
    flag is absent the phase is skipped entirely and default runs are unchanged.
+   The optional `tts` arg selects the narration provider (`"say"` | `"kokoro"` |
+   `"neutts"`); the workflow defaults to `"say"` so server runs without Kokoro
+   configured do not hard-fail. The Video agent passes provider env vars to the CLI
+   as follows: when tts is `"kokoro"`, for **each** of `$KOKORO_PYTHON`,
+   `$KOKORO_MODEL`, `$KOKORO_VOICES` that is set, append the corresponding flag
+   (`--kokoro-python`, `--kokoro-model`, `--kokoro-voices`) independently; when tts
+   is `"neutts"`, if `$NEUTTS_PYTHON` is set append `--neutts-python`, and append
+   `--neutts-voice` with the requested voice name; when tts is `"say"` (the default),
+   append no provider flags.
 
 8. **ChainReview**: a fresh agent reads the assembled explainer bottom-up (as a
    learner would), plus the graph files, and writes
