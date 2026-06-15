@@ -130,3 +130,9 @@ to `--format mp4|both`. Setup: `docs/tts-and-ffmpeg-notes.md`.
 - **Atomic ref-clean write** (`_prepare_neutts_ref`): writes to `ref_clean.wav.tmp.wav` then `os.replace`-renames atomically. Also regenerates when `ref.wav` is newer than `ref_clean.wav` (mtime comparison), not just when the file is absent.
 - **Wider exception tuples** (`_synthesize_segments`): both the kokoro and neutts `except` clauses now catch `(subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError, KeyError)` — covering runner timeouts and missing config keys.
 - 2 new regression tests in `TestProviderPlumbing` (`test_runner_writes_nothing_raises`, `test_cache_invalidated_when_model_changes`). 40 tests total, 1 skip, all passing.
+
+**Phase 8 Task 5 (thread tts/cfg through render_mp4 and build).**
+
+- `render_mp4(manifest, out_dir, stage, tts="say", cfg=None)`: gained `tts` and `cfg` keyword parameters. The `_synthesize_segments` call now passes these through instead of the previously hardcoded `"say", None`. `render_mp4`'s own default is `tts="say"` so all existing direct callers and unit tests are unaffected.
+- `build(graph_dir, registry_root, out_dir, fmt="html", wpm=DEFAULT_WPM, stage=STAGE, tts="kokoro", cfg=None)`: gained `tts` and `cfg` keyword parameters. Its `render_mp4` call now passes `tts=tts, cfg=cfg`. `build`'s default is `tts="kokoro"` — the user-facing MP4 default — while `render_mp4`'s own default stays `"say"` to preserve the existing unit-test contract. The `fmt="html"` path (the default) never calls `render_mp4`, so `build`'s `tts="kokoro"` default is inert unless `fmt="mp4"` or `"both"`.
+- 2 new tests in `TestRenderMp4Tts` (`test_render_mp4_default_tts_is_say`, `test_render_mp4_kokoro_unconfigured_raises`). 42 tests total, 1 skip, all passing.

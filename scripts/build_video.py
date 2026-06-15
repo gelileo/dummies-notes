@@ -508,7 +508,7 @@ def _have_rasterizer():
         return False
 
 
-def render_mp4(manifest, out_dir, stage):
+def render_mp4(manifest, out_dir, stage, tts="say", cfg=None):
     """Return (mp4_path|None, notes). Honest fallback when tools are missing."""
     notes = []
     if not manifest.get("slides"):
@@ -523,7 +523,7 @@ def render_mp4(manifest, out_dir, stage):
     frames_dir = os.path.join(out_dir, "frames")
     pngs = _png_for_slides(manifest, frames_dir, stage)
     have_say = bool(shutil.which("say"))
-    segments, seg_notes = _synthesize_segments(manifest, frames_dir, "say", None, have_say)
+    segments, seg_notes = _synthesize_segments(manifest, frames_dir, tts, cfg, have_say)
     notes.extend(seg_notes)
     durations = _effective_durations(manifest, segments)
     silent = os.path.join(frames_dir, "silent.mp4")
@@ -541,7 +541,8 @@ def render_mp4(manifest, out_dir, stage):
     return mp4_path, notes
 
 
-def build(graph_dir, registry_root, out_dir, fmt="html", wpm=DEFAULT_WPM, stage=STAGE):
+def build(graph_dir, registry_root, out_dir, fmt="html", wpm=DEFAULT_WPM, stage=STAGE,
+          tts="kokoro", cfg=None):
     manifest, issues = build_manifest(graph_dir, registry_root, wpm, stage)
     if manifest is None:
         return None, issues
@@ -562,7 +563,7 @@ def build(graph_dir, registry_root, out_dir, fmt="html", wpm=DEFAULT_WPM, stage=
     if fmt in ("html", "both"):
         build_player(manifest, PLAYER_TEMPLATE, os.path.join(video_dir, "video.html"))
     if fmt in ("mp4", "both"):
-        _, mp4_notes = render_mp4(manifest, video_dir, stage)
+        _, mp4_notes = render_mp4(manifest, video_dir, stage, tts=tts, cfg=cfg)
         notes.extend(mp4_notes)
     result = {"video_dir": video_dir, "slides": len(manifest["slides"]), "notes": notes,
               "video_html": os.path.join(video_dir, "video.html") if fmt in ("html", "both") else None}

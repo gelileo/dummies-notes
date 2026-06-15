@@ -584,5 +584,37 @@ class TestProviderPlumbing(unittest.TestCase):
             self.assertEqual(calls[0], calls[1])       # same number of beats re-synthesized
 
 
+class TestRenderMp4Tts(unittest.TestCase):
+    def _manifest(self, base):
+        graph = os.path.join(base, "g"); registry = os.path.join(base, "r")
+        write_decomp(graph, "tcp", True); make_figure(registry, "tcp", 1)
+        return bv.build_manifest(graph, registry)[0]
+
+    def test_render_mp4_default_tts_is_say(self):
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as base:
+            m = self._manifest(base)
+            def which(c): return "/usr/bin/ffmpeg" if c == "ffmpeg" else ("/usr/bin/say" if c == "say" else None)
+            with mock.patch("build_video.shutil.which", side_effect=which), \
+                 mock.patch("build_video._have_rasterizer", return_value=True), \
+                 mock.patch("build_video.render.export_png", side_effect=lambda s, p, **k: open(p, "wb").close() or p), \
+                 mock.patch("build_video.subprocess.run", return_value=mock.Mock(returncode=0)), \
+                 mock.patch("build_video._say_segment", side_effect=lambda t, p: (open(p, "wb").close() or p) if t.strip() else None):
+                path, notes = bv.render_mp4(m, base, bv.STAGE)   # no tts arg → say
+            self.assertEqual(path, os.path.join(base, "video.mp4"))
+
+    def test_render_mp4_kokoro_unconfigured_raises(self):
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as base:
+            m = self._manifest(base)
+            def which(c): return "/usr/bin/ffmpeg" if c == "ffmpeg" else None
+            with mock.patch("build_video.shutil.which", side_effect=which), \
+                 mock.patch("build_video._have_rasterizer", return_value=True), \
+                 mock.patch("build_video.render.export_png", side_effect=lambda s, p, **k: open(p, "wb").close() or p):
+                with self.assertRaises(bv.TtsError):
+                    bv.render_mp4(m, base, bv.STAGE, tts="kokoro",
+                                  cfg={"python": "/no/such", "model": "m", "voices": "v", "voice": "af_heart"})
+
+
 if __name__ == "__main__":
     unittest.main()

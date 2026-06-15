@@ -574,3 +574,11 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - `references/figure-json.md`: trimmed the `runbook` row's Notes cell to just the definition; the standalone bold **runbook-first** paragraph below the table continues to carry the ordering rule.
 - Articles touched: `concepts/dummies-notes/illustration-engine.md`.
 - 2026-06-14 — Phase 8 start: scaffolding for pluggable --tts providers (gitignore voice-profiles/, README, drift mapping for tts_runner.py).
+
+## [2026-06-14] feat(tts): thread tts/cfg through render_mp4 and build (CLI default kokoro)
+
+`render_mp4` gained `tts="say"` and `cfg=None` keyword parameters; its `_synthesize_segments` call now passes them through. `build` gained `tts="kokoro"` and `cfg=None` keyword parameters; its `render_mp4` call passes them on. `render_mp4`'s own default stays `"say"` (no impact on existing direct/unit callers); `build`'s default is `"kokoro"` (the user-facing MP4 default). `fmt="html"` path is inert. 2 new tests in `TestRenderMp4Tts`; 42 tests total, 1 skip, all passing.
+
+- `scripts/build_video.py`: updated `render_mp4` signature + `_synthesize_segments` call; updated `build` signature + `render_mp4` call.
+- `scripts/tests/test_build_video.py`: added `TestRenderMp4Tts` class (`test_render_mp4_default_tts_is_say`, `test_render_mp4_kokoro_unconfigured_raises`).
+- Articles touched: `concepts/dummies-notes/video-engine.md`.
