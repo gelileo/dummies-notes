@@ -1,0 +1,72 @@
+{
+  "topic": "commit-snapshot",
+  "title": "A commit (a snapshot stamped with an id and linked to its parent)",
+  "definition": "A commit is a photo of your entire project at one instant. When you commit, git saves the state of all your files, stamps it with a unique id, and links it back to the commit taken just before it. So every commit knows its parent \u2014 the version right before it.",
+  "stage": {
+    "width": 1280,
+    "height": 720
+  },
+  "reading_rate_wpm": 150,
+  "slides": [
+    {
+      "kind": "title",
+      "concept_slug": null,
+      "image": null,
+      "caption": "A commit (a snapshot stamped with an id and linked to its parent)",
+      "narration": "A commit (a snapshot stamped with an id and linked to its parent)",
+      "duration_s": 5.2,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "commit-snapshot",
+      "image": "registry/commit-snapshot/figure/frame-01.svg",
+      "caption": "A commit photographs your whole project.",
+      "narration": "A commit is a photo of your entire project at one instant. Here git captures every file \u2014 app.py, index.html, style.css \u2014 exactly as they are right now.",
+      "duration_s": 11.2,
+      "transition": "cut",
+      "reveal_to": 1
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "commit-snapshot",
+      "image": "registry/commit-snapshot/figure/frame-01.svg",
+      "caption": "It gets stamped with a unique id.",
+      "narration": "Git stamps that snapshot with a unique id, a1b3f7. That id is how you point back to this exact version later.",
+      "duration_s": 8.4,
+      "transition": "reveal",
+      "reveal_to": 2
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "commit-snapshot",
+      "image": "registry/commit-snapshot/figure/frame-01.svg",
+      "caption": "The commit taken just before still exists.",
+      "narration": "This isn't the first snapshot. The commit taken just before it, 9c2e0d, is still sitting there with its own copy of every file.",
+      "duration_s": 9.2,
+      "transition": "reveal",
+      "reveal_to": 3
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "commit-snapshot",
+      "image": "registry/commit-snapshot/figure/frame-01.svg",
+      "caption": "Each commit links back to its parent.",
+      "narration": "The new commit links back to that earlier one \u2014 its parent. Every commit knows the exact version that came right before it.",
+      "duration_s": 9.2,
+      "transition": "reveal",
+      "reveal_to": 4
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "commit-snapshot",
+      "image": "registry/commit-snapshot/figure/frame-01.svg",
+      "caption": "Follow the parents back for the full history.",
+      "narration": "And the parent has a parent, and so on. Follow the chain back and you walk through the project's entire history, one snapshot at a time.",
+      "duration_s": 10.4,
+      "transition": "reveal",
+      "reveal_to": 5
+    }
+  ]
+}

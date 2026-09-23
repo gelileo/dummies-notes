@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:02,500
+The commit history graph
+
+2
+00:00:02,500 --> 00:00:14,100
+Every history begins with a single commit — one saved snapshot of your whole project, stamped with its own id. Go deeper: the commit figure shows what's inside one.
+
+3
+00:00:14,100 --> 00:00:22,900
+Make a change and you add another commit. It stores a link pointing back to the one before it — its parent.
+
+4
+00:00:22,900 --> 00:00:30,900
+Every new commit does the same, so the links chain together, each dot reaching back to the one before it.
+
+5
+00:00:30,900 --> 00:00:40,500
+Line them all up and you get a chain: oldest on the left, newest on the right. That chain is your project's entire history.
+
+6
+00:00:40,500 --> 00:00:58,100
+Want an old version back? Git starts at the newest commit and follows the links backward until it reaches the one you want, rebuilding it exactly. The past is fixed and always recoverable. Go deeper: the version figure explains what a saved snapshot is.

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 250" role="img" aria-label="Two pipelines: the classical one where a human designs features that feed a simple classifier, and the deep-learning one where raw data passes through stacked learned layers that each produce more abstract features." width="100%">
+<style>svg{color:#1A212C}.bg{fill:#F6F7F5}.af{fill:#0B7A83}.as{stroke:#0B7A83}@media (prefers-color-scheme:dark){svg{color:#E3E7EC}.bg{fill:#12171E}.af{fill:#38B6BE}.as{stroke:#38B6BE}}</style>
+<title>Representation learning: let the network find its own features</title>
+<rect class="bg" x="0" y="0" width="100%" height="100%"/>
+
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12" fill="currentColor">
+<text x="12" y="24" font-weight="700" font-size="12.5" letter-spacing="1.2">BEFORE 2012</text>
+<rect x="12" y="40" width="96" height="44" rx="3" fill="none" stroke="currentColor"/><text x="60" y="66" text-anchor="middle">raw pixels</text>
+<line x1="108" y1="62" x2="150" y2="62" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="152" y="40" width="150" height="44" rx="3" fill="none" stroke="currentColor" stroke-dasharray="4 3"/><text x="227" y="58" text-anchor="middle">hand-designed features</text><text x="227" y="74" text-anchor="middle" fill="currentColor" opacity=".7">edges · SIFT · histograms</text>
+<line x1="302" y1="62" x2="344" y2="62" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="346" y="40" width="110" height="44" rx="3" fill="none" stroke="currentColor"/><text x="401" y="66" text-anchor="middle">simple classifier</text>
+<line x1="456" y1="62" x2="498" y2="62" stroke="currentColor" marker-end="url(#a1)"/>
+<text x="504" y="66">“cat”</text>
+<text x="227" y="102" text-anchor="middle" font-style="italic" opacity=".7">a person designs this part</text>
+
+<text x="12" y="146" font-weight="700" font-size="12.5" letter-spacing="1.2">DEEP LEARNING</text>
+<rect x="12" y="162" width="96" height="44" rx="3" fill="none" stroke="currentColor"/><text x="60" y="188" text-anchor="middle">raw pixels</text>
+<line x1="108" y1="184" x2="130" y2="184" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="132" y="162" width="78" height="44" rx="3" class="af" opacity=".18"/><rect x="132" y="162" width="78" height="44" rx="3" fill="none" class="as"/><text x="171" y="188" text-anchor="middle">edges</text>
+<line x1="210" y1="184" x2="232" y2="184" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="234" y="162" width="78" height="44" rx="3" class="af" opacity=".18"/><rect x="234" y="162" width="78" height="44" rx="3" fill="none" class="as"/><text x="273" y="188" text-anchor="middle">textures</text>
+<line x1="312" y1="184" x2="334" y2="184" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="336" y="162" width="78" height="44" rx="3" class="af" opacity=".18"/><rect x="336" y="162" width="78" height="44" rx="3" fill="none" class="as"/><text x="375" y="188" text-anchor="middle">parts</text>
+<line x1="414" y1="184" x2="436" y2="184" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="438" y="162" width="78" height="44" rx="3" class="af" opacity=".18"/><rect x="438" y="162" width="78" height="44" rx="3" fill="none" class="as"/><text x="477" y="188" text-anchor="middle">objects</text>
+<line x1="516" y1="184" x2="538" y2="184" stroke="currentColor" marker-end="url(#a1)"/>
+<text x="544" y="188">“cat”</text>
+<text x="324" y="228" text-anchor="middle" font-style="italic" opacity=".7">every layer is learned from data — the hierarchy is discovered, not designed</text>
+</g></svg>

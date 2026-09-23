@@ -612,3 +612,10 @@ Phase 2 shipped two production subsystems. This entry summarises what landed and
 - Articles touched: `concepts/dummies-notes/video-engine.md`.
 
 - 2026-06-14 — Phase 8 complete: pluggable --tts say|kokoro|neutts. CLI default kokoro (hard-error if unconfigured), neutts opt-in cloned voice (falls back to say), say zero-dep fallback. One venv batch runner scripts/tts_runner.py; ffmpeg-denoised + Whisper-auto-transcribed NeuTTS reference; per-beat caching keyed on model/voice fingerprint; MP4-only. Workflow default stays say.
+
+## [2026-09-23] feat(skills): add drill-down-essentials skill + verifier; LLM curriculum built
+
+- `.claude/skills/drill-down-essentials/SKILL.md`: new skill — inventory a chapter's unexplained prerequisites, write `demo.py` before the article, one folder per concept under `essentials/`, symptom-keyed index, wire back into the chapter.
+- `.claude/skills/drill-down-essentials/scripts/verify_essentials.py`: checks folder structure, runs every demo, resolves links (inside-chapter → FAIL, outside → WARN), validates mermaid blocks when `npx` is present.
+- `subjects/LLM/`: 15 chapters populated (README, generated article, runnable scripts, essentials); reference material, no knowledge impact beyond the skill.
+- Articles touched: `concepts/dummies-notes/drill-down-essentials.md` (new).

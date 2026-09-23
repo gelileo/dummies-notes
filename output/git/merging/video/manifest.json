@@ -1,0 +1,62 @@
+{
+  "topic": "merging",
+  "title": "Merging: joining two lines back together",
+  "definition": "Merging joins two branch lines back into one. Git makes a new dot with two parents, one from each line, and combines both sets of changes into it. The two lines become one again, and the full history of both is kept.",
+  "stage": {
+    "width": 1280,
+    "height": 720
+  },
+  "reading_rate_wpm": 150,
+  "slides": [
+    {
+      "kind": "title",
+      "concept_slug": null,
+      "image": null,
+      "caption": "Merging: joining two lines back together",
+      "narration": "Merging: joining two lines back together",
+      "duration_s": 2.5,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "merging",
+      "image": "registry/merging/figure/frame-01.svg",
+      "caption": "Two lines that split from a shared commit",
+      "narration": "Here are two lines of history - blue main and teal feature - that split from the shared commit c9 and each added their own commits.",
+      "duration_s": 10.4,
+      "transition": "cut",
+      "reveal_to": 1
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "merging",
+      "image": "registry/merging/figure/frame-01.svg",
+      "caption": "Git makes one new commit to join them",
+      "narration": "To join them back together, Git creates one brand-new commit, the purple dot g7, sitting between the two lines.",
+      "duration_s": 7.6,
+      "transition": "reveal",
+      "reveal_to": 2
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "merging",
+      "image": "registry/merging/figure/frame-01.svg",
+      "caption": "Its first parent is the tip of main",
+      "narration": "Give it a link back to d4, the tip of the main line: that is its first parent.",
+      "duration_s": 7.2,
+      "transition": "reveal",
+      "reveal_to": 3
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "merging",
+      "image": "registry/merging/figure/frame-01.svg",
+      "caption": "Its second parent is the tip of feature",
+      "narration": "Give it a second link back to e5, the tip of the feature line: now g7 has two parents, both histories lead into it, and the two lines are one again.",
+      "duration_s": 12.4,
+      "transition": "reveal",
+      "reveal_to": 4
+    }
+  ]
+}

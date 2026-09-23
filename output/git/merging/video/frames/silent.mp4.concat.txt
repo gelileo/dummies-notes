@@ -1,0 +1,11 @@
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/merging/video/frames/slide-000.png'
+duration 2.432
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/merging/video/frames/slide-001.png'
+duration 7.637
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/merging/video/frames/slide-002.png'
+duration 6.891
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/merging/video/frames/slide-003.png'
+duration 4.501
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/merging/video/frames/slide-004.png'
+duration 9.493
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/merging/video/frames/slide-004.png'

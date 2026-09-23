@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+<rect width="1280" height="720" fill="#ffffff"/>
+<text x="640" y="350" text-anchor="middle" font-family="sans-serif" font-size="48" fill="#111">The commit history graph</text>
+</svg>

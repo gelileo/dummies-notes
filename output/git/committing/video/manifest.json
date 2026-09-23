@@ -1,0 +1,122 @@
+{
+  "topic": "committing",
+  "title": "Committing: adding a dot to the history line",
+  "definition": "Committing adds one new dot to the end of the current line. The new dot points back to the dot you were just on, and the label marking where you are now moves forward to the new dot. Your history grows by one snapshot.",
+  "stage": {
+    "width": 1280,
+    "height": 720
+  },
+  "reading_rate_wpm": 150,
+  "slides": [
+    {
+      "kind": "title",
+      "concept_slug": null,
+      "image": null,
+      "caption": "Committing: adding a dot to the history line",
+      "narration": "Committing: adding a dot to the history line",
+      "duration_s": 3.2,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "section",
+      "concept_slug": "current-commit-label",
+      "image": null,
+      "caption": "A label marking the commit you are on now",
+      "narration": "A label marking the commit you are on now",
+      "duration_s": 3.6,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "current-commit-label",
+      "image": "registry/current-commit-label/figure/frame-01.svg",
+      "caption": "Your history is a row of dots \u2014 each commit a saved snapshot, linked back to the one before it.",
+      "narration": "Git keeps your project as a chain of commits \u2014 dots on a line, each one a full snapshot linked back to its parent, oldest on the left, newest on the right. Go deeper: the commit figure shows what a single snapshot holds, and the history-graph figure shows how the dots link into one chain.",
+      "duration_s": 18.0,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "current-commit-label",
+      "image": "registry/current-commit-label/figure/frame-02.svg",
+      "caption": "A small label marks the one dot you're on right now \u2014 'you are here.'",
+      "narration": "One dot is special: it's the commit whose files you actually have open right now. A small movable label points at exactly that dot \u2014 a 'you are here' pin on your history. Here it sits on the newest commit, e7.",
+      "duration_s": 16.4,
+      "transition": "crossfade",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "current-commit-label",
+      "image": "registry/current-commit-label/figure/frame-03.svg",
+      "caption": "Slide the label to another dot to change where you are.",
+      "narration": "The label isn't stuck. Slide it from e7 back to an earlier dot, 3f, and 'where you are' moves with it \u2014 the dashed arrow shows the slide, and the pin now points at 3f.",
+      "duration_s": 14.0,
+      "transition": "crossfade",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "current-commit-label",
+      "image": "registry/current-commit-label/figure/frame-04.svg",
+      "caption": "Wherever the label lands, your working files match that dot's snapshot.",
+      "narration": "The label always points at exactly one dot, and the files in your project are that dot's snapshot. Landing on 3f means your files are now 3f's version \u2014 move the label and your files follow. Go deeper: the commit figure explains what that snapshot contains.",
+      "duration_s": 18.0,
+      "transition": "crossfade",
+      "reveal_to": null
+    },
+    {
+      "kind": "section",
+      "concept_slug": "committing",
+      "image": null,
+      "caption": "Committing: adding a dot to the history line",
+      "narration": "Committing: adding a dot to the history line",
+      "duration_s": 3.2,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "committing",
+      "image": "registry/committing/figure/frame-01.svg",
+      "caption": "A repo's history is a line of commits, each pointing back to the one before. The teal label marks the commit you're on now.",
+      "narration": "Think of a repo's history as a row of beads on a string. Each bead is a commit, one saved snapshot of your work, and every commit carries an arrow pointing back to the one before it. The teal label sitting on the last bead, c7e, marks exactly where you are right now.",
+      "duration_s": 18.0,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "committing",
+      "image": "registry/committing/figure/frame-02.svg",
+      "caption": "Committing drops one new commit onto the end of the line.",
+      "narration": "Now you make a commit. A fresh bead, 2b8, pops onto the end of the line, one brand-new snapshot of your work.",
+      "duration_s": 8.8,
+      "transition": "crossfade",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "committing",
+      "image": "registry/committing/figure/frame-03.svg",
+      "caption": "The new commit points back to the one you were just on \u2014 its parent.",
+      "narration": "That new bead doesn't float free. An arrow links 2b8 back to c7e, the commit you were just on. That backward link is its parent, and it's what threads the whole history together into one chain.",
+      "duration_s": 14.4,
+      "transition": "crossfade",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "committing",
+      "image": "registry/committing/figure/frame-04.svg",
+      "caption": "The label moves forward onto the new commit. Your history just grew by one snapshot.",
+      "narration": "Last, the label slides forward onto 2b8. That's now where you are, and the line is one snapshot longer than before. Go deeper: the snapshot in each bead is 'a commit'; the whole row of linked beads is 'the commit history graph'; the sliding teal tag is 'the label marking the commit you are on now'.",
+      "duration_s": 18.0,
+      "transition": "crossfade",
+      "reveal_to": null
+    }
+  ]
+}

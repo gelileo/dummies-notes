@@ -1,0 +1,82 @@
+{
+  "topic": "angle-measured-in-degrees",
+  "title": "What an angle is, measured in degrees",
+  "definition": "Stand at a corner and open a pair of scissors: the two blades share a point, and how far they have swung apart is the angle. We measure that swing in degrees \u2014 one full spin sliced into 360 tiny wedges. A protractor is a ruler bent into a half-circle that counts the wedges for you.",
+  "stage": {
+    "width": 1280,
+    "height": 720
+  },
+  "reading_rate_wpm": 150,
+  "slides": [
+    {
+      "kind": "title",
+      "concept_slug": null,
+      "image": null,
+      "caption": "What an angle is, measured in degrees",
+      "narration": "What an angle is, measured in degrees",
+      "duration_s": 2.8,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "angle-measured-in-degrees",
+      "image": "registry/angle-measured-in-degrees/figure/frame-01.svg",
+      "caption": "Two blades share one corner and swing apart \u2014 how wide is the gap?",
+      "narration": "How wide is the swing? Freeze-frame two blades opening from a single locked corner. Their tips race apart \u2014 but how far did they actually swing? That mystery gap is what we want to pin down.",
+      "duration_s": 14.4,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "angle-measured-in-degrees",
+      "image": "registry/angle-measured-in-degrees/figure/frame-02.svg",
+      "caption": "That gap between the blades has a name: the angle.",
+      "narration": "That gap between the blades has a special name: the angle. Look at the little green wedge drawn between them \u2014 that green shape is the angle itself. But how do we measure a swing?",
+      "duration_s": 14.0,
+      "transition": "crossfade",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "angle-measured-in-degrees",
+      "image": "registry/angle-measured-in-degrees/figure/frame-03.svg",
+      "caption": "One full turn is sliced into 360 tiny wedges called degrees.",
+      "narration": "Here is the wild trick: take one perfect full turn around the corner and chop it into 360 tiny steps called degrees \u2014 a whole spin sliced like a pizza into 360 microscopic wedges, one skinny wedge per degree.",
+      "duration_s": 15.6,
+      "transition": "crossfade",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "angle-measured-in-degrees",
+      "image": "registry/angle-measured-in-degrees/figure/frame-04.svg",
+      "caption": "The swing fills 50 wedges \u2014 so the angle is 50 degrees.",
+      "narration": "Now count. The swing fills exactly fifty of those pizza wedges \u2014 so we call it fifty degrees. Not a made-up number; just how many wedges fit the gap.",
+      "duration_s": 11.6,
+      "transition": "crossfade",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "angle-measured-in-degrees",
+      "image": "registry/angle-measured-in-degrees/figure/frame-05.svg",
+      "caption": "A protractor is a half-circle of wedges that counts them for you.",
+      "narration": "Counting fifty wedges by hand would take forever, so we use a protractor \u2014 a ruler bent into a half-circle with the wedges marked on the rim. Line one blade up with zero, read where the other blade points: fifty.",
+      "duration_s": 16.0,
+      "transition": "crossfade",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "angle-measured-in-degrees",
+      "image": "registry/angle-measured-in-degrees/figure/frame-06.svg",
+      "caption": "Two lines from one shared corner \u2014 angles are everywhere.",
+      "narration": "Once you know what to look for, these wedge-angles are everywhere. The square corner of a book? Exactly ninety degrees. Ramps, clock hands, open scissors \u2014 every one is just two lines swinging apart from a shared corner.",
+      "duration_s": 15.2,
+      "transition": "crossfade",
+      "reveal_to": null
+    }
+  ]
+}

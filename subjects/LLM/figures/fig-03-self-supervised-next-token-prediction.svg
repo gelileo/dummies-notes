@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 242" role="img" aria-label="A sequence of tokens, The capital of France is, enters the model, which outputs a probability distribution over the vocabulary: Paris 0.71, a 0.09, located 0.06, the 0.04, other 0.10. The loss is computed against the actual next token, Paris." width="100%">
+<style>svg{color:#1A212C}.bg{fill:#F6F7F5}.af{fill:#0B7A83}.as{stroke:#0B7A83}@media (prefers-color-scheme:dark){svg{color:#E3E7EC}.bg{fill:#12171E}.af{fill:#38B6BE}.as{stroke:#38B6BE}}</style>
+<title>Self-supervised next-token prediction</title>
+<rect class="bg" x="0" y="0" width="100%" height="100%"/>
+
+<defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="JetBrains Mono, monospace" font-size="12.5" fill="currentColor">
+<g>
+<rect x="12" y="60" width="36" height="28" rx="3" fill="none" stroke="currentColor"/><text x="30" y="79" text-anchor="middle">The</text>
+<rect x="54" y="60" width="66" height="28" rx="3" fill="none" stroke="currentColor"/><text x="87" y="79" text-anchor="middle">capital</text>
+<rect x="126" y="60" width="30" height="28" rx="3" fill="none" stroke="currentColor"/><text x="141" y="79" text-anchor="middle">of</text>
+<rect x="162" y="60" width="60" height="28" rx="3" fill="none" stroke="currentColor"/><text x="192" y="79" text-anchor="middle">France</text>
+<rect x="228" y="60" width="30" height="28" rx="3" fill="none" stroke="currentColor"/><text x="243" y="79" text-anchor="middle">is</text>
+<rect x="264" y="60" width="36" height="28" rx="3" fill="none" stroke="currentColor" stroke-dasharray="3 3"/><text x="282" y="79" text-anchor="middle">?</text>
+</g>
+<g font-family="Bricolage Grotesque, sans-serif">
+<text x="156" y="48" text-anchor="middle" opacity=".7">input (context)</text>
+<line x1="156" y1="96" x2="156" y2="120" stroke="currentColor" marker-end="url(#a3)"/>
+<rect x="60" y="122" width="192" height="40" rx="3" class="af" opacity=".18"/><rect x="60" y="122" width="192" height="40" rx="3" fill="none" class="as"/><text x="156" y="147" text-anchor="middle" font-weight="700">model (billions of weights)</text>
+<line x1="252" y1="142" x2="330" y2="142" stroke="currentColor" marker-end="url(#a3)"/>
+<text x="340" y="54" opacity=".7">output: probability of each next token</text>
+</g>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12">
+<rect x="400" y="66" width="192" height="14" class="af"/><text x="340" y="77">Paris</text><text x="598" y="77">.71</text>
+<rect x="400" y="88" width="24" height="14" fill="currentColor" opacity=".5"/><text x="340" y="99">a</text><text x="598" y="99">.09</text>
+<rect x="400" y="110" width="16" height="14" fill="currentColor" opacity=".5"/><text x="340" y="121">located</text><text x="598" y="121">.06</text>
+<rect x="400" y="132" width="11" height="14" fill="currentColor" opacity=".5"/><text x="340" y="143">the</text><text x="598" y="143">.04</text>
+<rect x="400" y="154" width="27" height="14" fill="currentColor" opacity=".5"/><text x="340" y="165">(all others)</text><text x="598" y="165">.10</text>
+<text x="340" y="196" font-style="italic" opacity=".8">actual next token: “Paris” → loss = −log(0.71) ≈ 0.34</text>
+<text x="340" y="214" font-style="italic" opacity=".8">had it guessed .10, loss = 2.30 →</text>
+<text x="340" y="230" font-style="italic" opacity=".8">nudge the weights toward “Paris”</text>
+</g></g></svg>

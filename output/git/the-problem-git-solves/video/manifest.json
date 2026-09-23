@@ -1,0 +1,142 @@
+{
+  "topic": "the-problem-git-solves",
+  "title": "The problem git solves",
+  "definition": "Picture a folder with essay_final.docx, essay_final_v2.docx, and essay_FINAL_actually.docx. You cannot tell what changed, you fear deleting any, and sharing means emailing copies. Git records your whole project over time: you keep one clean folder while git remembers every past version, so nothing is lost and you can always go back.",
+  "stage": {
+    "width": 1280,
+    "height": 720
+  },
+  "reading_rate_wpm": 150,
+  "slides": [
+    {
+      "kind": "title",
+      "concept_slug": null,
+      "image": null,
+      "caption": "The problem git solves",
+      "narration": "The problem git solves",
+      "duration_s": 2.5,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "section",
+      "concept_slug": "project-version-snapshot",
+      "image": null,
+      "caption": "A version (a saved snapshot of your whole project)",
+      "narration": "A version (a saved snapshot of your whole project)",
+      "duration_s": 3.6,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "project-version-snapshot",
+      "image": "registry/project-version-snapshot/figure/frame-01.svg",
+      "caption": "Your project folder and its files.",
+      "narration": "Here's your project \u2014 one folder holding all its files, the ones you keep editing.",
+      "duration_s": 6.0,
+      "transition": "cut",
+      "reveal_to": 1
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "project-version-snapshot",
+      "image": "registry/project-version-snapshot/figure/frame-01.svg",
+      "caption": "Snap a version: photograph the whole folder.",
+      "narration": "Saving a version is like taking a photo of the entire folder exactly as it looks right now. That frozen photo is version 1.",
+      "duration_s": 9.6,
+      "transition": "reveal",
+      "reveal_to": 2
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "project-version-snapshot",
+      "image": "registry/project-version-snapshot/figure/frame-01.svg",
+      "caption": "You keep working; a file changes.",
+      "narration": "You keep working and change a file \u2014 styles.css gets edited. Your live folder moves on, but the photo you took doesn't.",
+      "duration_s": 8.8,
+      "transition": "reveal",
+      "reveal_to": 3
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "project-version-snapshot",
+      "image": "registry/project-version-snapshot/figure/frame-01.svg",
+      "caption": "Snap again \u2014 version 2.",
+      "narration": "Take another photo and you get version 2: the whole folder again, now with the edited file baked in.",
+      "duration_s": 7.6,
+      "transition": "reveal",
+      "reveal_to": 4
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "project-version-snapshot",
+      "image": "registry/project-version-snapshot/figure/frame-01.svg",
+      "caption": "Any version brings everything back.",
+      "narration": "Because each version is a complete copy, loading one restores every file at once \u2014 the whole folder snaps back to exactly how it looked then.",
+      "duration_s": 10.4,
+      "transition": "reveal",
+      "reveal_to": 5
+    },
+    {
+      "kind": "section",
+      "concept_slug": "the-problem-git-solves",
+      "image": null,
+      "caption": "The problem git solves",
+      "narration": "The problem git solves",
+      "duration_s": 2.5,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "the-problem-git-solves",
+      "image": "registry/the-problem-git-solves/figure/frame-01.svg",
+      "caption": "Three files, nearly the same name.",
+      "narration": "Here's a folder most of us know: essay_final.docx, then v2, then the one you swear is actually final. Three files, nearly identical names.",
+      "duration_s": 9.2,
+      "transition": "cut",
+      "reveal_to": 1
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "the-problem-git-solves",
+      "image": "registry/the-problem-git-solves/figure/frame-01.svg",
+      "caption": "You can't tell them apart, or safely delete.",
+      "narration": "The trouble: you can't tell what changed between them, you're scared to delete any, and sharing one means emailing a whole copy.",
+      "duration_s": 8.8,
+      "transition": "reveal",
+      "reveal_to": 2
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "the-problem-git-solves",
+      "image": "registry/the-problem-git-solves/figure/frame-01.svg",
+      "caption": "Git keeps one clean file.",
+      "narration": "Git flips this around. You keep just one file in your folder, the clean copy you actually edit.",
+      "duration_s": 7.2,
+      "transition": "reveal",
+      "reveal_to": 3
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "the-problem-git-solves",
+      "image": "registry/the-problem-git-solves/figure/frame-01.svg",
+      "caption": "Behind the scenes, every version is saved.",
+      "narration": "Behind the scenes, git remembers every version you saved: a timeline of snapshots, so nothing is ever lost.",
+      "duration_s": 7.2,
+      "transition": "reveal",
+      "reveal_to": 4
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "the-problem-git-solves",
+      "image": "registry/the-problem-git-solves/figure/frame-01.svg",
+      "caption": "Jump back to any past version.",
+      "narration": "Need an old draft? Roll back to any past version on the timeline. One clean folder in front, the full history safely behind it.",
+      "duration_s": 9.6,
+      "transition": "reveal",
+      "reveal_to": 5
+    }
+  ]
+}

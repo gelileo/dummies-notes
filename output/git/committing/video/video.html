@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video</title>
+<style>
+:root{color-scheme:light dark}
+body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;
+     background:#0f1115;color:#e8e8e8;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+#stage{position:relative;width:min(96vw,1100px);aspect-ratio:16/9;background:#15181f;
+       border-radius:10px;overflow:hidden;margin-top:1.2rem}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+       justify-content:center;opacity:0;transition:opacity .5s ease;padding:2.2rem 2.2rem 3.4rem;box-sizing:border-box}
+.slide.show{opacity:1} .slide.cut{transition:none}
+.slide svg{max-width:100%;max-height:78%;height:auto}
+.card{font-size:2.4rem;text-align:center;line-height:1.3}
+#cap{position:absolute;bottom:1rem;left:0;right:0;text-align:center;font-size:1.05rem;color:#cfd2d8;padding:0 2rem;min-height:1.4em}
+[data-reveal]{opacity:0;transition:opacity .55s ease,transform .55s ease}
+[data-reveal]:not([data-anim="draw"]){transform:translateY(10px)}
+[data-reveal][data-anim="fade"]{transform:none}
+[data-reveal].on{opacity:1;transform:none}
+[data-reveal].dim{opacity:.32}
+#bar{width:min(96vw,1100px);display:flex;gap:.8rem;align-items:center;margin:.8rem 0}
+#prog{flex:1;height:5px;background:#2a2d36;border-radius:3px;overflow:hidden}
+#prog>div{height:100%;width:0;background:#5DCAA5}
+button{font:inherit;background:#23262e;color:#e8e8e8;border:1px solid #3a3d46;border-radius:6px;padding:.35rem .8rem;cursor:pointer}
+label{font-size:.9rem;color:#aab;display:flex;gap:.35rem;align-items:center}
+</style></head><body>
+<div id="stage"><div class="slide"><div class="card">Committing: adding a dot to the history line</div></div>
+<div class="slide"><div class="card">A label marking the commit you are on now</div></div>
+<div class="slide"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 250" role="img" font-family="sans-serif">
+  <title>The commit history — a row of dots</title>
+  <desc>Four commits as teal dots on a line, each linked back to its parent; no current-commit label yet.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- parent links (child -> parent, right to left) -->
+  <path class="arr" d="M230,130 L136,130" marker-end="url(#arrow)"/>
+  <path class="arr" d="M390,130 L296,130" marker-end="url(#arrow)"/>
+  <path class="arr" d="M550,130 L456,130" marker-end="url(#arrow)"/>
+
+  <!-- commit dots -->
+  <g class="c-teal">
+    <circle cx="100" cy="130" r="30" stroke-width="0.5"/>
+    <text x="100" y="130" class="th" text-anchor="middle" dominant-baseline="central">9c</text>
+  </g>
+  <g class="c-teal">
+    <circle cx="260" cy="130" r="30" stroke-width="0.5"/>
+    <text x="260" y="130" class="th" text-anchor="middle" dominant-baseline="central">3f</text>
+  </g>
+  <g class="c-teal">
+    <circle cx="420" cy="130" r="30" stroke-width="0.5"/>
+    <text x="420" y="130" class="th" text-anchor="middle" dominant-baseline="central">a1</text>
+  </g>
+  <g class="c-teal">
+    <circle cx="580" cy="130" r="30" stroke-width="0.5"/>
+    <text x="580" y="130" class="th" text-anchor="middle" dominant-baseline="central">e7</text>
+  </g>
+
+  <text x="340" y="205" class="ts" text-anchor="middle" dominant-baseline="central">each dot is a commit — one saved snapshot, stamped with its own id</text>
+</svg>
+</div>
+<div class="slide"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 250" role="img" font-family="sans-serif">
+  <title>The current-commit label points at one dot</title>
+  <desc>A movable 'you are here' label points at the newest commit e7, marking it as the current dot.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- parent links (child -> parent, right to left) -->
+  <path class="arr" d="M230,130 L136,130" marker-end="url(#arrow)"/>
+  <path class="arr" d="M390,130 L296,130" marker-end="url(#arrow)"/>
+  <path class="arr" d="M550,130 L456,130" marker-end="url(#arrow)"/>
+
+  <!-- commit dots -->
+  <g class="c-teal">
+    <circle cx="100" cy="130" r="30" stroke-width="0.5"/>
+    <text x="100" y="130" class="th" text-anchor="middle" dominant-baseline="central">9c</text>
+  </g>
+  <g class="c-teal">
+    <circle cx="260" cy="130" r="30" stroke-width="0.5"/>
+    <text x="260" y="130" class="th" text-anchor="middle" dominant-baseline="central">3f</text>
+  </g>
+  <g class="c-teal">
+    <circle cx="420" cy="130" r="30" stroke-width="0.5"/>
+    <text x="420" y="130" class="th" text-anchor="middle" dominant-baseline="central">a1</text>
+  </g>
+  <g class="c-coral">
+    <circle cx="580" cy="130" r="30" stroke-width="0.5"/>
+    <text x="580" y="130" class="th" text-anchor="middle" dominant-baseline="central">e7</text>
+  </g>
+
+  <!-- the current-commit label, pointing at e7 -->
+  <g class="c-coral">
+    <rect x="515" y="40" width="130" height="30" rx="6" stroke-width="0.5"/>
+    <text x="580" y="55" class="th" text-anchor="middle" dominant-baseline="central">you are here</text>
+  </g>
+  <path class="arr" d="M580,70 L580,98" marker-end="url(#arrow)"/>
+</svg>
+</div>
+<div class="slide"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 250" role="img" font-family="sans-serif">
+  <title>The label slides to another dot</title>
+  <desc>The same 'you are here' label slides from commit e7 back to commit 3f, changing which dot is current.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- parent links (child -> parent, right to left) -->
+  <path class="arr" d="M230,130 L136,130" marker-end="url(#arrow)"/>
+  <path class="arr" d="M390,130 L296,130" marker-end="url(#arrow)"/>
+  <path class="arr" d="M550,130 L456,130" marker-end="url(#arrow)"/>
+
+  <!-- commit dots -->
+  <g class="c-teal">
+    <circle cx="100" cy="130" r="30" stroke-width="0.5"/>
+    <text x="100" y="130" class="th" text-anchor="middle" dominant-baseline="central">9c</text>
+  </g>
+  <g class="c-coral">
+    <circle cx="260" cy="130" r="30" stroke-width="0.5"/>
+    <text x="260" y="130" class="th" text-anchor="middle" dominant-baseline="central">3f</text>
+  </g>
+  <g class="c-teal">
+    <circle cx="420" cy="130" r="30" stroke-width="0.5"/>
+    <text x="420" y="130" class="th" text-anchor="middle" dominant-baseline="central">a1</text>
+  </g>
+  <g class="c-teal">
+    <circle cx="580" cy="130" r="30" stroke-width="0.5"/>
+    <text x="580" y="130" class="th" text-anchor="middle" dominant-baseline="central">e7</text>
+  </g>
+
+  <!-- motion cue: the same label slides from e7 back to 3f -->
+  <path class="leader" d="M560,50 C 490,42 370,42 302,52" marker-end="url(#arrow)"/>
+  <text x="430" y="28" class="ts" text-anchor="middle" dominant-baseline="central">slides over</text>
+
+  <!-- the current-commit label, now pointing at 3f -->
+  <g class="c-coral">
+    <rect x="195" y="40" width="130" height="30" rx="6" stroke-width="0.5"/>
+    <text x="260" y="55" class="th" text-anchor="middle" dominant-baseline="central">you are here</text>
+  </g>
+  <path class="arr" d="M260,70 L260,98" marker-end="url(#arrow)"/>
+</svg>
+</div>
+<div class="slide"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 250" role="img" font-family="sans-serif">
+  <title>Your files match the dot the label points at</title>
+  <desc>The label rests on commit 3f, and the working files now match 3f's snapshot.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- parent links (child -> parent, right to left) -->
+  <path class="arr" d="M230,130 L136,130" marker-end="url(#arrow)"/>
+  <path class="arr" d="M390,130 L296,130" marker-end="url(#arrow)"/>
+  <path class="arr" d="M550,130 L456,130" marker-end="url(#arrow)"/>
+
+  <!-- commit dots -->
+  <g class="c-teal">
+    <circle cx="100" cy="130" r="30" stroke-width="0.5"/>
+    <text x="100" y="130" class="th" text-anchor="middle" dominant-baseline="central">9c</text>
+  </g>
+  <g class="c-coral">
+    <circle cx="260" cy="130" r="30" stroke-width="0.5"/>
+    <text x="260" y="130" class="th" text-anchor="middle" dominant-baseline="central">3f</text>
+  </g>
+  <g class="c-teal">
+    <circle cx="420" cy="130" r="30" stroke-width="0.5"/>
+    <text x="420" y="130" class="th" text-anchor="middle" dominant-baseline="central">a1</text>
+  </g>
+  <g class="c-teal">
+    <circle cx="580" cy="130" r="30" stroke-width="0.5"/>
+    <text x="580" y="130" class="th" text-anchor="middle" dominant-baseline="central">e7</text>
+  </g>
+
+  <!-- the current-commit label, resting on 3f -->
+  <g class="c-coral">
+    <rect x="195" y="40" width="130" height="30" rx="6" stroke-width="0.5"/>
+    <text x="260" y="55" class="th" text-anchor="middle" dominant-baseline="central">you are here</text>
+  </g>
+  <path class="arr" d="M260,70 L260,98" marker-end="url(#arrow)"/>
+
+  <text x="260" y="192" class="ts" text-anchor="middle" dominant-baseline="central">your files now match this snapshot</text>
+</svg>
+</div>
+<div class="slide"><div class="card">Committing: adding a dot to the history line</div></div>
+<div class="slide"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 210" role="img" font-family="sans-serif">
+  <title>The history line so far</title>
+  <desc>Three commit dots connected by arrows that point back to the previous commit, with a current-position label sitting on the last one.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- backward parent links (child points back to its parent) -->
+  <path class="arr" d="M248,150 L166,150" marker-end="url(#arrow)"/>
+  <path class="arr" d="M378,150 L296,150" marker-end="url(#arrow)"/>
+
+  <!-- commit dots -->
+  <g class="c-purple">
+    <circle cx="140" cy="150" r="22" stroke-width="0.5"/>
+    <text x="140" y="150" class="th" text-anchor="middle" dominant-baseline="central">a1c</text>
+  </g>
+  <g class="c-purple">
+    <circle cx="270" cy="150" r="22" stroke-width="0.5"/>
+    <text x="270" y="150" class="th" text-anchor="middle" dominant-baseline="central">9f3</text>
+  </g>
+  <g class="c-purple">
+    <circle cx="400" cy="150" r="22" stroke-width="0.5"/>
+    <text x="400" y="150" class="th" text-anchor="middle" dominant-baseline="central">c7e</text>
+  </g>
+
+  <!-- current-position label sitting on the last commit -->
+  <path class="arr" d="M400,84 L400,124" marker-end="url(#arrow)"/>
+  <g class="c-teal">
+    <rect x="360" y="44" width="80" height="40" rx="6" stroke-width="0.5"/>
+    <text x="400" y="59" class="th" text-anchor="middle" dominant-baseline="central">main</text>
+    <text x="400" y="75" class="ts" text-anchor="middle" dominant-baseline="central">current</text>
+  </g>
+</svg>
+</div>
+<div class="slide"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 210" role="img" font-family="sans-serif">
+  <title>A new commit appears at the end</title>
+  <desc>A fourth commit dot appears at the end of the line as a new snapshot; it is not yet linked, and the current-position label still sits on the previous commit.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- backward parent links (child points back to its parent) -->
+  <path class="arr" d="M248,150 L166,150" marker-end="url(#arrow)"/>
+  <path class="arr" d="M378,150 L296,150" marker-end="url(#arrow)"/>
+
+  <!-- commit dots -->
+  <g class="c-purple">
+    <circle cx="140" cy="150" r="22" stroke-width="0.5"/>
+    <text x="140" y="150" class="th" text-anchor="middle" dominant-baseline="central">a1c</text>
+  </g>
+  <g class="c-purple">
+    <circle cx="270" cy="150" r="22" stroke-width="0.5"/>
+    <text x="270" y="150" class="th" text-anchor="middle" dominant-baseline="central">9f3</text>
+  </g>
+  <g class="c-purple">
+    <circle cx="400" cy="150" r="22" stroke-width="0.5"/>
+    <text x="400" y="150" class="th" text-anchor="middle" dominant-baseline="central">c7e</text>
+  </g>
+
+  <!-- the new commit, freshly added at the end of the line (not yet linked) -->
+  <g class="c-purple">
+    <circle cx="530" cy="150" r="22" stroke-width="0.5"/>
+    <text x="530" y="150" class="th" text-anchor="middle" dominant-baseline="central">2b8</text>
+  </g>
+
+  <!-- current-position label sitting on the last commit -->
+  <path class="arr" d="M400,84 L400,124" marker-end="url(#arrow)"/>
+  <g class="c-teal">
+    <rect x="360" y="44" width="80" height="40" rx="6" stroke-width="0.5"/>
+    <text x="400" y="59" class="th" text-anchor="middle" dominant-baseline="central">main</text>
+    <text x="400" y="75" class="ts" text-anchor="middle" dominant-baseline="central">current</text>
+  </g>
+</svg>
+</div>
+<div class="slide"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 210" role="img" font-family="sans-serif">
+  <title>The new commit points back to its parent</title>
+  <desc>The new commit is linked by a backward arrow to the commit that was current, marking that earlier commit as its parent.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- backward parent links (child points back to its parent) -->
+  <path class="arr" d="M248,150 L166,150" marker-end="url(#arrow)"/>
+  <path class="arr" d="M378,150 L296,150" marker-end="url(#arrow)"/>
+  <path class="arr" d="M508,150 L426,150" marker-end="url(#arrow)"/>
+
+  <!-- commit dots -->
+  <g class="c-purple">
+    <circle cx="140" cy="150" r="22" stroke-width="0.5"/>
+    <text x="140" y="150" class="th" text-anchor="middle" dominant-baseline="central">a1c</text>
+  </g>
+  <g class="c-purple">
+    <circle cx="270" cy="150" r="22" stroke-width="0.5"/>
+    <text x="270" y="150" class="th" text-anchor="middle" dominant-baseline="central">9f3</text>
+  </g>
+  <g class="c-purple">
+    <circle cx="400" cy="150" r="22" stroke-width="0.5"/>
+    <text x="400" y="150" class="th" text-anchor="middle" dominant-baseline="central">c7e</text>
+  </g>
+
+  <!-- the new commit, now linked back to its parent -->
+  <g class="c-purple">
+    <circle cx="530" cy="150" r="22" stroke-width="0.5"/>
+    <text x="530" y="150" class="th" text-anchor="middle" dominant-baseline="central">2b8</text>
+  </g>
+
+  <!-- annotation: the backward link names the parent -->
+  <text x="467" y="112" class="ts" text-anchor="middle" dominant-baseline="central">points back</text>
+  <path class="leader" d="M467,120 L467,146"/>
+
+  <!-- current-position label sitting on the last commit -->
+  <path class="arr" d="M400,84 L400,124" marker-end="url(#arrow)"/>
+  <g class="c-teal">
+    <rect x="360" y="44" width="80" height="40" rx="6" stroke-width="0.5"/>
+    <text x="400" y="59" class="th" text-anchor="middle" dominant-baseline="central">main</text>
+    <text x="400" y="75" class="ts" text-anchor="middle" dominant-baseline="central">current</text>
+  </g>
+</svg>
+</div>
+<div class="slide"><svg class="cd-svg" xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 680 210" role="img" font-family="sans-serif">
+  <title>The label moves forward to the new commit</title>
+  <desc>The current-position label has moved forward onto the newly added commit, and the history line is now one snapshot longer.</desc>
+  <defs>
+    <style>text{font-family:-apple-system,"Segoe UI",Roboto,system-ui,"Helvetica Neue",Arial,sans-serif;}
+text.t{font-size:14px;font-weight:400;fill:#1c1c1a;}
+text.ts{font-size:12px;font-weight:400;fill:#6b6a64;}
+text.th{font-size:14px;font-weight:500;fill:#111110;}
+rect.box,.box>rect{fill:#F1EFE8;stroke:#D3D1C7;}
+.arr{stroke:#6b6a64;stroke-width:1.5;fill:none;stroke-linecap:round;}
+.leader{stroke:#9c9a92;stroke-width:0.5;stroke-dasharray:3 3;fill:none;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#EEEDFE;stroke:#534AB7;}
+.c-purple .th,.c-purple .t{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#E1F5EE;stroke:#0F6E56;}
+.c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#FAECE7;stroke:#993C1D;}
+.c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#FBEAF0;stroke:#993556;}
+.c-pink .th,.c-pink .t{fill:#72243E;} .c-pink .ts{fill:#993556;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#F1EFE8;stroke:#5F5E5A;}
+.c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#E6F1FB;stroke:#185FA5;}
+.c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#EAF3DE;stroke:#3B6D11;}
+.c-green .th,.c-green .t{fill:#27500A;} .c-green .ts{fill:#3B6D11;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#FAEEDA;stroke:#854F0B;}
+.c-amber .th,.c-amber .t{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#FCEBEB;stroke:#A32D2D;}
+.c-red .th,.c-red .t{fill:#791F1F;} .c-red .ts{fill:#A32D2D;}
+@media (prefers-color-scheme:dark){
+text.t{fill:#d6d4ca;} text.ts{fill:#b6b4aa;} text.th{fill:#f2f0e9;}
+rect.box,.box>rect{fill:#2C2C2A;stroke:#5F5E5A;}
+.arr{stroke:#b0aea4;} .leader{stroke:#8a8980;}
+.c-purple>rect,.c-purple>circle,.c-purple>ellipse,.c-purple>polygon{fill:#3C3489;stroke:#AFA9EC;}
+.c-purple .th,.c-purple .t{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-teal>rect,.c-teal>circle,.c-teal>ellipse,.c-teal>polygon{fill:#085041;stroke:#5DCAA5;}
+.c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral>rect,.c-coral>circle,.c-coral>ellipse,.c-coral>polygon{fill:#712B13;stroke:#F0997B;}
+.c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-pink>rect,.c-pink>circle,.c-pink>ellipse,.c-pink>polygon{fill:#72243E;stroke:#ED93B1;}
+.c-pink .th,.c-pink .t{fill:#F4C0D1;} .c-pink .ts{fill:#ED93B1;}
+.c-gray>rect,.c-gray>circle,.c-gray>ellipse,.c-gray>polygon{fill:#444441;stroke:#B4B2A9;}
+.c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-blue>rect,.c-blue>circle,.c-blue>ellipse,.c-blue>polygon{fill:#0C447C;stroke:#85B7EB;}
+.c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-green>rect,.c-green>circle,.c-green>ellipse,.c-green>polygon{fill:#27500A;stroke:#97C459;}
+.c-green .th,.c-green .t{fill:#C0DD97;} .c-green .ts{fill:#97C459;}
+.c-amber>rect,.c-amber>circle,.c-amber>ellipse,.c-amber>polygon{fill:#633806;stroke:#EF9F27;}
+.c-amber .th,.c-amber .t{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+.c-red>rect,.c-red>circle,.c-red>ellipse,.c-red>polygon{fill:#791F1F;stroke:#F09595;}
+.c-red .th,.c-red .t{fill:#F7C1C1;} .c-red .ts{fill:#F09595;}
+}
+.arrow-head{fill:#6b6a64;}
+@media (prefers-color-scheme:dark){.arrow-head{fill:#b0aea4;}}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <!-- backward parent links (child points back to its parent) -->
+  <path class="arr" d="M248,150 L166,150" marker-end="url(#arrow)"/>
+  <path class="arr" d="M378,150 L296,150" marker-end="url(#arrow)"/>
+  <path class="arr" d="M508,150 L426,150" marker-end="url(#arrow)"/>
+
+  <!-- commit dots -->
+  <g class="c-purple">
+    <circle cx="140" cy="150" r="22" stroke-width="0.5"/>
+    <text x="140" y="150" class="th" text-anchor="middle" dominant-baseline="central">a1c</text>
+  </g>
+  <g class="c-purple">
+    <circle cx="270" cy="150" r="22" stroke-width="0.5"/>
+    <text x="270" y="150" class="th" text-anchor="middle" dominant-baseline="central">9f3</text>
+  </g>
+  <g class="c-purple">
+    <circle cx="400" cy="150" r="22" stroke-width="0.5"/>
+    <text x="400" y="150" class="th" text-anchor="middle" dominant-baseline="central">c7e</text>
+  </g>
+
+  <!-- the new commit, linked back to its parent -->
+  <g class="c-purple">
+    <circle cx="530" cy="150" r="22" stroke-width="0.5"/>
+    <text x="530" y="150" class="th" text-anchor="middle" dominant-baseline="central">2b8</text>
+  </g>
+
+  <!-- annotation: the backward link names the parent -->
+  <text x="467" y="112" class="ts" text-anchor="middle" dominant-baseline="central">points back</text>
+  <path class="leader" d="M467,120 L467,146"/>
+
+  <!-- current-position label, now moved forward onto the new commit -->
+  <path class="arr" d="M530,84 L530,124" marker-end="url(#arrow)"/>
+  <g class="c-teal">
+    <rect x="490" y="44" width="80" height="40" rx="6" stroke-width="0.5"/>
+    <text x="530" y="59" class="th" text-anchor="middle" dominant-baseline="central">main</text>
+    <text x="530" y="75" class="ts" text-anchor="middle" dominant-baseline="central">current</text>
+  </g>
+</svg>
+</div><div id="cap"></div></div>
+<div id="bar">
+  <button id="play">⏸ Pause</button>
+  <button id="prev">←</button><button id="next">→</button>
+  <div id="prog"><div></div></div>
+  <span id="count"></span>
+  <label><input type="checkbox" id="tts"> 🔊 narrate</label>
+  <label><input type="checkbox" id="dim" checked> dim past</label>
+</div>
+<script>
+var M=window.__MANIFEST__={"topic": "committing", "title": "Committing: adding a dot to the history line", "definition": "Committing adds one new dot to the end of the current line. The new dot points back to the dot you were just on, and the label marking where you are now moves forward to the new dot. Your history grows by one snapshot.", "stage": {"width": 1280, "height": 720}, "reading_rate_wpm": 150, "slides": [{"kind": "title", "concept_slug": null, "caption": "Committing: adding a dot to the history line", "narration": "Committing: adding a dot to the history line", "duration_s": 3.2, "transition": "cut", "reveal_to": null, "container": 0}, {"kind": "section", "concept_slug": "current-commit-label", "caption": "A label marking the commit you are on now", "narration": "A label marking the commit you are on now", "duration_s": 3.6, "transition": "cut", "reveal_to": null, "container": 1}, {"kind": "frame", "concept_slug": "current-commit-label", "caption": "Your history is a row of dots \u2014 each commit a saved snapshot, linked back to the one before it.", "narration": "Git keeps your project as a chain of commits \u2014 dots on a line, each one a full snapshot linked back to its parent, oldest on the left, newest on the right. Go deeper: the commit figure shows what a single snapshot holds, and the history-graph figure shows how the dots link into one chain.", "duration_s": 18.0, "transition": "cut", "reveal_to": null, "container": 2}, {"kind": "frame", "concept_slug": "current-commit-label", "caption": "A small label marks the one dot you're on right now \u2014 'you are here.'", "narration": "One dot is special: it's the commit whose files you actually have open right now. A small movable label points at exactly that dot \u2014 a 'you are here' pin on your history. Here it sits on the newest commit, e7.", "duration_s": 16.4, "transition": "crossfade", "reveal_to": null, "container": 3}, {"kind": "frame", "concept_slug": "current-commit-label", "caption": "Slide the label to another dot to change where you are.", "narration": "The label isn't stuck. Slide it from e7 back to an earlier dot, 3f, and 'where you are' moves with it \u2014 the dashed arrow shows the slide, and the pin now points at 3f.", "duration_s": 14.0, "transition": "crossfade", "reveal_to": null, "container": 4}, {"kind": "frame", "concept_slug": "current-commit-label", "caption": "Wherever the label lands, your working files match that dot's snapshot.", "narration": "The label always points at exactly one dot, and the files in your project are that dot's snapshot. Landing on 3f means your files are now 3f's version \u2014 move the label and your files follow. Go deeper: the commit figure explains what that snapshot contains.", "duration_s": 18.0, "transition": "crossfade", "reveal_to": null, "container": 5}, {"kind": "section", "concept_slug": "committing", "caption": "Committing: adding a dot to the history line", "narration": "Committing: adding a dot to the history line", "duration_s": 3.2, "transition": "cut", "reveal_to": null, "container": 6}, {"kind": "frame", "concept_slug": "committing", "caption": "A repo's history is a line of commits, each pointing back to the one before. The teal label marks the commit you're on now.", "narration": "Think of a repo's history as a row of beads on a string. Each bead is a commit, one saved snapshot of your work, and every commit carries an arrow pointing back to the one before it. The teal label sitting on the last bead, c7e, marks exactly where you are right now.", "duration_s": 18.0, "transition": "cut", "reveal_to": null, "container": 7}, {"kind": "frame", "concept_slug": "committing", "caption": "Committing drops one new commit onto the end of the line.", "narration": "Now you make a commit. A fresh bead, 2b8, pops onto the end of the line, one brand-new snapshot of your work.", "duration_s": 8.8, "transition": "crossfade", "reveal_to": null, "container": 8}, {"kind": "frame", "concept_slug": "committing", "caption": "The new commit points back to the one you were just on \u2014 its parent.", "narration": "That new bead doesn't float free. An arrow links 2b8 back to c7e, the commit you were just on. That backward link is its parent, and it's what threads the whole history together into one chain.", "duration_s": 14.4, "transition": "crossfade", "reveal_to": null, "container": 9}, {"kind": "frame", "concept_slug": "committing", "caption": "The label moves forward onto the new commit. Your history just grew by one snapshot.", "narration": "Last, the label slides forward onto 2b8. That's now where you are, and the line is one snapshot longer than before. Go deeper: the snapshot in each bead is 'a commit'; the whole row of linked beads is 'the commit history graph'; the sliding teal tag is 'the label marking the commit you are on now'.", "duration_s": 18.0, "transition": "crossfade", "reveal_to": null, "container": 10}]};
+var conts=[].slice.call(document.querySelectorAll('#stage > .slide'));
+var cap=document.getElementById('cap'),count=document.getElementById('count');
+var progEl=document.querySelector('#prog>div');
+var tts=document.getElementById('tts'),dim=document.getElementById('dim');
+var i=0,playing=true,timer=null,progRAF=null,start=0;
+function speak(t){try{var u=new SpeechSynthesisUtterance(t);u.onend=function(){if(playing&&tts.checked)next();};speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+function drawLines(g){
+  var lines=g.tagName.toLowerCase()==='line'?[g]:[].slice.call(g.querySelectorAll('line'));
+  lines.forEach(function(ln){
+    // capture the TRUE target once (initial attributes are the full endpoint),
+    // so re-entry never reads a mid-animation value
+    if(!ln.dataset.tx2){ln.dataset.tx2=ln.getAttribute('x2');ln.dataset.ty2=ln.getAttribute('y2');}
+    var x1=+ln.getAttribute('x1'),y1=+ln.getAttribute('y1'),x2=+ln.dataset.tx2,y2=+ln.dataset.ty2;
+    var gen=(ln._gen=(ln._gen||0)+1),t0=null,D=650;   // generation token cancels a stale RAF
+    ln.setAttribute('x2',x1); ln.setAttribute('y2',y1);
+    function fr(ts){if(ln._gen!==gen)return; if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/D),e=1-Math.pow(1-p,3);
+      ln.setAttribute('x2',(x1+(x2-x1)*e).toFixed(1));ln.setAttribute('y2',(y1+(y2-y1)*e).toFixed(1));
+      if(p<1)requestAnimationFrame(fr);}
+    requestAnimationFrame(fr);
+  });
+}
+function reveal(cont,level){
+  [].slice.call(cont.querySelectorAll('[data-reveal]')).forEach(function(g){
+    var k=+g.getAttribute('data-reveal'), shown=(level===null||k<=level);
+    if(shown){
+      if(!g.classList.contains('on')){g.classList.add('on'); if(g.getAttribute('data-anim')==='draw')drawLines(g);}
+      g.classList.toggle('dim', dim.checked && level!==null && k<level);
+    } else { g.classList.remove('on','dim'); }
+  });
+}
+function show(n){
+  i=(n+M.slides.length)%M.slides.length; var s=M.slides[i];
+  conts.forEach(function(c,ci){c.classList.toggle('show',ci===s.container);});
+  var cont=conts[s.container];
+  if(cont)cont.classList.toggle('cut',s.transition!=='crossfade'&&s.transition!=='reveal');
+  if(cont && cont.querySelector('[data-reveal]')) reveal(cont, s.reveal_to);
+  cap.textContent = s.kind==='frame' ? (s.caption||'') : '';
+  count.textContent=(i+1)+' / '+M.slides.length;
+  clearTimeout(timer);start=performance.now();var dur=s.duration_s*1000;
+  if(tts.checked)speak(s.narration); else if(playing)timer=setTimeout(next,dur);
+  prog(dur);
+}
+function prog(dur){cancelAnimationFrame(progRAF);(function step(){var p=Math.min(1,(performance.now()-start)/dur);progEl.style.width=(p*100)+'%';if(p<1&&playing)progRAF=requestAnimationFrame(step);})();}
+function next(){show(i+1);}function prev(){show(i-1);}
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;
+document.getElementById('play').onclick=function(){playing=!playing;this.textContent=playing?'⏸ Pause':'▶ Play';if(playing)show(i);else{clearTimeout(timer);speechSynthesis.cancel();}};
+dim.onchange=function(){var s=M.slides[i],c=conts[s.container];if(c&&c.querySelector('[data-reveal]'))reveal(c,s.reveal_to);};
+show(0);
+</script></body></html>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 210" role="img" aria-label="A prompt containing three labeled examples of classifying support tickets, followed by a fourth unlabeled ticket. The frozen model outputs the label for the fourth. The weights are unchanged." width="100%">
+<style>svg{color:#1A212C}.bg{fill:#F6F7F5}.af{fill:#0B7A83}.as{stroke:#0B7A83}@media (prefers-color-scheme:dark){svg{color:#E3E7EC}.bg{fill:#12171E}.af{fill:#38B6BE}.as{stroke:#38B6BE}}</style>
+<title>In-context learning</title>
+<rect class="bg" x="0" y="0" width="100%" height="100%"/>
+
+<defs><marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="JetBrains Mono, monospace" font-size="11.5" fill="currentColor">
+<rect x="12" y="16" width="360" height="176" rx="4" fill="none" stroke="currentColor"/>
+<text x="24" y="36" font-family="Bricolage Grotesque, sans-serif" font-weight="700" letter-spacing="1.2" font-size="11">PROMPT (CONTEXT WINDOW)</text>
+<text x="24" y="60">"Login page shows 500 error"      → Bug</text>
+<text x="24" y="80">"Can you add dark mode?"          → Feature</text>
+<text x="24" y="100">"How do I export my data?"        → Question</text>
+<line x1="24" y1="112" x2="360" y2="112" stroke="currentColor" opacity=".3" stroke-dasharray="3 3"/>
+<text x="24" y="134">"Invoice PDF is blank since v4.2" → </text>
+<rect x="24" y="148" width="336" height="30" rx="3" class="af" opacity=".15"/>
+<text x="192" y="168" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="11.5">three demonstrations define the task — no training step</text>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12">
+<line x1="372" y1="104" x2="420" y2="104" stroke="currentColor" marker-end="url(#a6)"/>
+<rect x="422" y="72" width="120" height="64" rx="3" fill="none" stroke="currentColor"/>
+<text x="482" y="98" text-anchor="middle" font-weight="700">frozen model</text><text x="482" y="116" text-anchor="middle" font-size="11" opacity=".75">weights unchanged</text>
+<line x1="542" y1="104" x2="588" y2="104" stroke="currentColor" marker-end="url(#a6)"/>
+<text x="596" y="108" font-family="JetBrains Mono, monospace" font-weight="600">Bug</text>
+</g></g></svg>

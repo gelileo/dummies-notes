@@ -1,0 +1,15 @@
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/slide-000.png'
+duration 2.197
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/slide-001.png'
+duration 11.627
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/slide-002.png'
+duration 10.283
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/slide-003.png'
+duration 15.701
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/slide-004.png'
+duration 9.579
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/slide-005.png'
+duration 13.397
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/slide-006.png'
+duration 13.376
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/slide-006.png'

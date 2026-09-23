@@ -1,0 +1,51 @@
+1
+00:00:00,000 --> 00:00:02,500
+The problem git solves
+
+2
+00:00:02,500 --> 00:00:06,100
+A version (a saved snapshot of your whole project)
+
+3
+00:00:06,100 --> 00:00:12,100
+Here's your project — one folder holding all its files, the ones you keep editing.
+
+4
+00:00:12,100 --> 00:00:21,700
+Saving a version is like taking a photo of the entire folder exactly as it looks right now. That frozen photo is version 1.
+
+5
+00:00:21,700 --> 00:00:30,500
+You keep working and change a file — styles.css gets edited. Your live folder moves on, but the photo you took doesn't.
+
+6
+00:00:30,500 --> 00:00:38,100
+Take another photo and you get version 2: the whole folder again, now with the edited file baked in.
+
+7
+00:00:38,100 --> 00:00:48,500
+Because each version is a complete copy, loading one restores every file at once — the whole folder snaps back to exactly how it looked then.
+
+8
+00:00:48,500 --> 00:00:51,000
+The problem git solves
+
+9
+00:00:51,000 --> 00:01:00,200
+Here's a folder most of us know: essay_final.docx, then v2, then the one you swear is actually final. Three files, nearly identical names.
+
+10
+00:01:00,200 --> 00:01:09,000
+The trouble: you can't tell what changed between them, you're scared to delete any, and sharing one means emailing a whole copy.
+
+11
+00:01:09,000 --> 00:01:16,200
+Git flips this around. You keep just one file in your folder, the clean copy you actually edit.
+
+12
+00:01:16,200 --> 00:01:23,400
+Behind the scenes, git remembers every version you saved: a timeline of snapshots, so nothing is ever lost.
+
+13
+00:01:23,400 --> 00:01:33,000
+Need an old draft? Roll back to any past version on the timeline. One clean folder in front, the full history safely behind it.

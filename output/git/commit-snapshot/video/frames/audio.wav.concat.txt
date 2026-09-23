@@ -1,0 +1,6 @@
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-snapshot/video/frames/aud-000.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-snapshot/video/frames/aud-001.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-snapshot/video/frames/aud-002.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-snapshot/video/frames/aud-003.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-snapshot/video/frames/aud-004.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-snapshot/video/frames/aud-005.wav'

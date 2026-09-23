@@ -1,0 +1,13 @@
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-history-graph/video/frames/slide-000.png'
+duration 2.000
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-history-graph/video/frames/slide-001.png'
+duration 10.475
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-history-graph/video/frames/slide-002.png'
+duration 6.037
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-history-graph/video/frames/slide-003.png'
+duration 5.845
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-history-graph/video/frames/slide-004.png'
+duration 7.211
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-history-graph/video/frames/slide-005.png'
+duration 15.808
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/commit-history-graph/video/frames/slide-005.png'

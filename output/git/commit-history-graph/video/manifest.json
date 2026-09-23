@@ -1,0 +1,72 @@
+{
+  "topic": "commit-history-graph",
+  "title": "The commit history graph",
+  "definition": "Because each commit points to its parent, the commits form a chain of dots: newest on the right, oldest on the left, each linked to the one before. That chain is your history. Git rebuilds any past version by following the links backward, so the past is fixed and always recoverable.",
+  "stage": {
+    "width": 1280,
+    "height": 720
+  },
+  "reading_rate_wpm": 150,
+  "slides": [
+    {
+      "kind": "title",
+      "concept_slug": null,
+      "image": null,
+      "caption": "The commit history graph",
+      "narration": "The commit history graph",
+      "duration_s": 2.5,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "commit-history-graph",
+      "image": "registry/commit-history-graph/figure/frame-01.svg",
+      "caption": "It starts with one commit.",
+      "narration": "Every history begins with a single commit \u2014 one saved snapshot of your whole project, stamped with its own id. Go deeper: the commit figure shows what's inside one.",
+      "duration_s": 11.6,
+      "transition": "cut",
+      "reveal_to": 1
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "commit-history-graph",
+      "image": "registry/commit-history-graph/figure/frame-01.svg",
+      "caption": "Each new commit links back to its parent.",
+      "narration": "Make a change and you add another commit. It stores a link pointing back to the one before it \u2014 its parent.",
+      "duration_s": 8.8,
+      "transition": "reveal",
+      "reveal_to": 2
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "commit-history-graph",
+      "image": "registry/commit-history-graph/figure/frame-01.svg",
+      "caption": "The links keep chaining.",
+      "narration": "Every new commit does the same, so the links chain together, each dot reaching back to the one before it.",
+      "duration_s": 8.0,
+      "transition": "reveal",
+      "reveal_to": 3
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "commit-history-graph",
+      "image": "registry/commit-history-graph/figure/frame-01.svg",
+      "caption": "Newest on the right, oldest on the left \u2014 that's your history.",
+      "narration": "Line them all up and you get a chain: oldest on the left, newest on the right. That chain is your project's entire history.",
+      "duration_s": 9.6,
+      "transition": "reveal",
+      "reveal_to": 4
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "commit-history-graph",
+      "image": "registry/commit-history-graph/figure/frame-01.svg",
+      "caption": "Walk the links backward to recover any version.",
+      "narration": "Want an old version back? Git starts at the newest commit and follows the links backward until it reaches the one you want, rebuilding it exactly. The past is fixed and always recoverable. Go deeper: the version figure explains what a saved snapshot is.",
+      "duration_s": 17.6,
+      "transition": "reveal",
+      "reveal_to": 5
+    }
+  ]
+}

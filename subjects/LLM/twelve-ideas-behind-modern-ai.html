@@ -1,0 +1,962 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Twelve Ideas Behind Modern AI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#F6F7F5; --ink:#1A212C; --muted:#5B6470; --rule:#D9DEE3; --panel:#EDF0EE;
+  --accent:#0B7A83; --accent-soft:#D6ECEC; --plum:#7A4E9E; --plum-soft:#EAE1F3;
+  --code-bg:#E9ECEA; --warn:#B5651D;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,"Helvetica Neue",Arial,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12171E; --ink:#E3E7EC; --muted:#98A2AE; --rule:#2A323C; --panel:#1A2029;
+    --accent:#38B6BE; --accent-soft:#12343A; --plum:#B08BDB; --plum-soft:#2A2238;
+    --code-bg:#1F262F; --warn:#E0955A;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12171E; --ink:#E3E7EC; --muted:#98A2AE; --rule:#2A323C; --panel:#1A2029;
+  --accent:#38B6BE; --accent-soft:#12343A; --plum:#B08BDB; --plum-soft:#2A2238;
+  --code-bg:#1F262F; --warn:#E0955A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:17.5px;line-height:1.6;padding-inline:20px;padding-block:0 80px;}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:40px}
+@media (min-width:1100px){.wrap{grid-template-columns:230px minmax(0,1fr)}}
+nav.toc{display:none}
+@media (min-width:1100px){
+  nav.toc{display:block;position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto;padding-top:64px;font-family:var(--display);font-size:13.5px;line-height:1.35}
+  nav.toc ol{list-style:none;margin:0;padding:0}
+  nav.toc li{margin:0 0 9px 0}
+  nav.toc a{color:var(--muted);text-decoration:none;display:flex;gap:9px}
+  nav.toc a:hover{color:var(--ink)}
+  nav.toc .n{font-variant-numeric:tabular-nums;color:var(--accent);font-weight:700;min-width:1.6em}
+  nav.toc .eyebrow{margin-bottom:12px}
+}
+main{max-width:70ch;min-width:0}
+header.masthead{padding-top:64px;padding-bottom:36px;border-bottom:1px solid var(--rule);margin-bottom:40px}
+.eyebrow{font-family:var(--display);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,5vw,50px);line-height:1.05;letter-spacing:-.02em;margin:10px 0 18px;text-wrap:balance}
+.lede{font-size:20px;line-height:1.5;color:var(--muted);margin:0}
+h2{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.12;letter-spacing:-.015em;margin:0 0 14px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.25;margin:0 0 8px;text-wrap:balance}
+h4{font-family:var(--display);font-weight:700;font-size:16px;margin:0 0 6px}
+p{margin:0 0 16px}
+section.concept{padding-top:28px;margin-top:40px;border-top:1px solid var(--rule)}
+.chip{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:10px}
+.chip .n{font-variant-numeric:tabular-nums;background:var(--accent);color:var(--paper);border-radius:3px;padding:1px 6px}
+.oneline{font-family:var(--display);font-size:18px;line-height:1.4;font-weight:500;padding:14px 18px;background:var(--panel);border-left:3px solid var(--accent);margin:0 0 22px}
+figure{margin:24px 0}
+figure svg{display:block;max-width:100%;height:auto;color:var(--ink)}
+figure svg .af{fill:var(--accent)} figure svg .as{stroke:var(--accent)}
+figcaption{font-family:var(--display);font-size:13.5px;line-height:1.45;color:var(--muted);margin-top:10px}
+.example{border:1px solid var(--rule);padding:14px 18px;margin:0 0 20px;background:var(--paper)}
+.example .lbl{font-family:var(--display);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
+code,pre{font-family:var(--mono);font-size:.86em}
+code{background:var(--code-bg);padding:1px 5px;border-radius:3px}
+pre{background:var(--code-bg);padding:12px 14px;overflow-x:auto;line-height:1.5;margin:0 0 18px}
+pre code{background:none;padding:0}
+.drill{margin:22px 0 0;padding:16px 18px 6px 20px;border-left:3px solid var(--accent);background:var(--accent-soft)}
+.drill .lvl{font-family:var(--display);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--accent);margin-bottom:6px}
+.drill.l2{border-left-color:var(--plum);background:var(--plum-soft);margin:16px 0 14px;padding:14px 16px 4px 18px}
+.drill.l2 .lvl{color:var(--plum)}
+.drill p{font-size:16.5px}
+.drill h3{font-size:18px}
+.drill.l2 h3{font-size:16.5px}
+.drill .example{background:transparent}
+.tok{display:inline-block;font-family:var(--mono);font-size:.85em;padding:2px 6px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);margin:1px 2px}
+table{border-collapse:collapse;width:100%;font-size:15.5px;margin:0 0 18px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--display);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--display);font-size:13px;color:var(--muted);margin:14px 0 0}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+.legend .k1::before{background:var(--accent)}
+.legend .k2::before{background:var(--plum)}
+.closing{margin-top:56px;padding-top:28px;border-top:1px solid var(--rule)}
+.map{font-family:var(--display);font-size:14px;line-height:1.5}
+.map ol{margin:0;padding-left:1.4em}
+.map li{margin-bottom:6px}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <div class="eyebrow">Contents</div>
+  <ol>
+    <li><a href="#c1"><span class="n">1</span>Representation learning</a></li>
+    <li><a href="#c2"><span class="n">2</span>Embeddings</a></li>
+    <li><a href="#c3"><span class="n">3</span>Next-token prediction</a></li>
+    <li><a href="#c4"><span class="n">4</span>Attention &amp; the Transformer</a></li>
+    <li><a href="#c5"><span class="n">5</span>Scaling laws</a></li>
+    <li><a href="#c6"><span class="n">6</span>In-context learning</a></li>
+    <li><a href="#c7"><span class="n">7</span>Pretrain, then align</a></li>
+    <li><a href="#c8"><span class="n">8</span>Hardware co-design</a></li>
+    <li><a href="#c9"><span class="n">9</span>Reasoning &amp; test-time compute</a></li>
+    <li><a href="#c10"><span class="n">10</span>Multimodality</a></li>
+    <li><a href="#c11"><span class="n">11</span>Long context &amp; retrieval</a></li>
+    <li><a href="#c12"><span class="n">12</span>Tool use &amp; agency</a></li>
+    <li><a href="#closing"><span class="n">∞</span>How it fits together</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="masthead">
+  <div class="eyebrow">A field guide for engineers who aren't ML specialists</div>
+  <h1>Twelve Ideas Behind Modern AI</h1>
+  <p class="lede">The concepts that turned a decade of research into GPT-4, Claude, Gemini and the agents built on them — each one explained, illustrated, and unpacked down to the ideas it rests on.</p>
+</header>
+
+<p>Almost nothing in a modern language model is individually new. Attention, reinforcement learning, self-supervision, even the idea of predicting the next word were all known before 2017. What produced today's systems was a particular <em>stack</em> of ideas that happened to fit together and to keep working as they were scaled up. This guide walks through the twelve that carry the most weight, in roughly the order they became load-bearing.</p>
+<p>Each concept follows the same shape: a one-line version, a fuller explanation with a picture, a worked example, and then the ideas it depends on. Those prerequisites are colored by depth so you can skip them if you already know them, or follow them two levels down if you don't.</p>
+<div class="legend"><span class="k1">Depends on — first level</span><span class="k2">Which in turn depends on — second level</span></div>
+
+<!-- ============ 1 ============ -->
+<section class="concept" id="c1">
+<div class="chip"><span class="n">1</span>Foundation</div>
+<h2>Representation learning: let the network find its own features</h2>
+<p class="oneline">Instead of humans deciding what to measure in the data, the model learns the measurements — and given enough data, the learned ones win.</p>
+
+<p>Before 2012, building a vision or speech system meant a specialist spending months designing <em>features</em>: edge detectors, color histograms, phoneme templates. A relatively simple classifier then ran on top of those hand-made measurements. The deep-learning bet was that a many-layered network, fed raw pixels or raw audio, could learn better measurements than any human would design, provided it saw enough examples. AlexNet's 2012 ImageNet result (a 10-point jump in accuracy over the best hand-engineered system) settled the argument, and every later idea in this guide assumes it.</p>
+<p>What makes this work is <em>depth</em>: each layer builds slightly more abstract features out of the previous layer's. In a vision network the first layer learns edges and color blobs, the next combines them into textures and corners, the next into parts like eyes or wheels, and eventually whole objects. Nobody programmed that hierarchy; it fell out of training. Language models do the same with text, building from characters to words to phrases to the structure of an argument.</p>
+
+<figure>
+<svg viewBox="0 0 680 250" role="img" aria-label="Two pipelines: the classical one where a human designs features that feed a simple classifier, and the deep-learning one where raw data passes through stacked learned layers that each produce more abstract features.">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12" fill="currentColor">
+<text x="12" y="24" font-weight="700" font-size="12.5" letter-spacing="1.2">BEFORE 2012</text>
+<rect x="12" y="40" width="96" height="44" rx="3" fill="none" stroke="currentColor"/><text x="60" y="66" text-anchor="middle">raw pixels</text>
+<line x1="108" y1="62" x2="150" y2="62" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="152" y="40" width="150" height="44" rx="3" fill="none" stroke="currentColor" stroke-dasharray="4 3"/><text x="227" y="58" text-anchor="middle">hand-designed features</text><text x="227" y="74" text-anchor="middle" fill="currentColor" opacity=".7">edges · SIFT · histograms</text>
+<line x1="302" y1="62" x2="344" y2="62" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="346" y="40" width="110" height="44" rx="3" fill="none" stroke="currentColor"/><text x="401" y="66" text-anchor="middle">simple classifier</text>
+<line x1="456" y1="62" x2="498" y2="62" stroke="currentColor" marker-end="url(#a1)"/>
+<text x="504" y="66">“cat”</text>
+<text x="227" y="102" text-anchor="middle" font-style="italic" opacity=".7">a person designs this part</text>
+
+<text x="12" y="146" font-weight="700" font-size="12.5" letter-spacing="1.2">DEEP LEARNING</text>
+<rect x="12" y="162" width="96" height="44" rx="3" fill="none" stroke="currentColor"/><text x="60" y="188" text-anchor="middle">raw pixels</text>
+<line x1="108" y1="184" x2="130" y2="184" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="132" y="162" width="78" height="44" rx="3" class="af" opacity=".18"/><rect x="132" y="162" width="78" height="44" rx="3" fill="none" class="as"/><text x="171" y="188" text-anchor="middle">edges</text>
+<line x1="210" y1="184" x2="232" y2="184" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="234" y="162" width="78" height="44" rx="3" class="af" opacity=".18"/><rect x="234" y="162" width="78" height="44" rx="3" fill="none" class="as"/><text x="273" y="188" text-anchor="middle">textures</text>
+<line x1="312" y1="184" x2="334" y2="184" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="336" y="162" width="78" height="44" rx="3" class="af" opacity=".18"/><rect x="336" y="162" width="78" height="44" rx="3" fill="none" class="as"/><text x="375" y="188" text-anchor="middle">parts</text>
+<line x1="414" y1="184" x2="436" y2="184" stroke="currentColor" marker-end="url(#a1)"/>
+<rect x="438" y="162" width="78" height="44" rx="3" class="af" opacity=".18"/><rect x="438" y="162" width="78" height="44" rx="3" fill="none" class="as"/><text x="477" y="188" text-anchor="middle">objects</text>
+<line x1="516" y1="184" x2="538" y2="184" stroke="currentColor" marker-end="url(#a1)"/>
+<text x="544" y="188">“cat”</text>
+<text x="324" y="228" text-anchor="middle" font-style="italic" opacity=".7">every layer is learned from data — the hierarchy is discovered, not designed</text>
+</g></svg>
+<figcaption>The shift from human-designed features to learned ones. The teal layers are all trained end-to-end; nobody specifies what “textures” or “parts” should mean.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example</div>
+<p>Ask a spam filter from 2005 how it decides, and the answer is a list a human wrote: presence of the word “free”, ratio of capital letters, number of links. Ask a modern model, and there is no list. It has learned thousands of intermediate features — some of which correspond to things like “urgent tone” or “mismatched sender domain” — and combines them in ways nobody wrote down. The cost is interpretability; the benefit is that the features keep improving as long as you keep adding data.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Neural networks and backpropagation</h3>
+<p>A neural network is a stack of layers, each one a matrix multiplication followed by a simple non-linear squashing function (a <em>ReLU</em> just clips negatives to zero). Stacking linear-then-nonlinear steps is what lets the network represent arbitrarily complicated functions. The parameters are the numbers in those matrices — “weights” — and there can be billions of them.</p>
+<p><em>Backpropagation</em> is the algorithm that tells each weight how it should change to reduce the error. It is the chain rule from calculus applied mechanically backwards through the layers: compute the output, compare it to the right answer, then propagate “blame” back so every weight learns its share of responsibility. It is cheap (about the cost of two forward passes) and it is the reason deep networks are trainable at all.</p>
+<div class="example"><div class="lbl">Intuition</div><p>Imagine a factory line where the final product is slightly wrong. Backprop is the manager walking the line backwards, telling each station “you contributed this much to the defect — adjust by this much.” Do that a few million times and the line produces the right product.</p></div>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>Gradient descent</h3>
+<p>Once backprop has computed, for every weight, the direction that would reduce the error, gradient descent takes a small step in that direction. Repeat. The “learning rate” is the step size: too big and training oscillates or explodes, too small and it takes forever. In practice models use <em>stochastic</em> gradient descent — estimating the direction from a small random batch of examples rather than the whole dataset — plus refinements like Adam that adapt the step size per weight. Every model in this guide, from AlexNet to GPT-5, is trained this way. The whole of deep learning is “define a loss, take its gradient, step downhill, repeat.”</p>
+</div>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>GPU parallelism</h3>
+<p>A layer is a matrix multiplication, and a matrix multiplication is millions of independent multiply-adds. Graphics cards were built to do exactly that for pixels, so in 2009–2012 researchers discovered they could train networks 10–50× faster on gaming GPUs than on CPUs. AlexNet was trained on two consumer GTX 580s. That accident of hardware history is why deep learning became practical when it did, and why NVIDIA became the most valuable company in the world. Concept 8 returns to how the hardware and the algorithms have been co-designed since.</p>
+</div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="concept" id="c2">
+<div class="chip"><span class="n">2</span>Foundation</div>
+<h2>Embeddings: meaning as geometry</h2>
+<p class="oneline">Every word, image patch, or document becomes a point in a high-dimensional space where distance means similarity and direction means relationship.</p>
+
+<p>Computers store words as arbitrary IDs: “cat” might be token 7,214 and “kitten” token 30,877, with nothing connecting them. An embedding replaces each ID with a vector — a list of a few hundred to a few thousand numbers — chosen so that words used in similar contexts end up near each other. “Cat” and “kitten” become neighbors; “cat” and “carburetor” do not.</p>
+<p>The surprising part, discovered with word2vec in 2013, is that <em>directions</em> in this space carry meaning too. The vector from “man” to “woman” is roughly the same as the vector from “king” to “queen”, so <code>king − man + woman ≈ queen</code>. Nobody built that in; it emerged from the training objective. Modern models are, at bottom, enormous machines for constructing such representations and transforming them layer by layer — the “hidden state” flowing through a Transformer is just an embedding that gets progressively enriched with context.</p>
+
+<figure>
+<svg viewBox="0 0 560 300" role="img" aria-label="A two-dimensional projection of an embedding space: king, queen, man and woman form a parallelogram, with the man-to-woman arrow parallel to the king-to-queen arrow; a cluster of animal words sits far away.">
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="af"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12.5" fill="currentColor">
+<line x1="40" y1="260" x2="530" y2="260" stroke="currentColor" opacity=".35"/><line x1="40" y1="260" x2="40" y2="20" stroke="currentColor" opacity=".35"/>
+<text x="530" y="278" text-anchor="end" opacity=".6">dimension 1 (of ~4096)</text>
+<text x="20" y="20" transform="rotate(-90 20 20)" text-anchor="end" opacity=".6">dimension 2</text>
+<line x1="120" y1="200" x2="200" y2="120" class="as" stroke-width="2" marker-end="url(#a2)"/>
+<line x1="300" y1="190" x2="380" y2="110" class="as" stroke-width="2" marker-end="url(#a2)"/>
+<line x1="120" y1="200" x2="300" y2="190" stroke="currentColor" opacity=".3" stroke-dasharray="3 4"/>
+<line x1="200" y1="120" x2="380" y2="110" stroke="currentColor" opacity=".3" stroke-dasharray="3 4"/>
+<circle cx="120" cy="200" r="5" fill="currentColor"/><text x="120" y="222" text-anchor="middle">man</text>
+<circle cx="200" cy="120" r="5" fill="currentColor"/><text x="200" y="108" text-anchor="middle">woman</text>
+<circle cx="300" cy="190" r="5" fill="currentColor"/><text x="300" y="212" text-anchor="middle">king</text>
+<circle cx="380" cy="110" r="5" fill="currentColor"/><text x="380" y="98" text-anchor="middle">queen</text>
+<text x="240" y="150" text-anchor="middle" class="af" font-style="italic">same direction ≈ “gender”</text>
+<circle cx="470" cy="215" r="4" fill="currentColor" opacity=".7"/><text x="482" y="212">cat</text>
+<circle cx="490" cy="238" r="4" fill="currentColor" opacity=".7"/><text x="502" y="242">kitten</text>
+<circle cx="455" cy="240" r="4" fill="currentColor" opacity=".7"/><text x="410" y="244">dog</text>
+<circle cx="470" cy="225" r="42" fill="none" stroke="currentColor" opacity=".3" stroke-dasharray="3 3"/>
+<text x="470" y="292" text-anchor="middle" opacity=".7" font-style="italic">nearby = similar meaning</text>
+</g></svg>
+<figcaption>A two-dimensional cartoon of a space that really has thousands of dimensions. Similar concepts cluster; consistent relationships appear as parallel arrows.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: the same idea powers search</div>
+<p>Embed every paragraph in your documentation, then embed a user's question with the same model. The paragraphs whose vectors are closest to the question's vector are the relevant ones — even if they share no keywords. A query for “my app crashes when I rotate the phone” will land near a paragraph titled “Handling orientation changes” because both live in the same region of meaning-space. This is semantic search, and it is the retrieval half of RAG (Concept 11).</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Vector spaces and cosine similarity</h3>
+<p>A vector is just an ordered list of numbers, and a space of vectors has a natural notion of distance. For embeddings the usual measure is <em>cosine similarity</em>: the cosine of the angle between two vectors, which is 1 when they point the same way, 0 when they are perpendicular (unrelated), and −1 when opposite. It ignores length and cares only about direction, which suits embeddings because a word's frequency tends to inflate its vector's length without changing its meaning.</p>
+<pre><code>cos(a, b) = (a · b) / (|a| · |b|)
+
+cos(embed("cat"), embed("kitten"))     ≈ 0.85
+cos(embed("cat"), embed("carburetor")) ≈ 0.08</code></pre>
+<p>High-dimensional spaces behave counter-intuitively — there is enormous room, so you can have thousands of directions that are all nearly perpendicular to one another. That is why a 4,096-number vector can encode far more than 4,096 distinct features: the model packs many concepts into overlapping directions, a phenomenon called superposition.</p>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>word2vec and the distributional hypothesis</h3>
+<p>The linguistic idea behind all of this is old: “You shall know a word by the company it keeps” (Firth, 1957). Words that appear in similar contexts have similar meanings. word2vec (Mikolov et al., 2013) turned that into a tiny neural network with one job: given a word, predict the words around it (the “skip-gram” objective). The embedding is the network's internal representation of the input word. Because the network must place “cat” and “kitten” close together to make similar predictions about their neighbors (“purrs”, “fur”, “meows”), similarity emerges automatically.</p>
+<p>Modern LLMs no longer train separate word2vec-style embeddings; the embedding table is learned jointly with everything else, and the useful representations are the contextual ones inside the network. But the principle — meaning from context, encoded as geometry — is unchanged.</p>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>Negative sampling</h3>
+<p>Predicting “which of 100,000 vocabulary words appears next to this one” requires scoring all 100,000 candidates for every training example — far too slow in 2013. Negative sampling replaces that with a cheap binary question: “is this word pair real or randomly generated?” For each real pair like (cat, purrs), the model is also shown a handful of fake pairs like (cat, spreadsheet) and trained to tell them apart. Five or ten negatives per positive is enough. The trick — turn an expensive many-way classification into a few cheap yes/no judgements — recurs throughout ML, including in the contrastive training behind CLIP (Concept 10).</p>
+</div>
+</div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="concept" id="c3">
+<div class="chip"><span class="n">3</span>The training signal</div>
+<h2>Self-supervised next-token prediction</h2>
+<p class="oneline">Predicting the next word in ordinary text is a free, unlimited training signal — and doing it well forces a model to learn grammar, facts, reasoning, and a model of the world.</p>
+
+<p>Supervised learning needs labels: a human marks each image “cat” or “dog”, each sentence “positive” or “negative”. Labels are expensive, so labeled datasets are small. The insight behind GPT is that text already contains its own labels. Take any sentence, hide the last word, and you have a training example: input “The capital of France is”, correct answer “Paris”. The internet provides trillions of these for free. This is <em>self-supervised</em> learning — the supervision comes from the data's own structure.</p>
+<p>The task sounds trivial and turns out to be bottomless. To predict the next token well across all of human writing, a model has to learn spelling, then grammar, then facts (“Paris”), then style, then arithmetic (to finish “17 × 23 =”), then the logical structure of arguments (to finish a proof), then theory of mind (to finish dialogue). Each capability is just a way of lowering the prediction error on some slice of text. The model is never told to learn any of it; it learns whatever helps.</p>
+
+<figure>
+<svg viewBox="0 0 640 242" role="img" aria-label="A sequence of tokens, The capital of France is, enters the model, which outputs a probability distribution over the vocabulary: Paris 0.71, a 0.09, located 0.06, the 0.04, other 0.10. The loss is computed against the actual next token, Paris.">
+<defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="JetBrains Mono, monospace" font-size="12.5" fill="currentColor">
+<g>
+<rect x="12" y="60" width="36" height="28" rx="3" fill="none" stroke="currentColor"/><text x="30" y="79" text-anchor="middle">The</text>
+<rect x="54" y="60" width="66" height="28" rx="3" fill="none" stroke="currentColor"/><text x="87" y="79" text-anchor="middle">capital</text>
+<rect x="126" y="60" width="30" height="28" rx="3" fill="none" stroke="currentColor"/><text x="141" y="79" text-anchor="middle">of</text>
+<rect x="162" y="60" width="60" height="28" rx="3" fill="none" stroke="currentColor"/><text x="192" y="79" text-anchor="middle">France</text>
+<rect x="228" y="60" width="30" height="28" rx="3" fill="none" stroke="currentColor"/><text x="243" y="79" text-anchor="middle">is</text>
+<rect x="264" y="60" width="36" height="28" rx="3" fill="none" stroke="currentColor" stroke-dasharray="3 3"/><text x="282" y="79" text-anchor="middle">?</text>
+</g>
+<g font-family="Bricolage Grotesque, sans-serif">
+<text x="156" y="48" text-anchor="middle" opacity=".7">input (context)</text>
+<line x1="156" y1="96" x2="156" y2="120" stroke="currentColor" marker-end="url(#a3)"/>
+<rect x="60" y="122" width="192" height="40" rx="3" class="af" opacity=".18"/><rect x="60" y="122" width="192" height="40" rx="3" fill="none" class="as"/><text x="156" y="147" text-anchor="middle" font-weight="700">model (billions of weights)</text>
+<line x1="252" y1="142" x2="330" y2="142" stroke="currentColor" marker-end="url(#a3)"/>
+<text x="340" y="54" opacity=".7">output: probability of each next token</text>
+</g>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12">
+<rect x="400" y="66" width="192" height="14" class="af"/><text x="340" y="77">Paris</text><text x="598" y="77">.71</text>
+<rect x="400" y="88" width="24" height="14" fill="currentColor" opacity=".5"/><text x="340" y="99">a</text><text x="598" y="99">.09</text>
+<rect x="400" y="110" width="16" height="14" fill="currentColor" opacity=".5"/><text x="340" y="121">located</text><text x="598" y="121">.06</text>
+<rect x="400" y="132" width="11" height="14" fill="currentColor" opacity=".5"/><text x="340" y="143">the</text><text x="598" y="143">.04</text>
+<rect x="400" y="154" width="27" height="14" fill="currentColor" opacity=".5"/><text x="340" y="165">(all others)</text><text x="598" y="165">.10</text>
+<text x="340" y="196" font-style="italic" opacity=".8">actual next token: “Paris” → loss = −log(0.71) ≈ 0.34</text>
+<text x="340" y="214" font-style="italic" opacity=".8">had it guessed .10, loss = 2.30 →</text>
+<text x="340" y="230" font-style="italic" opacity=".8">nudge the weights toward “Paris”</text>
+</g></g></svg>
+<figcaption>One training step. The model outputs a probability for every token in its vocabulary; the loss punishes it in proportion to how little probability it gave the token that actually came next.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: why “just predicting text” includes reasoning</div>
+<p>Consider the training document: <em>“Alice has 3 apples and buys 4 more. She now has”</em> followed by <em>“7”</em>. The only way to reliably lower the loss on millions of documents like this is to actually add. Now consider a detective novel that ends with the culprit's name. To predict that name from the preceding 300 pages, the model must track clues, motives, and alibis. Text is written by people using their intelligence; predicting it well requires reconstructing a good chunk of that intelligence.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Tokenization</h3>
+<p>Models don't see characters or words; they see <em>tokens</em>, chunks somewhere in between. Common words are one token; rare words are split into pieces; code and non-English text tend to fragment more. A typical vocabulary has 50,000–250,000 tokens. Tokenization matters practically: it is why models are charged per token, why they sometimes struggle to count letters in a word (they never saw the letters individually), and why a long variable name costs more than a short one.</p>
+<div class="tablewrap"><table>
+<tr><th>Text</th><th>Tokens</th><th>Count</th></tr>
+<tr><td>The capital of France</td><td><span class="tok">The</span><span class="tok">·capital</span><span class="tok">·of</span><span class="tok">·France</span></td><td>4</td></tr>
+<tr><td>antidisestablishment</td><td><span class="tok">ant</span><span class="tok">idis</span><span class="tok">establish</span><span class="tok">ment</span></td><td>4</td></tr>
+<tr><td>getUserById</td><td><span class="tok">get</span><span class="tok">User</span><span class="tok">By</span><span class="tok">Id</span></td><td>4</td></tr>
+<tr><td>牙科诊所</td><td><span class="tok">牙</span><span class="tok">科</span><span class="tok">诊</span><span class="tok">所</span></td><td>4 (often more)</td></tr>
+</table></div>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>Byte-pair encoding (BPE)</h3>
+<p>BPE builds the vocabulary from data. Start with individual bytes as the only tokens. Scan the training corpus, find the most frequent adjacent pair (say <code>t</code>+<code>h</code>), and merge it into a new token <code>th</code>. Repeat: <code>th</code>+<code>e</code> → <code>the</code>, and so on, for tens of thousands of merges. Frequent strings become single tokens; rare ones stay fragmented. Because it bottoms out at bytes, any input can be tokenized — there is never an “unknown word.” The same merges applied in reverse turn the model's output tokens back into text.</p>
+</div>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Softmax and cross-entropy loss</h3>
+<p>The model's last layer produces one raw score (a “logit”) per vocabulary token. <em>Softmax</em> turns those scores into probabilities: exponentiate each and divide by the sum, so they are all positive and add to 1. <em>Cross-entropy</em> then measures how surprised the model was by the real next token: −log(probability it assigned). Assigning 0.71 to the right answer costs 0.34; assigning 0.01 costs 4.6. Averaged over a dataset this is the “loss” you see plotted on every training curve, and it is exactly the quantity the scaling laws in Concept 5 are about.</p>
+<p>A useful way to think of the loss: it is the number of bits the model needs to encode the text. A lower loss means a better compressor. Many researchers take this literally — to compress human writing well you must understand it, so “build a good compressor of the internet” and “build an intelligence” become the same engineering problem.</p>
+</div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="concept" id="c4">
+<div class="chip"><span class="n">4</span>The architecture</div>
+<h2>Attention and the Transformer</h2>
+<p class="oneline">Let every token look directly at every other token and decide what to borrow from it — all in parallel. One simple block, stacked dozens of times, scales from millions to trillions of parameters without redesign.</p>
+
+<p>Before 2017, language models read text one token at a time with a recurrent network, carrying a fixed-size summary forward. Two problems: information from 500 tokens back had to survive 500 compression steps, and the sequential dependency meant GPUs sat mostly idle. <em>Attention</em> solves both. For each token, the model computes a weighted mixture of all the other tokens' representations, with weights that depend on relevance. The pronoun “it” can reach back and pull information straight from “the trophy” with no intermediate steps, and because every token's mixture is computed independently, the whole sequence is processed at once.</p>
+<p>The Transformer (Vaswani et al., “Attention Is All You Need”) is the architecture that made attention the <em>only</em> mixing mechanism. A block consists of an attention layer (tokens exchange information) followed by a feed-forward layer (each token is processed on its own — this is where most of the “knowledge” is stored), with residual connections and normalization holding it together. Stack 30–100 of these blocks and you have GPT. The design's real virtue is its indifference to scale: the same block used at 100 million parameters works at a trillion, and works for pixels and audio as well as text.</p>
+
+<figure>
+<svg viewBox="0 0 680 300" role="img" aria-label="Left: the sentence 'The trophy didn't fit in the suitcase because it was too big', with attention arrows from 'it' back to earlier tokens, thickest to 'trophy'. Right: a Transformer block showing attention and feed-forward sublayers with residual connections, stacked N times.">
+<defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12" fill="currentColor">
+<text x="12" y="22" font-weight="700" letter-spacing="1.2">ATTENTION: WHAT DOES “IT” REFER TO?</text>
+<g font-family="JetBrains Mono, monospace" font-size="11.5">
+<rect x="12" y="150" width="32" height="26" rx="3" fill="none" stroke="currentColor"/><text x="28" y="168" text-anchor="middle">The</text>
+<rect x="48" y="150" width="56" height="26" rx="3" class="af" opacity=".25"/><rect x="48" y="150" width="56" height="26" rx="3" fill="none" class="as" stroke-width="1.5"/><text x="76" y="168" text-anchor="middle">trophy</text>
+<rect x="108" y="150" width="50" height="26" rx="3" fill="none" stroke="currentColor"/><text x="133" y="168" text-anchor="middle">didn't</text>
+<rect x="162" y="150" width="30" height="26" rx="3" fill="none" stroke="currentColor"/><text x="177" y="168" text-anchor="middle">fit</text>
+<rect x="196" y="150" width="24" height="26" rx="3" fill="none" stroke="currentColor"/><text x="208" y="168" text-anchor="middle">in</text>
+<rect x="224" y="150" width="30" height="26" rx="3" fill="none" stroke="currentColor"/><text x="239" y="168" text-anchor="middle">the</text>
+<rect x="258" y="150" width="64" height="26" rx="3" fill="none" stroke="currentColor"/><text x="290" y="168" text-anchor="middle">suitcase</text>
+<rect x="326" y="150" width="58" height="26" rx="3" fill="none" stroke="currentColor"/><text x="355" y="168" text-anchor="middle">because</text>
+<rect x="388" y="150" width="24" height="26" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><text x="400" y="168" text-anchor="middle" font-weight="700">it</text>
+</g>
+<path d="M400 150 C 360 90, 120 90, 76 150" fill="none" class="as" stroke-width="3.5" marker-end="url(#a4)"/>
+<path d="M400 150 C 380 110, 300 110, 290 150" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".55" marker-end="url(#a4)"/>
+<path d="M400 150 C 395 128, 185 118, 177 150" fill="none" stroke="currentColor" stroke-width="1" opacity=".35" marker-end="url(#a4)"/>
+<text x="200" y="96" text-anchor="middle" class="af" font-weight="700">0.62</text>
+<text x="330" y="118" text-anchor="middle" opacity=".7">0.21</text>
+<text x="255" y="134" text-anchor="middle" opacity=".55">0.05</text>
+<text x="12" y="204" font-style="italic" opacity=".75">attention weights: how much “it” borrows from each earlier token</text>
+<text x="12" y="222" font-style="italic" opacity=".75">(swap “big” for “small” and the arrow to “suitcase” becomes the strong one)</text>
+
+<text x="470" y="22" font-weight="700" letter-spacing="1.2">ONE TRANSFORMER BLOCK</text>
+<rect x="470" y="34" width="196" height="232" rx="4" fill="none" stroke="currentColor" opacity=".5" stroke-dasharray="4 3"/>
+<text x="568" y="52" text-anchor="middle" opacity=".7">× N (30–100+)</text>
+<line x1="568" y1="266" x2="568" y2="240" stroke="currentColor" marker-end="url(#a4)"/>
+<rect x="504" y="200" width="128" height="36" rx="3" class="af" opacity=".18"/><rect x="504" y="200" width="128" height="36" rx="3" fill="none" class="as"/><text x="568" y="216" text-anchor="middle" font-weight="700">attention</text><text x="568" y="229" text-anchor="middle" font-size="10.5">tokens exchange info</text>
+<line x1="568" y1="200" x2="568" y2="176" stroke="currentColor" marker-end="url(#a4)"/>
+<text x="581" y="184" font-size="10.5" opacity=".7">+ norm</text>
+<rect x="504" y="132" width="128" height="36" rx="3" fill="none" stroke="currentColor"/><text x="568" y="148" text-anchor="middle" font-weight="700">feed-forward</text><text x="568" y="161" text-anchor="middle" font-size="10.5">each token alone</text>
+<line x1="568" y1="132" x2="568" y2="106" stroke="currentColor" marker-end="url(#a4)"/>
+<text x="581" y="116" font-size="10.5" opacity=".7">+ norm</text>
+<text x="568" y="92" text-anchor="middle" opacity=".7">to next block</text>
+<path d="M490 266 L490 218 L504 218" fill="none" stroke="currentColor" opacity=".5"/><path d="M490 218 L490 150 L504 150" fill="none" stroke="currentColor" opacity=".5"/>
+<text x="478" y="245" font-size="10" opacity=".7" transform="rotate(-90 478 245)">residual</text>
+</g></svg>
+<figcaption>Left: attention as a soft lookup — “it” assigns most of its weight to “trophy” because of “too big”. Right: the block that is repeated to build the whole model; the vertical lines on the left edge are residual connections that let information skip a sublayer.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: why attention and not something cleverer</div>
+<p>Attention is O(n²) in sequence length — every token looks at every other — and researchers have proposed dozens of cheaper alternatives. Almost none displaced it. The reason is that attention's cost is spent in exactly the operation GPUs are best at (large matrix multiplies), it has no sequential bottleneck, and it makes long-range lookups trivially easy. Simplicity that maps well to hardware beat theoretical efficiency. That pattern — pick the design that scales cleanly, not the one that is cleverest at small size — is a recurring lesson of the field.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Query, key, value</h3>
+<p>Attention is a soft version of a dictionary lookup. Each token produces three vectors from its embedding via learned matrices: a <em>query</em> (“what am I looking for?”), a <em>key</em> (“what do I contain?”), and a <em>value</em> (“what information do I hand over if selected?”). A token's query is compared against every other token's key; the match scores are turned into weights; the output is the weighted sum of the values.</p>
+<pre><code>scores  = Q · Kᵀ / √d          # how well each query matches each key
+weights = softmax(scores)      # rows sum to 1
+output  = weights · V          # blend the values</code></pre>
+<p>“Multi-head” attention simply runs this several times in parallel with different learned matrices, so one head can track grammatical agreement while another tracks coreference and another tracks which function a variable was defined in. Interpretability research has found heads that do recognizably specific jobs.</p>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>Dot products as similarity, softmax as soft selection</h3>
+<p>The dot product of two vectors is large when they point the same way, so <code>q · k</code> is a similarity score between what a token wants and what another token has — the same geometry as Concept 2. Dividing by √d (the vector dimension) keeps the scores from growing so large that softmax saturates into a hard one-hot pick. Softmax, met in Concept 3, then converts scores into a probability-like weighting. The result is differentiable, which is the whole point: a hard “pick the single most relevant token” could not be trained by gradient descent, but a soft blend can. Nearly every mechanism in deep learning follows this recipe — replace a discrete choice with a smooth weighting so gradients can flow.</p>
+</div>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Positional encoding</h3>
+<p>Attention on its own is order-blind: “dog bites man” and “man bites dog” produce the same set of query/key/value vectors. Position has to be injected. The original Transformer added a fixed sine-wave pattern to each embedding; modern models use <em>rotary position embeddings</em> (RoPE), which rotate the query and key vectors by an angle proportional to position, so the dot product between two tokens naturally depends on their relative distance. RoPE is also what makes it possible to stretch a model's context window after training (Concept 11).</p>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Residual connections and normalization</h3>
+<p>Stacking 100 layers used to be impossible — gradients faded to nothing on the way back. Two fixes from 2015–16 made depth routine. <em>Residual connections</em> (ResNet) have each layer compute a <em>correction</em> that is added to its input, rather than replacing it: <code>x + f(x)</code>. The gradient can then flow straight through the addition, and a layer that learns nothing useful simply passes its input along. <em>Layer normalization</em> rescales the activations at each layer to a stable range so that no layer sees wildly drifting inputs. Together they make a Transformer a “residual stream” — a running vector that each block reads from and writes small updates to, which is also why it is possible to skip or reorder blocks and still get sensible output.</p>
+</div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="concept" id="c5">
+<div class="chip"><span class="n">5</span>Engineering, not alchemy</div>
+<h2>Scaling laws</h2>
+<p class="oneline">Model quality improves as a smooth, predictable power law in parameters, data and compute — so you can forecast a model's performance before spending the money to train it.</p>
+
+<p>In 2020, Kaplan and colleagues at OpenAI trained hundreds of small models and plotted loss against size. On log-log axes the points fell on straight lines, over seven orders of magnitude, with no sign of flattening. Double the compute and the loss drops by a predictable amount. This converted AI from alchemy into engineering: a lab could train a family of small models, fit the line, and know what a model 100× larger would achieve. It also justified the bet — spend hundreds of millions of dollars on one training run, because the line said it would work.</p>
+<p>In 2022 DeepMind's Chinchilla paper corrected the recipe. Earlier models had been too large and undertrained; for a fixed compute budget the best results come from roughly 20 tokens of training data per parameter. GPT-3 (175B parameters, 300B tokens) was badly off that ratio; Chinchilla (70B parameters, 1.4T tokens) matched it at a quarter of the size. The lesson — data matters as much as parameters — shaped every model since and is why data quality and synthetic data became such intense focus areas as the supply of good text ran low.</p>
+
+<figure>
+<svg viewBox="0 0 640 300" role="img" aria-label="Log-log plot of loss versus training compute. Points for models from 10^17 to 10^25 FLOPs fall on a straight descending line; a dashed extension predicts the next model's loss before it is trained.">
+<defs><marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12" fill="currentColor">
+<line x1="70" y1="250" x2="600" y2="250" stroke="currentColor" opacity=".5"/><line x1="70" y1="250" x2="70" y2="30" stroke="currentColor" opacity=".5"/>
+<g opacity=".7" font-variant-numeric="tabular-nums">
+<text x="70" y="270" text-anchor="middle">10¹⁷</text><text x="176" y="270" text-anchor="middle">10¹⁹</text><text x="282" y="270" text-anchor="middle">10²¹</text><text x="388" y="270" text-anchor="middle">10²³</text><text x="494" y="270" text-anchor="middle">10²⁵</text>
+<text x="600" y="270" text-anchor="end">FLOPs</text>
+<text x="62" y="250" text-anchor="end">2.0</text><text x="62" y="176" text-anchor="end">3.0</text><text x="62" y="103" text-anchor="end">4.5</text><text x="62" y="40" text-anchor="end">7.0</text>
+</g>
+<text x="24" y="140" transform="rotate(-90 24 140)" text-anchor="middle" opacity=".7">test loss (log scale)</text>
+<text x="335" y="292" text-anchor="middle" opacity=".7">training compute (log scale)</text>
+<g stroke="currentColor" opacity=".12"><line x1="70" y1="176" x2="600" y2="176"/><line x1="70" y1="103" x2="600" y2="103"/><line x1="176" y1="30" x2="176" y2="250"/><line x1="282" y1="30" x2="282" y2="250"/><line x1="388" y1="30" x2="388" y2="250"/><line x1="494" y1="30" x2="494" y2="250"/></g>
+<line x1="80" y1="60" x2="470" y2="212" class="as" stroke-width="2.5"/>
+<line x1="470" y1="212" x2="590" y2="259" class="as" stroke-width="2.5" stroke-dasharray="6 5" opacity=".8"/>
+<g fill="currentColor">
+<circle cx="90" cy="66" r="4"/><circle cx="130" cy="79" r="4"/><circle cx="165" cy="95" r="4"/><circle cx="205" cy="108" r="4"/><circle cx="240" cy="124" r="4"/><circle cx="285" cy="139" r="4"/><circle cx="330" cy="158" r="4"/><circle cx="380" cy="178" r="4"/><circle cx="425" cy="193" r="4"/><circle cx="460" cy="209" r="4"/>
+</g>
+<circle cx="540" cy="239" r="6" fill="none" class="as" stroke-width="2"/>
+<text x="540" y="222" text-anchor="middle" class="af" font-weight="700">next model</text>
+<text x="540" y="209" text-anchor="middle" class="af" font-size="11">predicted before training</text>
+<text x="150" y="150" font-style="italic" opacity=".75">straight on log-log axes</text>
+<text x="150" y="166" font-style="italic" opacity=".75">= power law: loss ∝ compute^−0.05</text>
+<text x="380" y="70" opacity=".75">each point: a model trained</text><text x="380" y="86" opacity=".75">to convergence at that budget</text>
+</g></svg>
+<figcaption>The shape of a scaling law (illustrative values). The line is fit on the smaller models; the open circle is a forecast. Real plots from Kaplan (2020) and Hoffmann (2022) look very much like this.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: what a scaling law buys you</div>
+<p>GPT-4's technical report describes predicting its final loss from models trained with 1,000–10,000× less compute, and the prediction landed. Labs also use scaling laws to make design decisions cheaply: try two architectures at 100M parameters, and if one has a better slope (not just a better intercept), it will win at 100B. Conversely, a proposed improvement that only helps small models is usually discarded. Scaling laws are also why compute — chips, power, data centers — became the central strategic resource of the industry.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Power laws and log-log plots</h3>
+<p>A power law is a relationship of the form <code>y = a · xᵇ</code>. Take logarithms of both sides and it becomes <code>log y = log a + b · log x</code> — a straight line with slope <em>b</em>. That is why researchers plot loss and compute on log axes: a straight line there is the fingerprint of a power law, and its slope tells you how much you gain per doubling. The slopes for language models are small (around −0.05 to −0.1 in loss per unit of log-compute), which means each doubling helps only a little — but doublings are cheap when compute grows 10× every couple of years, and the line's refusal to bend is what matters.</p>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Compute-optimal training (Chinchilla)</h3>
+<p>Given a fixed compute budget, you can spend it on a bigger model trained on less data or a smaller model trained on more. Chinchilla's finding is that the optimum has data scaling in proportion to parameters — roughly 20 tokens per parameter. But “compute-optimal for training” is not “optimal overall”: a model will be run for inference billions of times, and a smaller model is cheaper to serve. So production models are now deliberately <em>over</em>-trained on far more than 20 tokens per parameter (Llama 3 8B saw ~1,900 tokens per parameter) to buy cheap inference at the cost of expensive training.</p>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>The 6ND rule</h3>
+<p>Training compute is well approximated by <code>C ≈ 6 · N · D</code> FLOPs, where N is parameters and D is training tokens. The 6 comes from about 2 FLOPs per parameter per token for the forward pass and 4 for the backward pass. It lets you convert between “size,” “data,” and “dollars” on a napkin: a 70B-parameter model on 1.4T tokens is 6 × 7×10¹⁰ × 1.4×10¹² ≈ 6×10²³ FLOPs; at a realistic 40% utilization of an H100's ~10¹⁵ FLOP/s, that is about 1.5×10⁹ GPU-seconds, or roughly 1,000 GPUs for three weeks.</p>
+</div>
+</div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="concept" id="c6">
+<div class="chip"><span class="n">6</span>The surprise</div>
+<h2>In-context learning</h2>
+<p class="oneline">A large enough model can pick up a new task from a few examples placed in its prompt, with no retraining — so one general model can replace a thousand specialized ones.</p>
+
+<p>GPT-3's paper was titled “Language Models are Few-Shot Learners,” and the title was the discovery. Show the model three examples of English→French translation in the prompt and it translates the fourth line. Show it three examples of extracting dates from emails and it extracts the fourth. The weights do not change; the “learning” happens entirely inside the forward pass, in the way attention lets later tokens condition on earlier ones. Smaller models cannot do this; the ability appears and sharpens with scale.</p>
+<p>This is the concept that made a single model viable as a product. Before it, every task needed its own fine-tuned model and its own labeled dataset. After it, a task is a paragraph of instructions. Prompt engineering, system prompts, chatbots, retrieval-augmented generation, and agents are all in-context learning wearing different clothes: they all work by putting the right information in front of a frozen model.</p>
+
+<figure>
+<svg viewBox="0 0 640 210" role="img" aria-label="A prompt containing three labeled examples of classifying support tickets, followed by a fourth unlabeled ticket. The frozen model outputs the label for the fourth. The weights are unchanged.">
+<defs><marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="JetBrains Mono, monospace" font-size="11.5" fill="currentColor">
+<rect x="12" y="16" width="360" height="176" rx="4" fill="none" stroke="currentColor"/>
+<text x="24" y="36" font-family="Bricolage Grotesque, sans-serif" font-weight="700" letter-spacing="1.2" font-size="11">PROMPT (CONTEXT WINDOW)</text>
+<text x="24" y="60">"Login page shows 500 error"      → Bug</text>
+<text x="24" y="80">"Can you add dark mode?"          → Feature</text>
+<text x="24" y="100">"How do I export my data?"        → Question</text>
+<line x1="24" y1="112" x2="360" y2="112" stroke="currentColor" opacity=".3" stroke-dasharray="3 3"/>
+<text x="24" y="134">"Invoice PDF is blank since v4.2" → </text>
+<rect x="24" y="148" width="336" height="30" rx="3" class="af" opacity=".15"/>
+<text x="192" y="168" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="11.5">three demonstrations define the task — no training step</text>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12">
+<line x1="372" y1="104" x2="420" y2="104" stroke="currentColor" marker-end="url(#a6)"/>
+<rect x="422" y="72" width="120" height="64" rx="3" fill="none" stroke="currentColor"/>
+<text x="482" y="98" text-anchor="middle" font-weight="700">frozen model</text><text x="482" y="116" text-anchor="middle" font-size="11" opacity=".75">weights unchanged</text>
+<line x1="542" y1="104" x2="588" y2="104" stroke="currentColor" marker-end="url(#a6)"/>
+<text x="596" y="108" font-family="JetBrains Mono, monospace" font-weight="600">Bug</text>
+</g></g></svg>
+<figcaption>Few-shot prompting. The task is specified by example, the model infers the pattern, and nothing is written back to the weights.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: the same model, four products</div>
+<p>A support-ticket classifier, a SQL generator, a tone rewriter and a meeting summarizer can all be the same API call to the same weights with a different first paragraph. In 2019 those were four ML projects with four datasets and four deployment pipelines. This collapse in the cost of building an “AI feature” is the economic engine behind the entire application layer built since ChatGPT.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Prompting: zero-shot, few-shot, and instructions</h3>
+<p><em>Zero-shot</em> means describing the task in words with no examples (“Classify this ticket as Bug, Feature, or Question”). <em>Few-shot</em> means providing demonstrations. Raw pretrained models needed few-shot prompts because they had only ever seen text continue naturally; instruction-tuned models (Concept 7) respond to zero-shot instructions because they were trained on exactly that format. The practical craft of prompting — be specific, give examples for anything ambiguous, ask for step-by-step reasoning, specify the output format — is entirely about making the pattern the model must infer as unambiguous as possible.</p>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>How a frozen network “learns”: induction heads</h3>
+<p>How can anything be learned without changing weights? Interpretability work found a concrete mechanism. Certain attention heads, called <em>induction heads</em>, implement the rule “find where this token appeared before, and copy whatever followed it.” Chained, they let a model complete patterns it has never seen: if the prompt contains <code>A → B</code> and later <code>A →</code>, an induction head fills in <code>B</code>. These circuits emerge suddenly during pretraining — there is a visible bump in the loss curve when they form — and the model's in-context learning ability improves at the same moment. The broader point is that a big enough network learns, during pretraining, general-purpose <em>algorithms</em> for reading its own context, and those algorithms are what do the “learning” at inference time.</p>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>Emergence and phase changes</h3>
+<p>Some capabilities do not improve smoothly with scale; they are near zero until a certain size and then appear abruptly. Three-digit arithmetic, multi-step reasoning and few-shot learning all showed this. Whether emergence is real or an artifact of how we measure (a smooth improvement in per-token probability looks like a sudden jump when you score only exact-match correctness) is debated. Either way, it is why scaling has kept producing surprises rather than just “the same thing, slightly better,” and why nobody can fully predict what the next 10× of compute will unlock.</p>
+</div>
+</div>
+</section>
+
+<!-- ============ 7 ============ -->
+<section class="concept" id="c7">
+<div class="chip"><span class="n">7</span>From model to product</div>
+<h2>Pretrain, then align</h2>
+<p class="oneline">Pretraining produces a brilliant but uncooperative text-completer. A short second phase — supervised fine-tuning plus reinforcement learning from human feedback — turns it into an assistant that follows instructions and behaves well.</p>
+
+<p>A raw pretrained model, asked “Explain how vaccines work,” is as likely to continue with “…in 500 words. Due Friday. (10 marks)” as with an explanation, because both are things that follow that sentence on the internet. It has enormous capability and no notion of what you want. GPT-3 was available for two years and did not change the world; ChatGPT, essentially GPT-3.5 with an alignment phase, did within weeks. The capability was already there. The alignment made it usable.</p>
+<p>Alignment happens in two steps. <em>Supervised fine-tuning</em> (SFT) trains the model on a few tens of thousands of high-quality example conversations written by people, teaching it the format: a user asks, the assistant answers helpfully. Then <em>reinforcement learning from human feedback</em> (RLHF) refines the behavior: humans compare pairs of model answers and pick the better one; a reward model learns to predict those preferences; the language model is then optimized to produce answers the reward model scores highly. This teaches things that are hard to demonstrate but easy to judge — tone, honesty about uncertainty, refusing harmful requests, not being sycophantic — and it is the technique that produced ChatGPT and Claude.</p>
+
+<figure>
+<svg viewBox="0 0 680 230" role="img" aria-label="Three-stage pipeline: pretraining on trillions of tokens of internet text produces a base model; supervised fine-tuning on tens of thousands of demonstrations produces an instruction-following model; reinforcement learning from human preferences, via a reward model, produces the aligned assistant.">
+<defs><marker id="a7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12" fill="currentColor">
+<rect x="12" y="50" width="176" height="72" rx="4" fill="none" stroke="currentColor"/>
+<text x="100" y="72" text-anchor="middle" font-weight="700">1 · Pretraining</text>
+<text x="100" y="90" text-anchor="middle" font-size="11.5">next-token prediction</text>
+<text x="100" y="106" text-anchor="middle" font-size="11.5" opacity=".75">~10¹³ tokens · months · $10⁸</text>
+<line x1="188" y1="86" x2="230" y2="86" stroke="currentColor" marker-end="url(#a7)"/>
+<text x="209" y="76" text-anchor="middle" font-size="10.5" opacity=".7">base</text>
+<rect x="232" y="50" width="176" height="72" rx="4" fill="none" stroke="currentColor"/>
+<text x="320" y="72" text-anchor="middle" font-weight="700">2 · Supervised fine-tune</text>
+<text x="320" y="90" text-anchor="middle" font-size="11.5">imitate ideal answers</text>
+<text x="320" y="106" text-anchor="middle" font-size="11.5" opacity=".75">~10⁴–10⁵ examples · days</text>
+<line x1="408" y1="86" x2="450" y2="86" stroke="currentColor" marker-end="url(#a7)"/>
+<text x="429" y="76" text-anchor="middle" font-size="10.5" opacity=".7">SFT</text>
+<rect x="452" y="50" width="216" height="72" rx="4" class="af" opacity=".18"/><rect x="452" y="50" width="216" height="72" rx="4" fill="none" class="as"/>
+<text x="560" y="72" text-anchor="middle" font-weight="700">3 · RL from human feedback</text>
+<text x="560" y="90" text-anchor="middle" font-size="11.5">maximize reward-model score</text>
+<text x="560" y="106" text-anchor="middle" font-size="11.5" opacity=".75">~10⁵ comparisons · days</text>
+<rect x="470" y="160" width="180" height="46" rx="4" fill="none" stroke="currentColor" stroke-dasharray="4 3"/>
+<text x="560" y="179" text-anchor="middle" font-weight="700">reward model</text>
+<text x="560" y="195" text-anchor="middle" font-size="11" opacity=".75">trained on “A is better than B”</text>
+<line x1="520" y1="160" x2="520" y2="124" stroke="currentColor" marker-end="url(#a7)"/><text x="512" y="146" text-anchor="end" font-size="10.5">score</text>
+<line x1="600" y1="122" x2="600" y2="158" stroke="currentColor" marker-end="url(#a7)"/><text x="608" y="146" font-size="10.5">answers</text>
+<text x="100" y="150" text-anchor="middle" font-style="italic" opacity=".75">99% of compute</text>
+<text x="100" y="166" text-anchor="middle" font-style="italic" opacity=".75">capability comes from here</text>
+<text x="320" y="150" text-anchor="middle" font-style="italic" opacity=".75">~1% of compute</text>
+<text x="320" y="166" text-anchor="middle" font-style="italic" opacity=".75">usability comes from here</text>
+</g></svg>
+<figcaption>The alignment pipeline. Almost all compute goes into stage 1; almost all of the difference between “GPT-3” and “ChatGPT” comes from stages 2 and 3.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: what human feedback teaches that demonstrations can't</div>
+<p>Ask people to <em>write</em> a perfect answer about a contested medical question and they will disagree and produce uneven quality. Ask them to <em>compare</em> two answers — one confident and wrong, one that hedges appropriately and cites what is known — and they agree quickly and reliably. Judging is easier than generating. RLHF exploits that asymmetry: the model gets a training signal for “good judgment” from people who could not necessarily demonstrate it themselves.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Reinforcement learning</h3>
+<p>Supervised learning says “here is the right output.” Reinforcement learning says only “that was good” or “that was bad,” after the fact, possibly for a whole sequence of decisions. An agent takes actions in an environment, receives a reward, and adjusts its <em>policy</em> — its rule for choosing actions — to get more reward in future. RL is what trained AlphaGo, and for language models the “action” is emitting a token, the “episode” is a full response, and the “reward” is a score for the finished response.</p>
+<p>The reason RL is needed at all is that the thing we want — a helpful, honest answer — has no single correct form. There are a million good answers and a billion bad ones; supervised learning can only imitate the specific good answers it was shown, while RL can improve anything a reward can score.</p>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>Policy gradients and PPO</h3>
+<p>The basic RL update for language models is the <em>policy gradient</em>: increase the probability of tokens that were part of high-reward responses, decrease it for low-reward ones. Naive versions are unstable — one lucky sample can swing the policy wildly. <em>Proximal Policy Optimization</em> (PPO) constrains each update so the new policy stays close to the old one, and RLHF adds a further penalty for drifting too far from the SFT model, so the model cannot “hack” the reward model by producing strange text that scores well but reads badly. That drift, called <em>reward hacking</em>, is the central failure mode of RLHF: the reward model is an imperfect proxy for what humans want, and an optimizer will find its blind spots (for example, learning that longer, more confident answers score higher regardless of correctness).</p>
+</div>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Preference learning: reward models, DPO, and AI feedback</h3>
+<p>A <em>reward model</em> is a copy of the language model with its output layer replaced by a single number, trained so that for each human comparison the preferred answer scores higher. Once trained it can judge millions of responses no human will ever read. <em>Direct Preference Optimization</em> (DPO, 2023) showed that you can skip the separate reward model and RL loop entirely — a clever rearrangement of the math lets the language model be trained directly on preference pairs with a supervised-style loss, which is simpler and more stable, and is now widely used. <em>Constitutional AI</em> / RLAIF (Anthropic, 2022) replaces some of the human comparisons with an AI's own judgments against a written set of principles, which scales far better and gives more consistent, auditable behavior. Most frontier models now use a mixture: human preferences for the hardest judgments, AI feedback for volume.</p>
+</div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="concept" id="c8">
+<div class="chip"><span class="n">8</span>Making it affordable</div>
+<h2>Hardware–algorithm co-design</h2>
+<p class="oneline">Modern models exist because the algorithms were bent to fit the hardware and the hardware was built around the algorithms: lower precision, memory-aware kernels, parallelism across thousands of chips, and architectures that only activate a fraction of themselves per token.</p>
+
+<p>A trillion-parameter model does not fit on one GPU. Training it means spreading the work across tens of thousands of accelerators for months, and serving it means answering millions of requests a day at a price people will pay. None of that is possible with a naive implementation, so a large share of the progress since 2020 is invisible to users: it is engineering that makes the same mathematics 10–100× cheaper.</p>
+<p>The gains come from four directions. <em>Lower numerical precision</em> — doing arithmetic in 16-bit, 8-bit, even 4-bit numbers instead of 32-bit — halves or quarters memory and doubles or quadruples throughput with almost no loss in quality. <em>Memory-aware algorithms</em> like FlashAttention restructure computation so data stays in fast on-chip memory. <em>Parallelism</em> splits a model across chips in three complementary ways. And <em>mixture-of-experts</em> changes the architecture so that a model can have a trillion parameters but use only a tenth of them for any given token.</p>
+
+<figure>
+<svg viewBox="0 0 680 290" role="img" aria-label="A mixture-of-experts layer: a token's representation enters a router, which selects 2 of 8 expert feed-forward networks; only those two are computed and their outputs are combined. Six experts remain idle for this token.">
+<defs><marker id="a8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12" fill="currentColor">
+<text x="12" y="22" font-weight="700" letter-spacing="1.2">MIXTURE OF EXPERTS: ONE TOKEN'S PATH THROUGH A LAYER</text>
+<rect x="12" y="120" width="90" height="36" rx="3" fill="none" stroke="currentColor"/><text x="57" y="143" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11.5">"insulin"</text>
+<line x1="102" y1="138" x2="140" y2="138" stroke="currentColor" marker-end="url(#a8)"/>
+<rect x="142" y="112" width="90" height="52" rx="3" fill="none" stroke="currentColor"/><text x="187" y="134" text-anchor="middle" font-weight="700">router</text><text x="187" y="150" text-anchor="middle" font-size="10.5" opacity=".75">pick top-2 of 8</text>
+<g>
+<rect x="320" y="40" width="120" height="22" rx="3" fill="none" stroke="currentColor" opacity=".35"/><text x="380" y="55" text-anchor="middle" opacity=".45">expert 1 · code</text>
+<rect x="320" y="68" width="120" height="22" rx="3" class="af" opacity=".22"/><rect x="320" y="68" width="120" height="22" rx="3" fill="none" class="as" stroke-width="1.5"/><text x="380" y="83" text-anchor="middle" font-weight="700">expert 2 · biomedical</text>
+<rect x="320" y="96" width="120" height="22" rx="3" fill="none" stroke="currentColor" opacity=".35"/><text x="380" y="111" text-anchor="middle" opacity=".45">expert 3 · legal</text>
+<rect x="320" y="124" width="120" height="22" rx="3" fill="none" stroke="currentColor" opacity=".35"/><text x="380" y="139" text-anchor="middle" opacity=".45">expert 4 · dialogue</text>
+<rect x="320" y="152" width="120" height="22" rx="3" fill="none" stroke="currentColor" opacity=".35"/><text x="380" y="167" text-anchor="middle" opacity=".45">expert 5 · math</text>
+<rect x="320" y="180" width="120" height="22" rx="3" class="af" opacity=".22"/><rect x="320" y="180" width="120" height="22" rx="3" fill="none" class="as" stroke-width="1.5"/><text x="380" y="195" text-anchor="middle" font-weight="700">expert 6 · chemistry</text>
+<rect x="320" y="208" width="120" height="22" rx="3" fill="none" stroke="currentColor" opacity=".35"/><text x="380" y="223" text-anchor="middle" opacity=".45">expert 7 · multilingual</text>
+<rect x="320" y="236" width="120" height="22" rx="3" fill="none" stroke="currentColor" opacity=".35"/><text x="380" y="251" text-anchor="middle" opacity=".45">expert 8 · general</text>
+</g>
+<path d="M232 130 C 270 110, 290 79, 318 79" fill="none" class="as" stroke-width="2.5" marker-end="url(#a8)"/>
+<path d="M232 146 C 270 160, 290 191, 318 191" fill="none" class="as" stroke-width="2" marker-end="url(#a8)"/>
+<text x="262" y="100" class="af" font-weight="700" font-size="11.5">0.7</text>
+<text x="262" y="184" class="af" font-weight="700" font-size="11.5">0.3</text>
+<path d="M440 79 C 480 79, 490 128, 518 130" fill="none" class="as" stroke-width="2.5" marker-end="url(#a8)"/>
+<path d="M440 191 C 480 191, 490 146, 518 144" fill="none" class="as" stroke-width="2" marker-end="url(#a8)"/>
+<rect x="520" y="118" width="80" height="40" rx="3" fill="none" stroke="currentColor"/><text x="560" y="134" text-anchor="middle" font-weight="700">weighted</text><text x="560" y="149" text-anchor="middle" font-weight="700">sum</text>
+<line x1="600" y1="138" x2="640" y2="138" stroke="currentColor" marker-end="url(#a8)"/>
+<text x="648" y="142" font-size="11">out</text>
+<text x="380" y="282" text-anchor="middle" font-size="11" font-style="italic" opacity=".75">8 experts stored · 2 computed → ¼ the FLOPs of a dense layer this size</text>
+</g></svg>
+<figcaption>A mixture-of-experts feed-forward layer. The labels on the experts are illustrative — real experts specialize in ways that don't map neatly onto human categories — but the mechanism is exact: a small router picks a few experts per token and the rest are skipped.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: the same answer at one-tenth the price</div>
+<p>Between GPT-4's launch in March 2023 and mid-2025 the price of GPT-4-level output fell by more than an order of magnitude, and open models of similar quality can be run on a single high-end workstation. The mathematics of the models did not fundamentally change over that period. What changed was 8-bit and 4-bit quantization, mixture-of-experts architectures, better attention kernels, speculative decoding, and smaller models trained on far more data (Concept 5). Cost reduction is itself a capability: it decides which applications are economically possible.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Mixed precision and quantization</h3>
+<p>Standard floating point uses 32 bits per number. Neural networks turn out to be remarkably tolerant of noise: training in 16-bit (bfloat16, which keeps float32's range but drops precision) with a 32-bit copy of the weights for the update step is now universal, and NVIDIA's newest chips train in 8-bit. For <em>inference</em> the weights can be squeezed further, to 8 or 4 bits per parameter, with a clever per-block scaling factor to preserve range. A 70B model at 4 bits fits in 35 GB instead of 280 GB — the difference between a single GPU and a rack. Because inference on modern hardware is limited by how fast weights can be read from memory rather than by arithmetic, halving the bits roughly doubles the tokens per second.</p>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>FlashAttention and the memory hierarchy</h3>
+<p>Attention's n×n score matrix is huge for long sequences and, in a naive implementation, gets written to and read back from GPU memory several times. FlashAttention (2022) computes attention in tiles that fit in the GPU's tiny on-chip SRAM, never materializing the full matrix, and recomputes a few values rather than storing them. It gives identical results 2–4× faster with memory that grows linearly rather than quadratically in sequence length. It is the single kernel most responsible for making 100K+ token contexts practical, and it is a perfect example of the theme: nothing about the math changed, only its arrangement relative to the hardware.</p>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>Memory bandwidth versus arithmetic</h3>
+<p>An H100 can perform about 10¹⁵ multiply-adds per second but can only read about 3×10¹² bytes per second from its main memory (HBM). Its on-chip SRAM is ~10× faster still but only tens of megabytes. So the ratio of arithmetic to memory traffic — <em>arithmetic intensity</em> — decides whether a kernel is fast. Matrix multiplication has high intensity (each loaded number is used many times) and runs near peak. Naive attention and, notably, token-by-token generation have low intensity: to emit one token the whole model's weights must be streamed from memory once, and only a handful of operations are done per weight. This is why inference is “memory-bound,” why batching many users together is so important for serving cost, and why quantization helps speed and not just size.</p>
+</div>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Three kinds of parallelism</h3>
+<p><em>Data parallelism</em>: every GPU holds a full copy of the model and processes different examples; gradients are averaged. Simple, but the model must fit on one chip. <em>Tensor parallelism</em>: each matrix is split across several GPUs in the same server and they exchange partial results at every layer — needs very fast interconnect (NVLink). <em>Pipeline parallelism</em>: different layers live on different GPUs and micro-batches flow through like an assembly line. Frontier training runs use all three at once (“3D parallelism”) across tens of thousands of GPUs, plus sharded optimizer states (ZeRO/FSDP) so no chip has to hold everything. The engineering challenge of keeping 20,000 GPUs busy without one straggler or failure stalling the run is a large part of why training frontier models is hard even with unlimited money.</p>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Mixture-of-experts and the KV cache</h3>
+<p><em>Mixture-of-experts</em> (MoE) replaces the feed-forward layer of each block with several parallel copies (“experts”) and a small router that sends each token to the top one or two. Total parameters — and so the model's capacity to store knowledge — go up by the number of experts, while the compute per token barely changes. Mixtral, DeepSeek-V3, GPT-4 (reportedly) and most frontier models use it. The cost is engineering: experts must be balanced so none is idle, and all of them still have to sit in memory.</p>
+<p>The <em>KV cache</em> is the other ubiquitous inference trick. When generating token 1,000, the keys and values of the previous 999 tokens haven't changed, so they are stored rather than recomputed. Generation becomes linear rather than quadratic in length, but the cache itself grows with context and is often the binding memory constraint when serving long conversations — which is why techniques to shrink it (grouped-query attention, multi-head latent attention) are in every recent architecture paper.</p>
+</div>
+</section>
+
+<!-- ============ 9 ============ -->
+<section class="concept" id="c9">
+<div class="chip"><span class="n">9</span>The second scaling axis</div>
+<h2>Reasoning and test-time compute</h2>
+<p class="oneline">Let the model think before it answers — generating a long chain of intermediate steps — and train that thinking with reinforcement learning against answers that can be checked. Spending more compute at inference time became a new way to buy capability.</p>
+
+<p>For a decade, the recipe for a better model was a bigger model with more training. In late 2024 OpenAI's o1 and then DeepSeek's R1 demonstrated a second axis: give the model room to produce thousands of tokens of private working — trying approaches, noticing mistakes, backtracking — before committing to an answer, and its performance on math, code and hard reasoning jumps far beyond what its size would predict. A model allowed to think for a minute beats one ten times its size answering instantly.</p>
+<p>The crucial ingredient is <em>how</em> the thinking is trained. Rather than imitating human-written reasoning, the model is trained by reinforcement learning on problems with verifiable answers: a math problem with a known solution, code with unit tests. The model tries, gets a reward when the final answer checks out, and gradually discovers reasoning strategies that work — including self-verification and error correction that nobody taught it. R1's paper showed “aha moments” emerging spontaneously in the training logs. This is also why the biggest gains have been in domains with checkable answers, and why extending them to fuzzier domains is an active frontier.</p>
+
+<figure>
+<svg viewBox="0 0 640 260" role="img" aria-label="Two axes of scaling. The horizontal axis is training compute; the vertical axis is inference-time thinking tokens. Accuracy contours rise toward the top-right. Arrows show that moving up (more thinking) can match moving right (a bigger model).">
+<defs><marker id="a9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12" fill="currentColor">
+<line x1="80" y1="220" x2="600" y2="220" stroke="currentColor" opacity=".5" marker-end="url(#a9)"/>
+<line x1="80" y1="220" x2="80" y2="24" stroke="currentColor" opacity=".5" marker-end="url(#a9)"/>
+<text x="600" y="242" text-anchor="end" opacity=".75">training compute (model size × data) →</text>
+<text x="30" y="122" transform="rotate(-90 30 122)" text-anchor="middle" opacity=".75">thinking tokens at inference →</text>
+<g fill="none" class="as" opacity=".55">
+<path d="M80 150 C 200 140, 260 90, 300 24"/>
+<path d="M80 200 C 260 190, 380 120, 440 24"/>
+<path d="M200 220 C 380 200, 500 130, 580 24"/>
+</g>
+<g class="af" font-size="11" font-weight="700">
+<text x="106" y="140">90%</text><text x="122" y="184">70%</text><text x="260" y="208">50%</text>
+</g>
+<text x="92" y="42" font-size="11" font-style="italic" opacity=".7">contours: accuracy on a hard math benchmark</text>
+<circle cx="220" cy="205" r="6" fill="currentColor"/><text x="208" y="209" text-anchor="end" font-size="11.5" font-weight="700">GPT-4 class, instant answer</text>
+<line x1="220" y1="205" x2="470" y2="205" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#a9)"/>
+<circle cx="480" cy="205" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+<text x="350" y="192" text-anchor="middle" font-size="11" opacity=".8">old route: a 10× bigger model</text>
+<line x1="220" y1="205" x2="220" y2="70" class="as" stroke-width="2.5" marker-end="url(#a9)"/>
+<circle cx="220" cy="60" r="6" class="af"/>
+<text x="232" y="64" font-size="11.5" font-weight="700" class="af">same model, think for 10,000 tokens</text>
+<text x="232" y="80" font-size="11" class="af">reaches the same contour</text>
+</g></svg>
+<figcaption>Two ways to reach the same accuracy contour: scale the model (move right) or scale the thinking (move up). Test-time compute made the vertical direction available, and it is often the cheaper one.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: what a reasoning trace looks like</div>
+<pre><code>Q: A bat and a ball cost $1.10. The bat costs $1.00 more than the ball.
+   How much is the ball?
+
+[thinking] Intuitive answer is 10¢. Check: 10¢ + $1.10 = $1.20 total. Wrong.
+Let ball = x. Bat = x + 1.00. Sum: 2x + 1.00 = 1.10 → x = 0.05.
+Check: 5¢ + $1.05 = $1.10. ✓
+
+A: 5 cents.</code></pre>
+<p>Nothing in the final answer reveals the work, but the work is why the answer is right. Before reasoning training, models made the same intuitive mistake humans make; the trained habit of “check the obvious answer before committing” is what RL against verifiable rewards instills.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Chain-of-thought</h3>
+<p>Discovered in 2022 as a prompting trick: append “Let's think step by step” and models became much better at multi-step problems. The mechanism is that a Transformer does a fixed amount of computation per token, so a hard problem cannot be solved in the single forward pass that produces the answer token — but it <em>can</em> be solved if the model writes out intermediate results, each one becoming context for the next step. The tokens act as external working memory. Reasoning models turn this trick into a trained skill: the “thinking” is a long chain-of-thought the model learned to produce because it was rewarded for the answers it led to.</p>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Reinforcement learning with verifiable rewards</h3>
+<p>RLHF (Concept 7) used a learned reward model that approximated human taste and could be gamed. For reasoning, the reward is a <em>checker</em>: does the final number match the answer key, do the unit tests pass, does the proof verify? Such rewards cannot be hacked by sounding confident, so the model can be optimized much harder against them without drifting into nonsense. Training then works like this: sample many attempts at each problem, score each attempt, and push the model toward what worked. Because there is no human in the loop, this scales to millions of problems — the constraint becomes finding enough problems with checkable answers, which is why math and code led and why labs now build elaborate environments for other domains.</p>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>GRPO and sampling-based advantage</h3>
+<p>PPO needs a second “critic” network to estimate how good a partial answer is, which doubles memory and is hard to train for long text. DeepSeek's <em>Group Relative Policy Optimization</em> drops the critic: for each problem, sample a group of (say) 16 answers, score them all, and treat each answer's <em>advantage</em> as its score minus the group's mean, divided by the group's standard deviation. Answers better than their siblings are reinforced, worse ones suppressed. It is simple, memory-cheap, and was the algorithm behind R1's open replication of o1-style reasoning. The broader idea — compare a sample to its peers rather than to an absolute estimate — recurs across modern RL for language models.</p>
+</div>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Inference-time scaling and search</h3>
+<p>Once a model can think, there are several ways to spend more compute on a problem. <em>Longer thinking</em>: simply let the chain run further (the “reasoning effort” setting exposed in APIs). <em>Parallel sampling</em>: generate many independent answers and take a majority vote, or have a verifier pick the best — accuracy climbs predictably with the number of samples. <em>Tree search</em>: explore alternative partial solutions and expand the promising ones, in the spirit of AlphaGo. Each trades money and latency for accuracy, and the fact that the trade is smooth and predictable is what makes “test-time compute” a genuine scaling law rather than a trick.</p>
+</div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section class="concept" id="c10">
+<div class="chip"><span class="n">10</span>Beyond text</div>
+<h2>Multimodality through a shared token space</h2>
+<p class="oneline">Images, audio and video can be cut into tokens and fed into the same Transformer that reads text — one architecture and one training objective serve every modality, and contrastive training aligns them with language.</p>
+
+<p>The Transformer never cared that its tokens were words. Cut an image into a grid of 16×16-pixel patches, project each patch to a vector, and you have a sequence the architecture can process exactly as it processes a sentence — that is the Vision Transformer (ViT, 2020), and it matched or beat convolutional networks once given enough data. Slice audio into short frames, or video into patches across space and time, and the same holds. GPT-4o, Gemini and Claude are trained on interleaved sequences where a text token, an image patch and an audio frame are simply neighbors in the same stream.</p>
+<p>The other half is alignment between modalities: getting the vector for a picture of a dog to sit near the vector for the word “dog.” CLIP (2021) did this with contrastive learning on 400 million image–caption pairs from the web, and its embedding space became the bridge for text-to-image generation (DALL·E 2, Stable Diffusion), for zero-shot image classification, and for teaching language models to see.</p>
+
+<figure>
+<svg viewBox="0 0 660 230" role="img" aria-label="An image is cut into a 4-by-4 grid of patches which become 16 tokens; text becomes tokens too; both are concatenated into one sequence that enters the same Transformer, which outputs text describing the image.">
+<defs><marker id="a10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12" fill="currentColor">
+<g stroke="currentColor" class="af">
+<rect x="16" y="40" width="22" height="22" opacity=".15"/><rect x="40" y="40" width="22" height="22" opacity=".25"/><rect x="64" y="40" width="22" height="22" opacity=".35"/><rect x="88" y="40" width="22" height="22" opacity=".2"/>
+<rect x="16" y="64" width="22" height="22" opacity=".3"/><rect x="40" y="64" width="22" height="22" opacity=".55"/><rect x="64" y="64" width="22" height="22" opacity=".6"/><rect x="88" y="64" width="22" height="22" opacity=".25"/>
+<rect x="16" y="88" width="22" height="22" opacity=".25"/><rect x="40" y="88" width="22" height="22" opacity=".5"/><rect x="64" y="88" width="22" height="22" opacity=".5"/><rect x="88" y="88" width="22" height="22" opacity=".3"/>
+<rect x="16" y="112" width="22" height="22" opacity=".15"/><rect x="40" y="112" width="22" height="22" opacity=".2"/><rect x="64" y="112" width="22" height="22" opacity=".2"/><rect x="88" y="112" width="22" height="22" opacity=".15"/>
+</g>
+<text x="63" y="30" text-anchor="middle" opacity=".75">image → 16 patches</text>
+<text x="16" y="152" font-size="11" opacity=".7">each patch → one vector</text>
+<line x1="112" y1="86" x2="150" y2="86" stroke="currentColor" marker-end="url(#a10)"/>
+<g font-family="JetBrains Mono, monospace" font-size="10.5">
+<rect x="154" y="74" width="12" height="24" class="af" opacity=".5"/><rect x="168" y="74" width="12" height="24" class="af" opacity=".5"/><rect x="182" y="74" width="12" height="24" class="af" opacity=".5"/><rect x="196" y="74" width="12" height="24" class="af" opacity=".5"/>
+<text x="212" y="91" opacity=".7">…</text>
+<rect x="226" y="74" width="12" height="24" class="af" opacity=".5"/>
+<rect x="244" y="74" width="46" height="24" fill="none" stroke="currentColor"/><text x="267" y="90" text-anchor="middle">What</text>
+<rect x="294" y="74" width="30" height="24" fill="none" stroke="currentColor"/><text x="309" y="90" text-anchor="middle">is</text>
+<rect x="328" y="74" width="40" height="24" fill="none" stroke="currentColor"/><text x="348" y="90" text-anchor="middle">this</text>
+<rect x="372" y="74" width="20" height="24" fill="none" stroke="currentColor"/><text x="382" y="90" text-anchor="middle">?</text>
+</g>
+<text x="273" y="62" text-anchor="middle" opacity=".75">one sequence: image tokens then text tokens</text>
+<line x1="273" y1="104" x2="273" y2="128" stroke="currentColor" marker-end="url(#a10)"/>
+<rect x="163" y="130" width="220" height="40" rx="3" fill="none" stroke="currentColor"/><text x="273" y="155" text-anchor="middle" font-weight="700">the same Transformer</text>
+<line x1="383" y1="150" x2="420" y2="150" stroke="currentColor" marker-end="url(#a10)"/>
+<text x="428" y="154" font-family="JetBrains Mono, monospace" font-size="11.5">“A dental X-ray showing…”</text>
+<text x="500" y="40" text-anchor="middle" font-size="11" font-style="italic" opacity=".75">audio frames and video patches</text>
+<text x="500" y="56" text-anchor="middle" font-size="11" font-style="italic" opacity=".75">enter the sequence the same way</text>
+</g></svg>
+<figcaption>A vision-language model. Image patches are projected into the same vector space as text tokens and concatenated; attention then lets the question attend to the picture.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: zero-shot classification with CLIP</div>
+<p>To build an image classifier for “cavity”, “healthy tooth”, “crown” in 2018 you needed thousands of labeled radiographs and a training run. With CLIP you embed the three phrases, embed the image, and pick the phrase whose vector is closest — no training at all, and you can change the categories by editing strings. Accuracy is lower than a purpose-trained model on a narrow task, but the ability to classify anything nameable, instantly, was new.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Patch tokenization and the Vision Transformer</h3>
+<p>A 224×224 image cut into 16×16 patches yields 196 patches, each of 768 pixel values (16×16×3 colors). A single learned linear layer maps each to the model's embedding size, positional encodings are added (2-D this time), and the result is a 196-token sequence. Convolutional networks had built in the assumption that nearby pixels matter most; ViT dropped that assumption and let attention learn it, which was worse with little data and better with a lot — the same “learned beats designed, given scale” story as Concept 1. Video adds a time dimension to the patches; audio is usually converted to a spectrogram (a picture of frequency over time) and patched the same way, or compressed into discrete audio tokens by a learned codec.</p>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Contrastive learning (CLIP)</h3>
+<p>CLIP trains two encoders — one for images, one for text — with a single rule: for a batch of N image–caption pairs, the embedding of each image should be closest to its own caption and far from the other N−1 captions, and vice versa. No labels are needed beyond the captions the web already provides. After training, the two encoders share a space where “a photo of a golden retriever” and an actual photo of one land together. The technique is <em>contrastive</em> because it learns by contrasting the true pair against the wrong ones — the same idea as word2vec's negative sampling (Concept 2) at a much larger scale.</p>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>The InfoNCE loss</h3>
+<p>Formally, for each image the model computes similarity scores against all N captions in the batch, applies softmax, and uses cross-entropy with the true caption as the target — exactly the machinery of Concept 3, with “which caption goes with this image” standing in for “which token comes next.” The batch itself supplies the negatives, so large batches (CLIP used 32,768) give harder, more informative contrasts. A learned temperature parameter sharpens or softens the softmax. This one loss function underlies CLIP, most modern embedding models for search, and much of self-supervised vision.</p>
+</div>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Diffusion: generating in the other direction</h3>
+<p>Understanding images is one thing; producing them is another. Diffusion models (behind DALL·E 2/3, Stable Diffusion, Midjourney, Sora and Veo) learn to reverse a noising process: take a real image, add Gaussian noise in many small steps until it is pure static, and train a network to predict and remove the noise at each step. To generate, start from static and denoise step by step, with a CLIP-style text embedding steering each step toward the caption. The approach is stable to train and produces extraordinary quality; its cost is that generation takes many passes, which a parallel line of work keeps reducing. Autoregressive image generation — predicting image tokens one at a time, exactly like text — is the competing approach and has recently become strong in models like GPT-4o's image output.</p>
+</div>
+</section>
+
+<!-- ============ 11 ============ -->
+<section class="concept" id="c11">
+<div class="chip"><span class="n">11</span>Knowing versus knowing where to look</div>
+<h2>Long context, retrieval and memory</h2>
+<p class="oneline">Context windows grew from 2,000 tokens to over a million, and retrieval lets a model pull in fresh or private information at the moment it answers — decoupling what a model knows from when it was trained.</p>
+
+<p>A model's weights are frozen at training time. They cannot know about yesterday's news, your company's internal docs, or the conversation you had with it last week. Two ideas address this. The first is simply a bigger <em>context window</em> — the amount of text the model can attend to at once. GPT-3 handled about 2,000 tokens (a few pages); Claude and Gemini now accept hundreds of thousands to over a million, enough for entire codebases or books. Anything you put in the window, the model can use with full attention, and in-context learning (Concept 6) does the rest.</p>
+<p>The second is <em>retrieval-augmented generation</em> (RAG): rather than stuffing everything into the window, store documents as embeddings (Concept 2), find the few most relevant to the question, and put only those in the prompt. It is cheaper than a huge context, keeps knowledge current without retraining, lets you cite sources, and — crucially for a company — keeps private data private while still letting the model use it. Together, long context and retrieval have turned models from oracles that know what they were trained on into readers that can be handed what they need.</p>
+
+<figure>
+<svg viewBox="0 0 660 230" role="img" aria-label="Retrieval-augmented generation: a question is embedded and matched against a vector index of document chunks; the top three chunks are inserted into the prompt alongside the question; the model answers with citations.">
+<defs><marker id="a11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12" fill="currentColor">
+<rect x="12" y="80" width="110" height="44" rx="3" fill="none" stroke="currentColor"/><text x="67" y="98" text-anchor="middle" font-weight="700">question</text><text x="67" y="114" text-anchor="middle" font-size="10.5" opacity=".75">“refund policy for…”</text>
+<line x1="122" y1="102" x2="160" y2="102" stroke="currentColor" marker-end="url(#a11)"/><text x="141" y="94" text-anchor="middle" font-size="10.5" opacity=".75">embed</text>
+<rect x="162" y="36" width="150" height="132" rx="3" fill="none" stroke="currentColor" stroke-dasharray="4 3"/>
+<text x="237" y="54" text-anchor="middle" font-weight="700">vector index</text>
+<text x="237" y="68" text-anchor="middle" font-size="10.5" opacity=".75">10⁶ document chunks</text>
+<g fill="currentColor" opacity=".35"><circle cx="185" cy="90" r="3"/><circle cx="205" cy="120" r="3"/><circle cx="270" cy="150" r="3"/><circle cx="290" cy="85" r="3"/><circle cx="220" cy="150" r="3"/><circle cx="180" cy="140" r="3"/><circle cx="295" cy="120" r="3"/><circle cx="255" cy="80" r="3"/></g>
+<circle cx="240" cy="112" r="6" fill="none" class="as" stroke-width="2"/>
+<g class="af"><circle cx="232" cy="98" r="3.5"/><circle cx="252" cy="120" r="3.5"/><circle cx="228" cy="124" r="3.5"/></g>
+<circle cx="240" cy="112" r="22" fill="none" class="as" opacity=".6" stroke-dasharray="3 3"/>
+<text x="237" y="184" text-anchor="middle" font-size="10.5" class="af">nearest 3 chunks</text>
+<line x1="312" y1="102" x2="350" y2="102" class="as" stroke-width="2" marker-end="url(#a11)"/>
+<rect x="352" y="40" width="160" height="124" rx="3" fill="none" stroke="currentColor"/>
+<text x="432" y="58" text-anchor="middle" font-weight="700">prompt</text>
+<rect x="362" y="68" width="140" height="18" class="af" opacity=".25"/><text x="432" y="81" text-anchor="middle" font-size="10.5">chunk: “Refunds within 30…”</text>
+<rect x="362" y="90" width="140" height="18" class="af" opacity=".25"/><text x="432" y="103" text-anchor="middle" font-size="10.5">chunk: “Exceptions for…”</text>
+<rect x="362" y="112" width="140" height="18" class="af" opacity=".25"/><text x="432" y="125" text-anchor="middle" font-size="10.5">chunk: “Process via portal”</text>
+<rect x="362" y="134" width="140" height="18" fill="none" stroke="currentColor"/><text x="432" y="147" text-anchor="middle" font-size="10.5">question</text>
+<line x1="512" y1="102" x2="550" y2="102" stroke="currentColor" marker-end="url(#a11)"/>
+<rect x="552" y="80" width="96" height="44" rx="3" fill="none" stroke="currentColor"/><text x="600" y="98" text-anchor="middle" font-weight="700">model</text><text x="600" y="114" text-anchor="middle" font-size="10.5" opacity=".75">answer + cites</text>
+<text x="330" y="212" text-anchor="middle" font-size="11" font-style="italic" opacity=".75">the weights never change — new knowledge arrives through the prompt</text>
+</g></svg>
+<figcaption>Retrieval-augmented generation. The model's knowledge is supplemented at query time with the handful of stored passages closest in embedding space to the question.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: when to use which</div>
+<p>You have a 400-page product manual and want a support assistant. Long context: paste the whole manual into every request — simple, the model sees everything, but each request costs hundreds of thousands of tokens and gets slower. RAG: chunk the manual, embed the chunks once, retrieve five per question — cheap and fast, but the retriever might miss the relevant paragraph, and questions that need a synthesis of the whole book fail. In practice teams combine them: retrieve generously into a large context, and cache the stable prefix (the system prompt and shared documents) so it is not re-processed on every call.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Why long context was hard</h3>
+<p>Attention's cost grows with the square of the sequence length, so 8× the context is 64× the attention compute and memory. Three things fixed it. FlashAttention (Concept 8) removed the memory blow-up. Rotary position embeddings (Concept 4) can be stretched — by rescaling the rotation frequencies — to positions the model never saw in training, then fine-tuned briefly on long documents. And architectural tweaks like grouped-query attention shrank the KV cache that must be held for every token in the window. The remaining challenge is quality: models can accept a million tokens but do not attend to all of them equally well, and “needle in a haystack” tests check whether a fact buried mid-context is actually used.</p>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Retrieval pipelines</h3>
+<p>A RAG system has more moving parts than the diagram shows. Documents must be <em>chunked</em> into passages small enough to be specific but large enough to be self-contained. Each chunk is embedded with an embedding model (trained contrastively, as in Concept 10). At query time the question is embedded and the nearest chunks are found, usually combined with old-fashioned keyword search (BM25) because embeddings miss exact identifiers like error codes or part numbers. A <em>reranker</em> — a small model that reads question and chunk together — often re-orders the top 50 to pick the best 5. Most RAG failures are retrieval failures, not generation failures, so the engineering effort goes into chunking and search quality.</p>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>Approximate nearest-neighbor search</h3>
+<p>Finding the closest vectors among a billion by brute force means a billion dot products per query. Vector databases use <em>approximate</em> indexes that trade a little recall for orders of magnitude in speed. HNSW builds a multi-layer graph where each vector links to its near neighbors; a search walks greedily from a random entry point, descending through layers like a skip list, and finds a near-optimal result in logarithmic time. IVF partitions the space into clusters and searches only the closest few; product quantization compresses vectors so more fit in RAM. These are the data structures inside Pinecone, pgvector, FAISS and every “vector database,” and they are why semantic search over a company's entire document store can return in milliseconds.</p>
+</div>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Memory across sessions</h3>
+<p>Both long context and RAG are stateless: the next conversation starts blank. “Memory” features layer a persistence mechanism on top — the model writes notable facts to a store during a conversation and retrieves them into later ones, which is RAG where the documents are the model's own notes. Design questions here are more about product than ML: what is worth remembering, how to keep it accurate as facts change, and what a user would be uncomfortable finding stored. This is also where agent frameworks put the notes an agent keeps across long tasks (Concept 12), and where the line between “context engineering” and “memory” has blurred.</p>
+</div>
+</section>
+
+<!-- ============ 12 ============ -->
+<section class="concept" id="c12">
+<div class="chip"><span class="n">12</span>From answering to doing</div>
+<h2>Tool use and agency</h2>
+<p class="oneline">Give the model the ability to call functions, run code, browse and operate a computer — then loop: act, observe the result, decide the next step. Reasoning plus tools turns a text generator into something that completes multi-step tasks and checks its own work.</p>
+
+<p>A language model by itself can only emit text. It cannot look anything up, cannot run the code it writes, cannot tell whether its answer is right. <em>Tool use</em> closes that gap: the model is told about a set of functions it may call — <code>search(query)</code>, <code>run_python(code)</code>, <code>read_file(path)</code> — and trained to emit a structured call when one is useful. The surrounding program executes the call and feeds the result back as more context. The model then continues, now informed by real data rather than its recollection of it.</p>
+<p>An <em>agent</em> is that pattern run in a loop toward a goal. Given “fix the failing test in this repo,” it reads the test, forms a hypothesis, edits a file, runs the tests, reads the output, and iterates until they pass — often over dozens or hundreds of steps and long stretches of time. Coding agents such as Claude Code and Codex were the first to reach broad usefulness because software offers what agents need most: rich tools, fast feedback and checkable success. The same loop, given a browser or a desktop, does the work of a knowledge worker's morning. This is where most of the practical value is being created now, and it rests on almost every concept that came before: in-context learning to read the tool results, reasoning to plan, long context to hold the task history, alignment to behave safely with real permissions.</p>
+
+<figure>
+<svg viewBox="0 0 640 260" role="img" aria-label="The agent loop: a goal enters; the model thinks and chooses an action; the action is a tool call executed in an environment such as a shell, browser or API; the observation returns to the model's context; the loop repeats until the model decides the goal is done and reports.">
+<defs><marker id="a12" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g font-family="Bricolage Grotesque, sans-serif" font-size="12" fill="currentColor">
+<rect x="14" y="108" width="78" height="40" rx="3" fill="none" stroke="currentColor"/><text x="53" y="133" text-anchor="middle" font-weight="700">goal</text>
+<line x1="92" y1="128" x2="140" y2="128" stroke="currentColor" marker-end="url(#a12)"/>
+<rect x="142" y="94" width="150" height="68" rx="4" class="af" opacity=".18"/><rect x="142" y="94" width="150" height="68" rx="4" fill="none" class="as"/>
+<text x="217" y="116" text-anchor="middle" font-weight="700">model</text>
+<text x="217" y="132" text-anchor="middle" font-size="11">think → choose action</text>
+<text x="217" y="148" text-anchor="middle" font-size="11" opacity=".75">context = goal + all history</text>
+<path d="M292 112 C 340 112, 360 60, 400 60" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#a12)"/>
+<text x="346" y="72" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5">run_tests()</text>
+<rect x="402" y="30" width="180" height="60" rx="4" fill="none" stroke="currentColor"/>
+<text x="492" y="52" text-anchor="middle" font-weight="700">environment</text>
+<text x="492" y="68" text-anchor="middle" font-size="11" opacity=".8">shell · files · browser · APIs</text>
+<path d="M492 90 C 492 150, 330 140, 292 144" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#a12)"/>
+<text x="404" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5">"3 passed, 1 failed:…"</text>
+<text x="404" y="164" text-anchor="middle" font-size="10.5" opacity=".75">observation appended to context</text>
+<path d="M217 162 C 217 200, 150 210, 100 210 C 60 210, 60 148, 92 140" fill="none" class="as" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#a12)"/>
+<text x="150" y="226" text-anchor="middle" class="af" font-size="11.5" font-weight="700">repeat until done</text>
+<text x="150" y="241" text-anchor="middle" font-size="10.5" opacity=".75">10 – 1,000+ steps</text>
+<line x1="292" y1="128" x2="400" y2="128" stroke="currentColor" opacity=".5" stroke-dasharray="2 3"/>
+<line x1="400" y1="128" x2="540" y2="128" stroke="currentColor" opacity=".5" stroke-dasharray="2 3" marker-end="url(#a12)"/>
+<rect x="542" y="108" width="84" height="40" rx="3" fill="none" stroke="currentColor"/><text x="584" y="127" text-anchor="middle" font-weight="700">report</text><text x="584" y="141" text-anchor="middle" font-size="10.5" opacity=".75">when done</text>
+<text x="330" y="218" font-size="11" font-style="italic" opacity=".75">the feedback edge is what lets the model catch and fix its own mistakes</text>
+</g></svg>
+<figcaption>The agent loop. Each observation from the environment becomes context for the next decision, so errors are visible and correctable rather than final.</figcaption>
+</figure>
+
+<div class="example"><div class="lbl">Example: the difference feedback makes</div>
+<p>Ask a 2023 chatbot to write a function and it produces code that looks right and may not compile. Ask an agent, and it writes the code, runs it, reads the <code>TypeError</code>, fixes the type, runs again, sees the tests pass, and only then reports back. Neither the model's knowledge nor its coding skill is the main difference. The difference is that the second one can see the consequences of its actions. Verification through tools is worth more than a large jump in raw model quality, and it is why agent benchmarks improved faster than any other category through 2025.</p></div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Function calling and structured output</h3>
+<p>Tool use starts with a contract. The application describes each tool with a name, a plain-language description and a JSON schema for its arguments; the model is trained to respond, when appropriate, with a JSON object naming the tool and filling in the arguments rather than with prose. The runtime validates the call, executes it, and returns the result as a specially-marked message. Models are fine-tuned specifically on this format so that they choose tools sensibly, fill arguments correctly and know when <em>not</em> to call one. The same machinery gives “structured output” — forcing a response into a schema — which is how models are wired into ordinary software that expects typed data rather than paragraphs.</p>
+<pre><code>// the model emits this instead of prose
+{ "tool": "search_tickets",
+  "arguments": { "status": "open", "product": "Invoice PDF", "since": "v4.2" } }
+
+// the runtime returns this as the next message
+{ "result": [ { "id": 8812, "title": "Blank PDF export", "reports": 14 } ] }</code></pre>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>The agent loop: ReAct and its descendants</h3>
+<p>The basic pattern was named ReAct (“Reason + Act”, 2022): interleave a thought, an action and an observation, and repeat. Everything since is elaboration. <em>Planning</em>: write down a task list first and tick it off, so a long job stays coherent. <em>Sub-agents</em>: spin up a fresh model instance with a narrow brief, so the main context is not flooded with detail. <em>Checkpoints and permissions</em>: ask before irreversible actions. <em>Context management</em>: summarize or discard old history so a 500-step task fits in the window. The frontier models are now trained with RL directly on multi-step agent tasks — reward for the task completing — rather than just prompted into the loop, which is where the large 2025 gains in reliability came from.</p>
+
+<div class="drill l2">
+<div class="lvl">Which depends on</div>
+<h3>Verifiers and the environment as reward</h3>
+<p>The reason agents and reasoning models (Concept 9) advanced together is that they share a training recipe: an environment that can say whether the task succeeded. A test suite, a compiler, a web form that either submitted or didn't, a spreadsheet whose totals either match or don't — each is a verifiable reward, so the same RL machinery that taught models to do math teaches them to operate tools. Labs now invest heavily in building such environments (“RL gyms”) across domains, and the pace of agent progress in any domain tracks how cheaply success there can be checked. Where no checker exists — writing a persuasive memo, say — progress is slower and still leans on human preference data.</p>
+</div>
+</div>
+
+<div class="drill">
+<div class="lvl">Depends on</div>
+<h3>Model Context Protocol and computer use</h3>
+<p>Two developments made tools universal rather than bespoke. The <em>Model Context Protocol</em> (MCP, Anthropic, late 2024) is an open standard for how a model connects to a tool server: a server advertises its tools and their schemas, any compliant client can use them, so a database, a ticketing system or a design tool needs to be integrated once rather than once per AI product. It was adopted across the industry within a year. <em>Computer use</em> is the fallback when no API exists: the model sees screenshots and emits mouse and keyboard actions, treating any GUI as a tool. It is slower and less reliable than a proper API, but it means the long tail of software with no integration is still reachable — and it is the capability behind agents that browse, fill forms and operate desktop applications.</p>
+</div>
+</section>
+
+<!-- ============ closing ============ -->
+<section class="closing" id="closing">
+<div class="eyebrow">How it fits together</div>
+<h2>One recipe, extended six times</h2>
+<p>Read in order, the twelve concepts tell a single story. A simple, general architecture (attention, Concept 4) is trained on a simple, general objective (next-token prediction, Concept 3) using learned representations (Concepts 1–2) and gets predictably better with scale (Concept 5). At sufficient scale it becomes a general-purpose learner that can be programmed with text (Concept 6). Each remaining gap was then closed by <em>adding a stage</em> rather than redesigning the whole thing: an alignment phase for usability (7), engineering for affordability (8), reinforcement learning on verifiable problems for reasoning (9), more token types for perception (10), retrieval and longer windows for knowledge (11), and tools and loops for action (12).</p>
+<p>That is also the honest answer to why the field surprised so many people. None of the components were secret. What was hard to believe in advance was that the same recipe would keep working — that you could pour a thousand times more compute into next-token prediction and get reasoning out, or bolt a feedback loop onto a text model and get a competent engineer. The lesson that generality plus scale beats clever specialization has now been learned six times in a row, and most bets in the industry assume it will hold at least once more.</p>
+
+<div class="map">
+<p><strong>If you remember one sentence per concept:</strong></p>
+<ol>
+<li>Learned features beat designed ones, given data.</li>
+<li>Meaning is geometry: similar things are near, relationships are directions.</li>
+<li>Predicting the next token is a free training signal that demands understanding.</li>
+<li>Attention lets every token consult every other, in parallel, at any scale.</li>
+<li>Loss falls as a straight line on log-log axes — so you can plan.</li>
+<li>A big enough model learns new tasks from its prompt, without retraining.</li>
+<li>Pretraining gives capability; a short alignment phase gives usability.</li>
+<li>Fewer bits, smarter kernels, more chips, sparser models: the same math, 100× cheaper.</li>
+<li>Letting the model think, and training the thinking with checkable rewards, is a second scaling axis.</li>
+<li>Anything you can tokenize, the same Transformer can read; contrastive training links the modalities.</li>
+<li>Long context and retrieval separate what a model knows from when it was trained.</li>
+<li>Tools plus a feedback loop turn a text generator into something that gets things done.</li>
+</ol>
+</div>
+</section>
+</main>
+</div>
+
+</body></html>

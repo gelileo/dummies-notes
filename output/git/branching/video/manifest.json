@@ -1,0 +1,72 @@
+{
+  "topic": "branching",
+  "title": "Branching: splitting the history into a second line",
+  "definition": "A branch starts a second line growing out of an existing dot. Both lines share the same past but now move forward on their own, so one dot can have two children. This lets you try a new feature on its own line without touching the main line.",
+  "stage": {
+    "width": 1280,
+    "height": 720
+  },
+  "reading_rate_wpm": 150,
+  "slides": [
+    {
+      "kind": "title",
+      "concept_slug": null,
+      "image": null,
+      "caption": "Branching: splitting the history into a second line",
+      "narration": "Branching: splitting the history into a second line",
+      "duration_s": 3.2,
+      "transition": "cut",
+      "reveal_to": null
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "branching",
+      "image": "registry/branching/figure/frame-01.svg",
+      "caption": "History is a line of linked commits",
+      "narration": "A project's history is a line of commits, each one a snapshot stamped with an id and linked back to the commit before it.",
+      "duration_s": 9.6,
+      "transition": "cut",
+      "reveal_to": 1
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "branching",
+      "image": "registry/branching/figure/frame-01.svg",
+      "caption": "A branch starts a second line",
+      "narration": "To try something new, you start a branch: a second line growing straight out of an existing commit.",
+      "duration_s": 7.2,
+      "transition": "reveal",
+      "reveal_to": 2
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "branching",
+      "image": "registry/branching/figure/frame-01.svg",
+      "caption": "The new line is named feature",
+      "narration": "That new line is a branch, here named feature; it shares every commit up to the split point.",
+      "duration_s": 7.2,
+      "transition": "reveal",
+      "reveal_to": 3
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "branching",
+      "image": "registry/branching/figure/frame-01.svg",
+      "caption": "One commit now has two children",
+      "narration": "The commit you split from also stays on main, so a single commit ends up with two children.",
+      "duration_s": 7.2,
+      "transition": "reveal",
+      "reveal_to": 4
+    },
+    {
+      "kind": "frame",
+      "concept_slug": "branching",
+      "image": "registry/branching/figure/frame-01.svg",
+      "caption": "The two lines move forward on their own",
+      "narration": "From here each line adds its own commits, so you can build the feature without touching main.",
+      "duration_s": 6.8,
+      "transition": "reveal",
+      "reveal_to": 5
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/branching/video/frames/slide-000.png'
+duration 2.752
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/branching/video/frames/slide-001.png'
+duration 7.445
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/branching/video/frames/slide-002.png'
+duration 5.547
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/branching/video/frames/slide-003.png'
+duration 5.376
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/branching/video/frames/slide-004.png'
+duration 5.163
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/branching/video/frames/slide-005.png'
+duration 5.120
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/git/branching/video/frames/slide-005.png'

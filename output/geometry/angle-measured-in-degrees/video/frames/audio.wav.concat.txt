@@ -1,0 +1,7 @@
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/aud-000.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/aud-001.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/aud-002.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/aud-003.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/aud-004.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/aud-005.wav'
+file '/Users/kunlu/Projects/gelileo/dummies_notes/output/geometry/angle-measured-in-degrees/video/frames/aud-006.wav'

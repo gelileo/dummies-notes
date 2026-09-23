@@ -1,0 +1,27 @@
+1
+00:00:00,000 --> 00:00:02,800
+What an angle is, measured in degrees
+
+2
+00:00:02,800 --> 00:00:17,200
+How wide is the swing? Freeze-frame two blades opening from a single locked corner. Their tips race apart — but how far did they actually swing? That mystery gap is what we want to pin down.
+
+3
+00:00:17,200 --> 00:00:31,200
+That gap between the blades has a special name: the angle. Look at the little green wedge drawn between them — that green shape is the angle itself. But how do we measure a swing?
+
+4
+00:00:31,200 --> 00:00:46,800
+Here is the wild trick: take one perfect full turn around the corner and chop it into 360 tiny steps called degrees — a whole spin sliced like a pizza into 360 microscopic wedges, one skinny wedge per degree.
+
+5
+00:00:46,800 --> 00:00:58,400
+Now count. The swing fills exactly fifty of those pizza wedges — so we call it fifty degrees. Not a made-up number; just how many wedges fit the gap.
+
+6
+00:00:58,400 --> 00:01:14,400
+Counting fifty wedges by hand would take forever, so we use a protractor — a ruler bent into a half-circle with the wedges marked on the rim. Line one blade up with zero, read where the other blade points: fifty.
+
+7
+00:01:14,400 --> 00:01:29,600
+Once you know what to look for, these wedge-angles are everywhere. The square corner of a book? Exactly ninety degrees. Ramps, clock hands, open scissors — every one is just two lines swinging apart from a shared corner.

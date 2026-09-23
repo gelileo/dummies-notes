@@ -1,0 +1,19 @@
+1
+00:00:00,000 --> 00:00:02,500
+Merging: joining two lines back together
+
+2
+00:00:02,500 --> 00:00:12,900
+Here are two lines of history - blue main and teal feature - that split from the shared commit c9 and each added their own commits.
+
+3
+00:00:12,900 --> 00:00:20,500
+To join them back together, Git creates one brand-new commit, the purple dot g7, sitting between the two lines.
+
+4
+00:00:20,500 --> 00:00:27,700
+Give it a link back to d4, the tip of the main line: that is its first parent.
+
+5
+00:00:27,700 --> 00:00:40,100
+Give it a second link back to e5, the tip of the feature line: now g7 has two parents, both histories lead into it, and the two lines are one again.
